@@ -1,0 +1,448 @@
+/* miniprogram/pages/index/productQRcode/productQRcode.wxss */
+.fab {
+  position: fixed;
+  bottom: 60px;
+  right: 16px;
+  width: 112rpx;
+  height: 112rpx;
+}
+
+.fab.quickSale {
+  position: fixed;
+  bottom: 130px;
+}
+
+.fab image {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.swiper {
+  background-color: #F5F5F5;
+}
+
+.badge {
+  position: absolute;
+  top: 1px;
+  right: 4px;
+  min-width: 16px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 10px;
+  text-align: center;
+  background-color: #FF7171;
+}
+
+.tagField {
+  margin-top: 2px;
+}
+
+.tagField .tag {
+  font-size: 14px;
+  width: 146rpx;
+}
+
+.hint text {
+  font-size: 17px;
+  color: #333;
+}
+
+.slider {
+  height: 250px;
+}
+
+.slideImage {
+  width: 100%;
+  height: 100%;
+}
+
+.productDetailBox {
+  padding: 13px 23px;
+}
+
+.productInfo,
+.introduction {
+  margin-left: 0;
+}
+
+.tagField {
+  padding: 10px 1px;
+}
+
+.productInfo .price {
+  color: #02a69f;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.productInfo .name {
+  color: #000;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  line-height: 28px;
+}
+
+.divider {
+  margin: 0 auto;
+}
+
+.introduction {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 80px 0;
+}
+
+.introduction .title {
+  color: #98dbd8;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.introduction .detail {
+  color: #72767c;
+}
+
+.submitField {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  background-color: #fff;
+  padding-bottom: 10px;
+}
+
+.submitField.normal {
+  width: calc(100vw - 16px);
+  padding-right: 8px;
+  padding-top: 10px;
+  padding-left: 6px;
+}
+
+.btnField {
+  display: flex;
+  margin-right: 0;
+}
+
+.purchaseBtn,
+.addCartBtn {
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  letter-spacing: 0.24px;
+}
+
+.purchaseBtn::after,
+.addCartBtn::after {
+  border: none;
+}
+
+.purchaseBtn {
+  background-color: #98dbd8;
+  border-radius: 20px 0 0 20px;
+  padding: 9px 23px 9px 32px;
+  box-shadow: 0 0 10px 0 rgba(134, 194, 191, 0.3)
+}
+
+.addCartBtn {
+  background-color: #02a69f;
+  border-radius: 0 21.48px 21.48px 0;
+  padding: 9px 20px;
+  box-shadow: 2px 2px 10px 0 rgba(0, 114, 109, 0.3);
+}
+
+.amountChange {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex: 1;
+}
+
+.reduce,
+.plus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  border: none;
+  background-color: #ffff;
+  color: #02a69f;
+  font-weight: 300;
+  font-size: 30px;
+  line-height: normal;
+}
+
+.reduce {
+  height: 100%;
+}
+
+.reduce image {
+  width: 40rpx;
+  height: 4rpx;
+}
+
+.plus image {
+  width: 40rpx;
+  height: 40rpx;
+}
+
+.reduce::after,
+.plus::after {
+  border-radius: 0;
+  border: none;
+}
+
+.reduce[disabled],
+.plus[disabled] {
+  opacity: 0.5;
+  background-color: #fff !important;
+}
+
+.input {
+  max-width: 6.9vw;
+  font-size: 21px;
+  font-weight: 400;
+  text-align: center;
+  color: #111111;
+}
+
+.updatePriceMode {
+  background-color: #f1f1f1;
+  align-items: center;
+}
+
+.updatePriceMode .inputField {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 23px;
+}
+
+.updatePriceMode .inputField text {
+  color: #333;
+  font-size: 16px;
+}
+
+.updatePriceMode .inputField input {
+  max-width: 37.6vw;
+  padding: 7px 0;
+  background-color: #fff;
+  text-align: center;
+}
+
+.updatePriceMode button {
+  width: 28.2vw;
+  display: flex;
+  justify-content: center;
+  background-color: #02a69f;
+  padding: 19px 0;
+  color: #fff;
+}
+
+.modelContent {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modelContent .item {
+  display: flex;
+  justify-content: center;
+}
+
+.modelContent .imageBox {
+  margin-top: 25px;
+  width: 100%;
+  height: 330rpx;
+}
+
+.imageBox image {
+  height: 100%;
+}
+
+.modelProductName {
+  color: #000000;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.24px;
+  margin: 10px 15px;
+}
+
+.modelProductName text {
+  text-align: center;
+}
+
+.inputForm {
+  margin: 21px;
+  display: flex;
+  flex-direction: column;
+}
+
+.inputForm .item {
+  align-self: center;
+  margin-bottom: 14px;
+}
+
+.inputForm .title {
+  color: #02A69F;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.inputForm .item {
+  display: flex;
+  align-items: center;
+}
+
+.inputForm .item .label {
+  color: #6D7278;
+  font-size: 14px;
+}
+
+.inputForm .item input {
+  width: 160rpx;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.inputForm .item .price {
+  color: #6D7278;
+  width: 160rpx;
+  font-size: 14px;
+  margin-left: 17px;
+  text-align: center;
+}
+
+.price.origin {
+  text-decoration: line-through;
+}
+
+.inputForm .item.last {
+  margin-bottom: 32px;
+}
+
+.inputForm .submit {
+  padding: 9px;
+  font-size: 16px;
+  border-radius: 6px;
+  margin: 12px;
+  color: #fff;
+  box-shadow: 2px 2px 10px 0 rgba(0, 114, 109, 0.3);
+  background-color: #02A69F;
+}
+
+.inputForm .submit:active {
+  box-shadow: none;
+}
+
+.onSelling,
+.toast {
+  align-items: center;
+  border-radius: 10px;
+}
+
+.onSelling {
+  background: linear-gradient(180deg, #DDDDDD 0%, #FFFFFF 100%);
+}
+
+.toast {
+  background: linear-gradient(180deg, #DBEEED 0%, #FFFFFF 100%);
+}
+
+.onSelling image {
+  margin-top: 20px;
+  width: 122px;
+}
+
+.toast image {
+  margin-top: 14px;
+  width: 198px;
+}
+
+.onSelling .text {
+  margin: 40px 38px 45px 40px;
+  color: #6D7278;
+  font-weight: 300;
+  font-size: 20px;
+}
+
+.onSelling .link,
+.toast .link {
+  color: #02A69F;
+  font-size: 16px;
+  text-decoration: underline;
+  margin-bottom: 45px;
+}
+
+.toast .text {
+  text-align: center;
+  margin: 0 66px 45px 70px;
+  color: #6D7278;
+  font-size: 20px;
+}
+
+.noAlias {
+  background-color: none;
+}
+
+.btnAround {
+  padding: 8px 47px;
+  border-radius: 20px;
+  background-color: #02A69F;
+  color: #fff;
+  box-shadow: 2px 2px 10px 0 rgba(0, 114, 109, 0.3);
+}
+
+@media (min-height: 720px) {
+  .fab {
+    bottom: 70px;
+  }
+
+  .submitField {
+    padding-bottom: 22px;
+  }
+
+  .submitField.previewMode {
+    padding-bottom: 53px;
+  }
+
+  .introduction {
+    padding-bottom: 104px;
+  }
+}
+
+.popupContainer {
+  padding: 44px 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.aliasAuth {
+  width: 330rpx;
+  height: 320rpx;
+}
+
+.popupContainer .subtitle {
+  font-size: 14px;
+  color: #6D7278;
+  margin-top: 34px;
+}
+
+.popupContainer .title {
+  font-size: 18px;
+  margin-top: 5px;
+  margin-bottom: 97px;
+}
+
+.auth {
+  padding: 8px 63px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  border-radius: 21px;
+  color: #fff;
+  background-color: #02A69F;
+}

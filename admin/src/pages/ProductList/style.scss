@@ -1,0 +1,25 @@
+.mainBox {
+	flex-grow: 1;
+	min-height: 100vh;
+	background-color: #efefef;
+	.indicator {
+		background-color: #82868b;
+	}
+	.table {
+		margin: 24px 40px;
+		.emptyTable {
+			width: 100%;
+			display: flex;
+			justify-content: center;
+		}
+	}
+	.fab {
+		position: fixed;
+		right: 30px;
+		bottom: 22px;
+		background-color: #0ba19a;
+	}
+	.fab:hover {
+		background-color: #136b73;
+	}
+}

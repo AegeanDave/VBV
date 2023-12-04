@@ -1,0 +1,292 @@
+.instruction {
+  margin: 20px 16px;
+  padding: 16px;
+  display: flex;
+  background-color: #E4F5F4;
+  color: #6D7278;
+  border-radius: 6px;
+}
+
+.instruction image {
+  flex-shrink: 0;
+  margin: auto 12px;
+  width: 40px;
+  height: 40px;
+}
+
+.instruction text,
+.register text {
+  color: #6D7278;
+  font-size: 14px;
+}
+
+.register {
+  display: flex;
+  flex-direction: column;
+}
+
+.card.register {
+  padding: 20px;
+}
+
+.register .title {
+  padding: 9px 4px;
+}
+
+.phoneInputGroup {
+  margin: 16px 24px 2px 30px;
+  display: flex;
+}
+
+.phoneInputGroup .regionCode {
+  width: 150rpx;
+}
+
+.picker {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  position: relative;
+  padding: 4px 8px;
+  color: #6D7278;
+}
+
+.picker::after {
+  position: absolute;
+  display: block;
+  right: 16rpx;
+  top: 26rpx;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 10rpx solid transparent;
+  border-top: 10rpx solid #999;
+}
+
+.phoneInputGroup .phone {
+  padding: 4px 8px;
+  flex-grow: 1;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  margin-left: 10px;
+}
+
+.phone input {
+  font-size: 16px;
+  color: #6D7278;
+}
+
+.btnArea {
+  margin-top: 17px;
+  padding-left: 220px;
+}
+
+.btnArea .newEmail {
+  padding: 5px 0;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.container {
+  padding: 15px;
+}
+
+.container .text {
+  margin: 80px auto;
+  color: #000000;
+  font-size: 16px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.container .text .bold {
+  font-size: 16px;
+  color: #000000;
+  font-weight: 500;
+}
+
+.submit {
+  width: 88%;
+  font-size: 16px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  border-radius: 6px;
+}
+
+.main {
+  background-color: #F4F4F4;
+  min-height: calc(100vh - 16px);
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  box-shadow: 0 0 5px 2px rgba(139, 139, 139, 0.1);
+  border-radius: 10px;
+  background-color: #ffffff;
+  margin: 8px 16px;
+}
+
+.card.products {
+  flex-grow: 1;
+}
+
+.card text,
+.userInfoNickname {
+  font-size: 14px;
+}
+
+.padding {
+  padding: 0 20px;
+}
+
+.cardHeader {
+  padding: 10px 0 8px 0;
+}
+
+.setting {
+  width: 38rpx;
+  height: 38rpx;
+  float: right;
+}
+
+.cardHeader.products {
+  display: flex;
+  padding: 0 10px;
+}
+
+.cardHeader text {
+  color: #02A69F;
+  font-weight: 500;
+}
+
+.warehouseInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0 15px 0;
+}
+
+.nameBox {
+  margin-bottom: 4px;
+}
+
+.nameBox text {
+  margin-bottom: 0;
+}
+
+.warehouseInfo .label {
+  font-weight: 400;
+}
+
+.warehouseInfo .value,
+.userInfoNickname {
+  font-weight: 600;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.scrollView {
+  height: 740rpx;
+}
+
+.orderState {
+  display: flex;
+  justify-content: space-around;
+  padding: 14px 0 22px 0;
+}
+
+.orderState text {
+  font-size: 16px;
+}
+
+.label {
+  font-weight: 500;
+}
+
+.amount {
+  color: #02A69F;
+}
+
+.tab {
+  padding: 10px;
+}
+
+.tab .unselected {
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 400;
+}
+
+.productsBox {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 34rpx 58rpx;
+}
+
+.productCard {
+  width: fit-content;
+  flex-direction: column;
+  padding: 0;
+}
+
+.price,
+.name {
+  max-width: 30vw;
+  overflow-wrap: break-word;
+}
+
+.price {
+  color: #02A69F;
+  font-weight: 500;
+}
+
+.cardContent.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 124rpx;
+}
+
+.cardContent.empty text {
+  color: rgba(0, 0, 0, 0.5);
+  line-height: 20px;
+}
+
+.iconBox {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(145, 145, 145, 0.31);
+}
+
+.iconBox image {
+  width: 106rpx;
+  height: 106rpx;
+}
+
+@media (min-height: 600px) {
+  .scrollView {
+    height: 570rpx;
+  }
+}
+
+@media (min-height: 700px) {
+  .scrollView {
+    height: 740rpx;
+  }
+
+  .main {
+    padding: 12px 0;
+  }
+}
+
+@media (min-height: 800px) {
+  .scrollView {
+    height: 820rpx;
+  }
+}

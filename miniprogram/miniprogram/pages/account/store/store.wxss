@@ -1,0 +1,143 @@
+page {
+  background-color: #F4F4F4;
+}
+
+.card {
+  margin-top: 16px;
+}
+
+.cardHeader.products {
+  padding: 10px 18px 6px;
+}
+
+.cardContent.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 35px;
+  padding-bottom: 58px;
+}
+
+.cardContent.empty text {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.productsBox {
+  padding: 14px 10rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.productCard {
+  width: fit-content;
+  flex-direction: column;
+  padding: 24rpx 44rpx;
+}
+
+.pic.store {
+  width: 244rpx;
+  height: 244rpx;
+}
+
+.price,
+.name {
+  margin-top: 2px;
+  max-width: 30.6vw;
+  overflow-wrap: break-word;
+}
+
+.price {
+  color: #02A69F;
+  font-weight: 500;
+}
+
+.bottomDialogBody view {
+  padding: 17px;
+}
+
+.bottomDialogBody view.cancel {
+  border-top: 8px solid #f2f2f2;
+}
+
+.middleBox {
+  width: calc(100% - 44px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px 4px 22px;
+}
+
+.middleBox text {
+  flex-grow: 1;
+  color: rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 14px;
+  padding: 0 8px;
+}
+
+.middleBox .divider {
+  max-width: 30%;
+}
+
+.mask {
+  position: fixed;
+  z-index: 999;
+  padding: 150rpx 22px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.canvasContainer {
+  display: flex;
+  padding: 0 16px;
+  flex-direction: column;
+  position: relative;
+}
+
+.closeIcon {
+  align-self: flex-end;
+  margin-bottom: 6px;
+}
+
+.canvasButtons {
+  margin-top: 31px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  padding: 9px 16px 9px 27px;
+}
+
+.canvasButtons text {
+  font-size: 16px;
+  margin: 0 27px;
+}
+
+.canvasButtons .download {
+  width: 36rpx;
+  height: 44rpx
+}
+
+@media (min-height: 700px) {
+  page {
+    padding: 12px 0;
+  }
+
+  .middleBox .divider {
+    max-width: 29%;
+  }
+}
+
+@media (min-height: 800px) {
+  .productCard {
+    padding: 24rpx 48rpx;
+  }
+
+  .middleBox .divider {
+    max-width: 32%;
+  }
+}

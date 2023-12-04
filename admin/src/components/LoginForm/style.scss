@@ -1,0 +1,40 @@
+.container.MuiPaper-rounded {
+	margin: 0 auto;
+	width: 250px;
+	border-radius: 10px;
+	padding: 26px 40px 40px 40px;
+	display: flex;
+	flex-direction: column;
+	.subtitle {
+		align-self: center;
+		margin-bottom: 60px;
+	}
+	form {
+		display: flex;
+		flex-direction: column;
+	}
+	.countryCode {
+		width: 80px;
+	}
+	.context {
+		color: #6d7278;
+	}
+	.hint {
+		font-size: 12px;
+		align-self: center;
+		display: flex;
+		align-items: center;
+		color: #6d7278;
+		.resend {
+			font-size: 12px;
+			line-height: normal;
+			color: #6d7278;
+		}
+	}
+	.btn {
+		margin: 56px 36px 0 36px;
+	}
+	.btn:disabled {
+		background-color: #d8d8d8;
+	}
+}

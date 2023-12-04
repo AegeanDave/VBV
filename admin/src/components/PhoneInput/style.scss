@@ -1,0 +1,17 @@
+.phone .select,
+.phone .input {
+	margin-right: 10px;
+}
+.phone .select .outlined {
+	min-width: 32px;
+}
+.select .outlined,
+.input input {
+	padding-bottom: 8px;
+	padding-top: 8px;
+	font-size: 0.875rem;
+}
+.phone .select.MuiOutlinedInput-root,
+.input .MuiOutlinedInput-root {
+	border-radius: 0;
+}

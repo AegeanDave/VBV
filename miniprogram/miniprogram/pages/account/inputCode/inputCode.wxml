@@ -1,0 +1,15 @@
+<view class="card inputBox">
+  <text>请输入您的邀请码来添加好友</text>
+  <input name="code" bindblur="inputValidation" value="{{currentValue && currentValue}}"></input>
+  <view class="btnArea">
+    <button bindtap="bindGetUserInfo" class="newCode confirm"
+      disabled="{{disabled}}">确认</button>
+  </view>
+</view>
+<pop-up show="{{showPopup}}" showCancel="">
+  <view class="popupContainer">
+    <image src="../../image/logo.png" class="logo"></image>
+    <text>您已收到好友邀请码，即刻开始购物</text>
+    <button bindtap="bindGetUserInfo" class="newCode auth">授权信息</button>
+  </view>
+</pop-up>

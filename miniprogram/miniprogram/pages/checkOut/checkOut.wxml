@@ -1,0 +1,49 @@
+<view class="addressField">
+	<view class="addressInfoBox">
+		<view class="innerBox" bindtap="toManageAddress">
+			<text class="title label">收货地址</text>
+			<view class="addressInfo" wx:if="{{addressList.length!==0}}">
+				<text wx:if="{{addressList[currentAddress].quickInputAddress}}">{{addressList[currentAddress].quickInputAddress}}</text>
+				<text wx:else>{{addressList[currentAddress].name}}\n{{addressList[currentAddress].province}}\n{{addressList[currentAddress].city}}\t{{addressList[currentAddress].street}}\n{{addressList[currentAddress].phone}}</text>
+			</view>
+			<view wx:else class="noAddress">
+				<text>暂无收货地址，点击添加</text>
+			</view>
+		</view>
+		<image class="arrowBtn" src='../image/arrowRight.svg' bindtap="toManageAddress"></image>
+	</view>
+	<view class="addressInfoBox">
+		<text class="title label">备注</text>
+		<text class="value comment" wx:if="{{!isEditing}}" bindtap="toEditing">{{comment||'选填'}}</text>
+		<textarea wx:else class="value editing comment" auto-height='true' value="{{comment}}" auto-focus="true"
+			maxlength="100" bindconfirm="handleChangeComment"></textarea>
+	</view>
+	<view class="addressInfoBox popBox" wx:if="{{addressList[currentAddress]&&(needCredential&&(!hasCredential))}}"
+		bindtap="toAddFile">
+		<image src="../image/info.png"></image>
+		<text class="bold">订单含海外直邮，请补充身份信息</text>
+	</view>
+	<view class="addressInfoBox popBox" wx:elif="{{addressList[currentAddress]&&(needCredential&&hasCredential)}}">
+		<image src='../image/correct.svg'></image>
+		<text>此地址已绑定身份信息</text>
+	</view>
+</view>
+<view class="orderList">
+	<block wx:for="{{order}}" wx:key="id" wx:for-item="product">
+		<view class="productCard order list">
+			<image src="{{product.coverImageURL}}" class="pic order"></image>
+			<view class="productInfo order">
+				<text class="name">{{product.productName}}</text>
+				<text class="price">￥{{product.dealerSale.price}}</text>
+			</view>
+			<text class="amount">数量：{{product.quantity}}</text>
+		</view>
+	</block>
+</view>
+<view wx:if="{{products.length!==0}}" class="btnBox order">
+	<view class="item">
+		<text class="label">总价：</text>
+		<text class="value">￥{{totalPrice}}</text>
+	</view>
+	<button class="submitOrder" bindtap="pay" disabled="{{disabled}}">下单</button>
+</view>

@@ -1,0 +1,63 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/account/account",
+    "pages/shoppingCart/shoppingCart",
+    "pages/account/aliasCode/aliasCode",
+    "pages/account/inputCode/inputCode",
+    "pages/account/followingAndFollower/followingAndFollower",
+    "pages/account/followingAndFollower/customer/customer",
+    "pages/index/productDetail/productDetail",
+    "pages/checkOut/checkOut",
+    "pages/checkOut/contactToPay/contactToPay",
+    "pages/checkOut/address/address",
+    "pages/checkOut/newAddress/newAddress",
+    "pages/account/store/store",
+    "pages/account/orders/orders",
+    "pages/account/orderHistory/orderHistory",
+    "pages/account/warehouse/warehouse",
+    "pages/account/warehouse/mailer/mailer",
+    "pages/account/orders/shareOrder/shareOrder",
+    "pages/account/orders/orderDetail/orderDetail",
+    "pages/checkOut/newAddress/uploadFile/uploadFile",
+    "pages/account/orderHistory/confirmOrder/confirmOrder",
+    "pages/account/orderHistory/orderDetail/orderDetail",
+    "pages/account/warehouse/setting/setting",
+    "pages/index/productQRcode/productQRcode",
+    "pages/account/followingAndFollower/dealer/dealer"
+  ],
+  "tabBar": {
+    "color": "#CDE1E0",
+    "selectedColor": "#23ABA4",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "pages/image/home.png",
+        "selectedIconPath": "pages/image/home_select.png",
+        "text": "主页"
+      },
+      {
+        "pagePath": "pages/shoppingCart/shoppingCart",
+        "iconPath": "pages/image/cart.png",
+        "selectedIconPath": "pages/image/cart_select.png",
+        "text": "购物车"
+      },
+      {
+        "pagePath": "pages/account/account",
+        "iconPath": "pages/image/account.png",
+        "selectedIconPath": "pages/image/account_select.png",
+        "text": "我的账户"
+      }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#0ba29a",
+    "navigationBarTitleText": "微帮微",
+    "navigationBarTextStyle": "white"
+  },
+  "sitemapLocation": "sitemap.json",
+  "useExtendedLib": {
+    "weui": true
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet"
+  },
+  "navigationBarTitleText": "采购记录"
+}

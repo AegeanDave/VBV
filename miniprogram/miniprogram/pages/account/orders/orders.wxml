@@ -1,0 +1,118 @@
+<scroll-view scroll-x="true" class="tabBar" scroll-with-animation="{{true}}">
+	<block wx:for="{{tabs}}" wx:for-item="tab" wx:key="id">
+		<view class="tab {{tab.id===currentTab && 'selected '}}" bindtap="toChangeTab" data-tab="{{tab.id}}">
+			<text>{{tab.name}}</text>
+			<view class="indicator"></view>
+		</view>
+	</block>
+</scroll-view>
+<swiper class="tab-box" current="{{currentTab}}" duration="300" bindchange="switchTab">
+	<block wx:for="{{tabs}}" wx:for-item="tab" wx:key="id">
+		<swiper-item scroll-x='true' style="width:100%">
+			<view wx:if="{{tab.id===0 && tab.orders.length===0}}" class="empty">
+				<image src='../../image/empty_orders.png' class="noOrders"></image>
+				<text>
+					暂无未付款订单</text>
+			</view>
+			<view wx:elif="{{tab.id===1 && tab.orders.length===0}}" class="empty">
+				<image src='../../image/empty_orders.png' class="noOrders"></image>
+				<text>
+					暂无已付款订单</text>
+			</view>
+			<view wx:elif="{{tab.id===2 && tab.orders.length===0}}" class="empty">
+				<image src='../../image/empty_orders.png' class="noOrders"></image>
+				<text>
+					暂无已发货订单</text>
+			</view>
+			<view class="orderList" wx:elif="{{tab.orders.length>0}}">
+				<block wx:for="{{tab.orders}}" wx:key="id" wx:for-item="order">
+					<view class="orderBox card">
+						<view class="boxHeader">
+							<view class="item">
+								<text class="label">下单时间: </text>
+								<text class="value">{{order.createdAt}}</text>
+							</view>
+							<button class="dotBox" data-code="{{code}}" bindtap="showModal" data-order="{{order}}">
+								<view></view>
+								<view></view>
+								<view></view>
+							</button>
+						</view>
+						<view class="productList" bindtap="bindToDetail" data-order="{{order}}">
+							<block wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="subOrder">
+								<block wx:for="{{subOrder.orderProducts}}" wx:key="id" wx:for-item="product">
+									<view class="productCard">
+										<image src="{{product.coverImageURL}}"></image>
+										<view class="productInfo">
+											<text class="price">￥{{product.price}}</text>
+											<text>{{product.productName}}</text>
+											<text>数量：{{product.quantity}}</text>
+											<view wx:if="{{order.status==='Paid' || order.status==='Complete'}}" class="tagBox">
+												<view
+													class="tag {{product.status==='Pending'?'pending':product.status==='Shipping'?'shipping': product.status==='Canceled' && 'canceled'}}">
+													{{product.status==='Pending'?'未发货':product.status==='Shipping'? '已发货' :product.status==='Canceled' && '被取消'}}
+												</view>
+											</view>
+										</view>
+									</view>
+								</block>
+							</block>
+						</view>
+						<view class="boxFooter">
+							<view class="footerInner">
+								<view class="item">
+									<text class="label">订单号: </text>
+									<text class="value">{{order.orderNumber}}</text>
+								</view>
+								<view class="item">
+									<text class="totalPrice label">总价: </text>
+									<text class="totalPrice amount value">￥{{order.totalPrice}}</text>
+								</view>
+							</view>
+							<view class="divLine"></view>
+							<view class="footerInner">
+								<text class="label">备注: </text>
+								<block wx:if="{{order.status==='Unpaid'}}">
+									<textarea wx:if="{{isCommentEditing && editingOrderId===order.orderId}}" class="value editing"
+										auto-height='true' maxlength="100" auto-focus="true" disable-default-padding="true"
+										bindconfirm="handleChangeComment" value="{{order.comment}}" data-order="{{order}}"></textarea>
+									<view class="item comment" wx:else bindtap="handleOnEdit" data-orderId="{{order.orderId}}">
+										<text class="value">{{order.comment||'空'}}</text>
+										<image src="../../image/edit.png" class="editIcon"></image>
+									</view>
+								</block>
+								<view class="item comment" wx:else>
+									<text class="value disabled">{{order.newComment||order.comment||'空'}}</text>
+								</view>
+							</view>
+							<view class="divLine"></view>
+							<view class="footerInner">
+								<view class="itemOuter">
+									<view class="item">
+										<text class="label">买家: </text>
+										<text class="value name">{{order.buyer.name}}</text>
+									</view>
+									<button bindtap="bindCopy" data-name="{{order.buyer.name}}">复制微信名</button>
+								</view>
+								<view class="itemOuter">
+									<view class="item">
+										<text class="label">订单状态: </text>
+										<text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
+										<text wx:elif="{{order.status==='Canceled'}}" class="paid value">被取消</text>
+										<text wx:elif="{{order.status==='Shipping'}}" class="paid value">已发货</text>
+										<text wx:else class="paid value">已付款</text>
+									</view>
+									<button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
+									<button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
+								</view>
+							</view>
+						</view>
+					</view>
+				</block>
+			</view>
+		</swiper-item>
+	</block>
+</swiper>
+<mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}"
+	actions="{{currentTab === 0 ? unPaidGroups : currentTab === 1 ? paidGroups : shippedGroups}}">
+</mp-actionSheet>

@@ -1,0 +1,73 @@
+text {
+  font-size: 16px;
+}
+
+.addressBox {
+  margin-bottom: 0;
+}
+
+.addNew {
+  margin-top: 9px;
+  padding: 13px 36px;
+  background-color: #e4f5f4;
+  justify-content: flex-start;
+}
+
+.addressList {
+  margin-top: 22px;
+}
+
+.addressList .title {
+  margin-bottom: 2px;
+  margin-left: 19px;
+  color: #333;
+  font-size: 16px;
+  letter-spacing: 0.24px;
+  line-height: 22px;
+}
+
+.item {
+  padding: 12px 19px;
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.itemLeft {
+  display: flex;
+  flex-direction: column;
+  color: #6d7278;
+  letter-spacing: 0.24px;
+}
+
+.regionBox,
+.street {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.itemRight {
+  width: 33vw;
+  display: flex;
+  justify-content: space-between;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.itemRight text {
+  color: #7a7f84;
+}
+
+.itemRight .delete {
+  color: #bd0000;
+  font-weight: 500;
+}
+
+.br {
+  border-left: 1px solid #e5e5e5;
+}
+
+.addressInfo {
+  display: flex;
+  flex-direction: column;
+}

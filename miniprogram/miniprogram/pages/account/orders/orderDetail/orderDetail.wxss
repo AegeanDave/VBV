@@ -1,0 +1,214 @@
+page {
+  background-color: #F4F4F4;
+}
+
+text,
+.productInfo .price {
+  font-size: 14px;
+}
+
+.productInfo .price {
+  color: #02A69F;
+}
+
+.name {
+  width: 100%;
+}
+
+.card {
+  padding: 12px 21px;
+}
+
+.card:first-child {
+  margin-top: 16px;
+}
+
+.label {
+  width: 24%;
+  font-weight: 600;
+  text-align: end;
+  color: #333333;
+}
+
+.value {
+  flex-grow: 1;
+  color: #373737
+}
+
+.fieldBox {
+  width: 100%;
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.fieldCard {
+  background-color: #F1F1F1;
+  border-radius: 14px;
+  padding: 3px 4px 3px 10px;
+  display: flex;
+}
+
+.fieldCard .label {
+  width: fit-content;
+}
+
+.fieldCard view {
+  font-size: 12px;
+}
+
+.tagField {
+  margin-top: 0;
+}
+
+.tag text {
+  color: #6D7278;
+}
+
+.avatar {
+  border-radius: 50%;
+  width: 36rpx;
+  height: 36rpx;
+  margin-left: 4px;
+}
+
+.copy {
+  width: 50rpx;
+  height: 50rpx;
+  margin-left: 4px;
+  position: relative;
+  background-color: #f1f1f1;
+  border-radius: 50%;
+}
+
+.copy image {
+  position: absolute;
+  width: 22rpx;
+  height: 22rpx;
+  top: 14rpx;
+  right: 13rpx;
+}
+
+.orderBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.tagField {
+  display: flex;
+}
+
+.productList {
+  display: flex;
+  flex-direction: column;
+}
+
+.productCard {
+  width: 100%;
+  padding: 6px 0;
+  display: flex;
+  background-color: rgba(244, 244, 244, 0.3);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  flex-direction: column;
+}
+
+.productCard .label {
+  width: auto;
+  text-align: start;
+}
+
+.productCard .mainInfo {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px;
+}
+
+.productCard .productImage {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: 8px;
+}
+
+.imageContainer {
+  display: flex;
+  padding: 0 6px;
+}
+
+.productCard .productInfo {
+  margin-left: 14px;
+  align-items: flex-start;
+}
+
+.arrow {
+  width: 40rpx;
+  height: 40rpx;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.tag {
+  margin-left: 4px;
+}
+
+.shippingBox,
+.trackingInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.shippingBox {
+  margin-top: 10px;
+  padding: 12px;
+}
+
+.trackingInfo text {
+  color: #6D7278;
+}
+
+.addressBox {
+  padding: 0;
+  background-color: inherit;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.comment {
+  margin-top: 10px;
+}
+
+.label {
+  color: #333333;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+.groupBox {
+  margin-top: 18px;
+}
+
+.addressInfo text {
+  overflow-wrap: break-word;
+}
+
+.shippingProgress {
+  margin-top: 4px;
+  padding: 0 7px;
+}
+
+.progressBox {
+  margin-top: 10px;
+}
+
+.progress {
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.shippingInfo {
+  padding: 11px 2px;
+}
+
+.trackingInfo {
+  padding: 6px 10px;
+}

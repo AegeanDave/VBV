@@ -1,0 +1,73 @@
+page {
+  background-color: #f3f3f3;
+}
+
+.orderBox {
+  background-color: #fff;
+  margin: 30px 20px;
+  padding: 20px 0;
+  border-radius: 10px;
+}
+
+.orderBox text {
+  color: #6d7278;
+  font-size: 14px;
+}
+
+.orderBox .boxHeader {
+  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.boxHeader .item {
+  display: flex;
+  margin-right: 14px;
+}
+
+.productList {
+  padding: 10px 17px;
+}
+
+scroll-view {
+  height: 48vh;
+}
+
+.productList .orderInfo {
+  padding: 5px 19px;
+}
+
+.productCard {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.unpaid {
+  color: #D03434;
+}
+
+.productCard image {
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.productCard .productInfo .price {
+  color: #02a69f;
+  font-size: 14px;
+}
+
+.btnField {
+  margin: 0 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.btnField button {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 16px;
+  color: #fff;
+  background-color: #02a69f;
+  margin-bottom: 14px;
+}

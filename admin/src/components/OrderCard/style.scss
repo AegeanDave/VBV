@@ -1,0 +1,102 @@
+.cardContainer {
+	min-width: 360px;
+	margin-bottom: 40px;
+	p,
+	span {
+		font-size: 0.8rem;
+	}
+	.header {
+		display: flex;
+		flex-direction: column;
+		background-color: #6bb0ad;
+		padding: 14px 16px;
+		color: #fff;
+		border-top-left-radius: inherit;
+		border-top-right-radius: inherit;
+		div {
+			display: flex;
+			justify-content: space-between;
+		}
+	}
+	.productList {
+		padding: 16px;
+		border-bottom: 1px solid #d8d8d8;
+		.img {
+			width: 92px;
+			height: 92px;
+		}
+	}
+
+	.addressBox,
+	.IDimagesBox {
+		display: flex;
+		flex-direction: column;
+		padding: 12px 16px;
+		border-bottom: 1px solid #d8d8d8;
+		.content {
+			padding-top: 10px;
+		}
+		.copyIcon {
+			margin-bottom: 2px;
+		}
+	}
+	.IDimagesBox {
+		.download {
+			margin-left: 4px;
+		}
+		.imges {
+			margin-top: 12px;
+			img {
+				width: 74px;
+				height: 74px;
+				object-fit: cover;
+				margin-right: 20px;
+			}
+		}
+	}
+	.shippingBox {
+		padding: 8px 16px;
+		.edit.horizontal {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			.company,
+			.trackingNumber {
+				margin-right: 8px;
+			}
+			.trackingNumber {
+				width: 54%;
+			}
+		}
+		.vertical {
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+			.trackingNumber {
+				width: 100%;
+			}
+		}
+		.input {
+			font-size: 0.8rem;
+		}
+		.company {
+			min-width: 20%;
+			padding: 6px 0;
+		}
+		.trackingNumber {
+			margin: 8px 0;
+		}
+		.reject {
+			color: #e02020;
+		}
+		.actionField {
+			display: flex;
+			justify-content: flex-end;
+			.submit,
+			.reforce {
+				margin: 6px 0 6px 8px;
+				padding: 4px 16px;
+			}
+		}
+	}
+}

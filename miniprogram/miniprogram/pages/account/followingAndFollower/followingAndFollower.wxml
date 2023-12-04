@@ -1,0 +1,30 @@
+<view wx:if="{{groupList.length===0}}" class="empty groupBox">
+  <block wx:if="{{groupName==='DEALER'}}">
+    <image src='../../image/group.png' mode="aspectFit"></image>
+    <text>暂无已关注</text>
+  </block>
+  <block wx:elif="{{groupName==='CUSTOMER'}}">
+    <image src='../../image/group.png' mode="aspectFit"></image>
+    <text>暂无关注您的客户</text>
+    <text bindtap="toAlias" class="link">去邀请</text>
+  </block>
+</view>
+<block wx:else>
+  <view class="filterBtn">
+    <text wx:if="{{groupName==='CUSTOMER'}}">仅查看待付款用户</text>
+    <text wx:else>仅查看未付款款用户</text>
+    <switch checked="{{lookingUnpaid}}" bindchange="bindFilter"></switch>
+  </view>
+  <view class="dealerList">
+    <block wx:for="{{!lookingUnpaid?groupList:filterGroup}}" wx:key="id" wx:for-item="dealer">
+      <view class="dealerCard list" bindtap="toDealer" data-dealer="{{dealer}}">
+        <view class="imgBox">
+          <image class="avatar" src="{{dealer.avatar}}"></image>
+          <view class="redDot" wx:if="{{dealer.ifUnpaid}}"></view>
+        </view>
+        <text class="name">{{dealer.name}}</text>
+        <image class="arrow" src="../../image/arrow.png" bindtap="toDealer" data-dealer="{{dealer}}"></image>
+      </view>
+    </block>
+  </view>
+</block>

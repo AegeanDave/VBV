@@ -1,0 +1,114 @@
+page {
+  background-color: #F4F4F4;
+}
+
+.firstNoBorder:first-child {
+  padding-top: 12px;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputBox {
+  padding: 12px 22px;
+  display: flex;
+  align-items: center;
+}
+
+.disabled {
+  color: rgba(0, 0, 0, 0.2);
+}
+
+text {
+  color: #333;
+}
+
+.selectedCountry,
+.regionPicker,
+.inputField input,
+textarea {
+  color: #6d7278;
+  font-size: 14px;
+  margin-left: 16px;
+  flex: 1;
+}
+
+textarea {
+  height: 130rpx;
+}
+
+.address {
+  align-self: start;
+}
+
+.regionPicker view {
+  display: inline-block;
+}
+
+.circle {
+  margin: 6px auto;
+  width: 27px;
+  height: 27px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #C4C4C4;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 16px;
+}
+
+.quickAddress {
+  padding: 15px;
+}
+
+.quickAddress .title {
+  font-size: 16px;
+}
+
+.quickAddress textarea {
+  border: 1px solid #02A69F;
+  height: 100px;
+  padding: 7px 5px;
+  border-radius: 4px;
+  margin-left: 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: calc(100% - 10px);
+}
+
+.quickAddress textarea[disabled] {
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+.commentPlaceholder {
+  color: #C4C4C4;
+}
+
+.quickAddress textarea:focus-within {
+  border: 1px solid #02A69F;
+}
+
+.btnArea {
+  position: fixed;
+  padding-bottom: 50rpx;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.btnArea button {
+  background-color: #02a69f;
+  border-radius: 19px;
+  font-size: 17px;
+  color: #fff;
+  padding: 8px 220rpx;
+}
+
+.btnArea button::after {
+  border-radius: 0;
+}

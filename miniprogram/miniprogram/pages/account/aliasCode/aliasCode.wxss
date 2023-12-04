@@ -1,0 +1,166 @@
+.topTab {
+  display: flex;
+  flex-direction: row;
+}
+
+.tab {
+  flex: 1;
+  display: block;
+  text-align: center;
+  padding: 18px;
+  background-color: #98dbd8;
+}
+
+.tab.selected {
+  background-color: #fff;
+}
+
+.tab text {
+  color: #6d7278;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.mainBox {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px;
+}
+
+.introduction {
+  padding: 11px 17px;
+  background-color: #E4F5F4;
+  margin-bottom: 20px;
+}
+
+.introduction text {
+  font-size: 14px;
+  color: #6D7278;
+}
+
+.codeBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.codeBox text {
+  color: #6d7278;
+  font-size: 14px;
+  letter-spacing: 0.27px;
+  line-height: 25px;
+}
+
+.codeBox .subtitle {
+  margin-left: 10px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 37px;
+}
+
+.empty text {
+  color: #6d7278;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.codeList {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.code {
+  margin-top: 1px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #f7f7f7;
+}
+
+.code text {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 18px;
+  color: #333;
+}
+
+.scrollUnused {
+  height: 38vh;
+}
+
+.scrollUsed {
+  height: 30vh;
+}
+
+.used {
+  margin-top: 22px;
+}
+
+.codeBox.used .code text {
+  color: #adadad;
+}
+
+.dotBox {
+  width: 50px;
+  padding: 9px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.dotBox[disabled] {
+  background-color: #f7f7f7 !important;
+}
+
+.dotBox view {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #bababa;
+}
+
+.btnArea {
+  width: calc(100% - 68px);
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 34px 34px 20px 34px;
+  background-color: #fff;
+}
+
+.buyNew {
+  padding: 12px 0;
+  font-size: 16px;
+}
+
+.bottomDialogBody view {
+  padding: 16px 0;
+  font-size: 17px;
+}
+
+.bottomDialogBody .share {
+  padding: 0;
+  border-bottom: 7px solid #f2f2f2;
+}
+
+.bottomDialogBody .share button {
+  background-color: #fff;
+  padding: 16px 0;
+  border-radius: 0;
+  line-height: normal;
+  font-size: 17px;
+}
+
+.bottomDialogBody .share button::after {
+  border-radius: 0;
+  border: none;
+}
+
+@media (min-height: 720px) {
+  .btnArea {
+    padding-bottom: 50px;
+  }
+}

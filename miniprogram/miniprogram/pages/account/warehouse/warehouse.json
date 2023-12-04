@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "pop-up": "../../../components/pop-up/pop-up",
+    "mp-actionSheet": "/miniprogram_npm/weui-miniprogram/actionsheet/actionsheet"
+  }
+}

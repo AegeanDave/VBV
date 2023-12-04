@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "pop-up": "../../../../components/pop-up/pop-up"
+  },
+  "navigationBarTitleText": "号码更改"
+}

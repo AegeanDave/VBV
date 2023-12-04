@@ -1,0 +1,46 @@
+<view class="addressField">
+  <view class="addressInfoBox">
+    <view class="innerBox" bindtap="toManageAddress">
+      <text class="title label">当前地址</text>
+      <view class="addressInfo">
+        <text wx:if="{{addressList[currentAddress].quickInputAddress}}">{{addressList[currentAddress].quickInputAddress}}</text>
+        <text
+          wx:else>{{addressList[currentAddress].name}}\n{{addressList[currentAddress].country}}\t{{addressList[currentAddress].province}}\n{{addressList[currentAddress].city}}\t{{addressList[currentAddress].street}}\n{{addressList[currentAddress].phone}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="addressInfoBox popBox addNew" bindtap="addNewAddress">
+    <text>+\t添加新地址</text>
+  </view>
+</view>
+<view class="addressList" wx:if="{{addressList.length>1}}">
+  <text class="title">已保存地址
+  </text>
+  <view class="savedAddress" wx:for="{{addressList}}" wx:key="id" wx:for-item="address">
+    <view class="item address" wx:if="{{index!==currentAddress}}">
+      <view class="itemLeft">
+        <text class="comment" wx:if="{{address.quickInputAddress}}">{{address.quickInputAddress}}</text>
+        <block wx:else>
+          <text class="name">{{address.name}}</text>
+          <view class="addressInfo">
+            <view class="regionBox">
+              <text class="province">{{address.province}}</text>
+              <text class="city">{{address.city}}</text>
+            </view>
+            <text class="street">{{address.street}}</text>
+          </view>
+          <text class="phone">{{address.phone}}</text>
+        </block>
+        <block>
+          <text wx:if="{{address.idFrontImage&&address.idBackImage}}">已绑定ID</text>
+          <text wx:else>未绑定ID</text>
+        </block>
+      </view>
+      <view class="itemRight">
+        <text class="useIt" bindtap="useThisAddress" data-address="{{index}}">选择地址</text>
+        <view class="br"></view>
+        <text class="delete" bindtap="deleteAddress" data-address="{{address.id}}">删除</text>
+      </view>
+    </view>
+  </view>
+</view>

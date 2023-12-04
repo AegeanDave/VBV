@@ -1,0 +1,38 @@
+<form bindsubmit="formSubmit">
+  <view class="card {{currentField!==0&&'disabled'}}" bindtap="activateField" data-index="0">
+    <view class="inputField">
+      <view class="inputBox firstNoBorder">
+        <text class="label {{currentField!==0&&'disabled'}}">收件人</text>
+        <input name="name" disabled="{{currentField!==0}}" auto-focus bindinput="handleChangeName"></input>
+      </view>
+      <view class="inputBox firstNoBorder">
+        <text class="label {{currentField!==0&&'disabled'}}">电话</text>
+        <input name="phone" type="number" maxlength="11" disabled="{{currentField!==0}}"
+          bindinput="handleChangePhone"></input>
+      </view>
+      <view class="inputBox firstNoBorder">
+        <text class="label {{currentField!==0&&'disabled'}}">省/市/区</text>
+        <picker class="regionPicker" name="region" mode="region" bindchange="bindRegionChange" value="{{regionChina}}"
+          disabled="{{currentField!==0}}">
+          <view class="picker {{currentField!==0&&'disabled'}}">
+            {{regionChina[0]}} {{regionChina[1]}} {{regionChina[2]}}
+          </view>
+        </picker>
+      </view>
+      <view class="inputBox firstNoBorder">
+        <text class="address label {{currentField!==0&&'disabled'}}">详细地址</text>
+        <textarea name="street" disable-default-padding="true" maxlength="80" disabled="{{currentField!==0}}"></textarea>
+      </view>
+    </view>
+  </view>
+  <view class="circle">或</view>
+  <view class="card quickAddress {{currentField!==1&&'disabled'}}" bindtap="activateField" data-index="1">
+    <text class="title {{currentField!==1&&'disabled'}}">快捷填写</text>
+    <textarea maxlength="100" name="quickInputAddress" cursor-spacing="100" placeholder="粘贴整段文字如：凌小发 902 488 8848 北京大兴区十一路783号b单元19楼1903号"
+      placeholder-class="commentPlaceholder" disabled="{{currentField!==1}}" bindinput="handleChangeComment"
+      auto-focus></textarea>
+  </view>
+  <view class="btnArea">
+    <button formType="submit" disabled="{{!(currentField===1&&quickInputAddress)&&!(currentField===0&&name&&phone)}}">添加</button>
+  </view>
+</form>

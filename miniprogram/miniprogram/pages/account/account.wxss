@@ -1,0 +1,121 @@
+.header {
+  background: #f2f2f2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 30px 10px 38px 10px;
+  border-bottom-left-radius: 190px 45px;
+  border-bottom-right-radius: 190px 45px;
+  background-color: #d9f7f6;
+}
+
+.userInfoAvatar {
+  width: 77px;
+  height: 77px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  overflow: hidden;
+  display: block;
+  background-image: url('https://vbangv-src.s3.us-east-2.amazonaws.com/asset/people.png');
+  background-repeat: no-repeat;
+  background-size: 45px 23px;
+  background-position: center;
+}
+
+.userInfoNickname {
+  color: #333;
+  font-size: 14px;
+  height: 17px;
+  margin-top: 9px;
+}
+
+.tapLeft, .openData, .tapRight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tapLeft, .tapRight {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.tapLeft image {
+  width: 35px;
+  height: 35px;
+  object-fit: fill;
+}
+
+.tapRight image {
+  width: 45px;
+  height: 24px;
+  object-fit: fill;
+}
+
+.tapLeft text, .tapRight text {
+  color: #333;
+  font-size: 12px;
+  line-height: 17px;
+}
+
+.tapLeft text {
+  margin-top: 3px;
+}
+
+.tapRight text {
+  margin-top: 7px;
+}
+
+.redDot {
+  bottom: 40px;
+  right: -7px;
+}
+
+.redDot.follower {
+  right: 2px;
+}
+
+.nav {
+  margin-top: 51px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  padding: 14px 41px;
+  border-bottom: 1px solid #cde1e0;
+  display: flex;
+  align-items: center;
+}
+
+.item:first-child {
+  border-top: 1px solid #cde1e0;
+}
+
+.item.myOrder {
+  position: relative;
+}
+
+.item.myOrder .redDot {
+  width: 10px;
+  height: 10px;
+  top: 9px;
+  left: 64px;
+}
+
+.item image {
+  width: 29px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.item .couponCode {
+  height: 24px;
+}
+
+.item text {
+  color: #6d7278;
+  font-size: 16px;
+  line-height: 22px;
+  margin-left: 14px;
+}

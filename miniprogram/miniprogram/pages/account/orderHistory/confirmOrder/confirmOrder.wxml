@@ -1,0 +1,27 @@
+<view class="hint">
+  <text>请通过微信联系以下供货商并完成订单付款</text>
+</view>
+  <view class="dealerList">
+    <block wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="subOrder">
+      <view class="dealerCard list">
+        <view class="imgBox">
+          <image class="avatar" src="{{subOrder.dealer.avatar}}"></image>
+        </view>
+        <view class="dealerInfo">
+          <text>{{subOrder.dealerName}}</text>
+          <text>应付：{{subOrder.sum}}</text>
+        </view>
+        <view wx:if="{{subOrder.status==='Unpaid'}}" bindtap="toContact" data-dealer="{{subOrder.dealer.name}}" class="copyBtn">
+          <image class="copy" src="../../../image/copy.png"></image>
+          <text>复制</text>
+        </view>
+        <view wx:else class="copyBtn">
+          <image class="correct" src="../../../image/correct_grey.svg"></image>
+          <text>付款已确认</text>
+        </view>
+      </view>
+    </block>
+  </view>
+<view class="totalPayment">
+  <text>总价：￥{{order.totalPrice}}</text>
+</view>

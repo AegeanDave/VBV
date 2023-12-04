@@ -1,0 +1,29 @@
+<view class="mainBox">
+  <view class="infoBox">
+    <text>跨国邮寄需要出示您的有效身份证明，请上传收件人身份证正反面</text>
+  </view>
+  <view class="previewBox">
+    <block>
+      <view class="mask hasImage" wx:if="{{tempFilePaths[0]}}">
+        <image src="{{tempFilePaths[0]}}"></image>
+        <image src="../../../image/minus.png" class="minus" bindtap="reduce" data-index="0"></image>
+      </view>
+      <view class="mask" bindtap="chooseImage" data-index="0" wx:else>
+        <image class="deleteSign" src="../../../image/plus.png"></image>
+      </view>
+    </block>
+    <block>
+      <view class="mask hasImage" wx:if="{{tempFilePaths[1]}}">
+        <image src="{{tempFilePaths[1]}}"></image>
+        <image src="../../../image/minus.png" class="minus" bindtap="reduce" data-index="1">
+        </image>
+      </view>
+      <view class="mask" bindtap="chooseImage" wx:else data-index="1">
+        <image class="deleteSign" src="../../../image/plus.png"></image>
+      </view>
+    </block>
+  </view>
+  <view class="btnArea">
+    <button disabled="{{!(tempFilePaths[0]&&tempFilePaths[1])}}" bindtap="upload">上传</button>
+  </view>
+</view>

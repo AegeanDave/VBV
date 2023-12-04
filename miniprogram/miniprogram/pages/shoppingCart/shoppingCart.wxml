@@ -1,0 +1,37 @@
+<view wx:if="{{products.length===0}}" class="cart empty">
+  <image src="../image/empty_cart.png" class="noProducts"></image>
+  <text>您的购物车还未添加任何产品</text>
+</view>
+<view wx:else class="cart nonempty">
+  <block wx:for="{{products}}" wx:key="id" wx:for-item="product">
+    <view class="list">
+      <view class="productCard inCart {{product.disabled&&'disabled'}}">
+        <image class="pic inCart" src="{{product.coverImageURL}}"></image>
+        <view class="productInfo inCart">
+          <text class="name inCart">{{product.productName}}</text>
+          <text class="price inCart">￥{{product.dealerSale.price}}</text>
+          <text wx:if="{{product.disabled}}" class="disabled">失效</text>
+        </view>
+        <view class="delete" data-index="{{index}}" bindtap="bindDelete">
+          <image src="../image/delete.png"></image>
+        </view>
+        <view class="amount">
+          <button bindtap='reduce' data-index="{{index}}" disabled='{{product.quantity==1||product.disabled}}'
+            class="reduce amountComponent">-</button>
+          <input class="input amountComponent" data-index="{{index}}" type='number' bindblur="bindKeyblur" maxlength='2'
+            value='{{product.quantity}}' disabled="{{product.disabled}}"></input>
+          <button bindtap='plus' data-index="{{index}}" class="plus amountComponent"
+            disabled='{{product.quantity==99||product.disabled}}'>+</button>
+        </view>
+      </view>
+      <view wx:if="{{product.idCardRequired}}" class="credential">
+        <image src="../image/info.png"></image>
+        <text>该商品属于跨境邮寄商品，海关需要您的证件信息</text>
+      </view>
+    </view>
+  </block>
+</view>
+<view wx:if="{{products.length!==0}}" class="btnBox">
+  <text class="totalPrice">总价：￥{{totalPrice}}</text>
+  <button class="submitOrder" bindtap="submitOrder" disabled="{{totalPrice==0}}">结账</button>
+</view>

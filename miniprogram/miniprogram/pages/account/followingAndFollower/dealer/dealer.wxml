@@ -1,0 +1,105 @@
+<view class="header">
+	<view class="leftBox">
+		<view class="imgBox">
+			<image class="avatar" src="{{dealer.avatar}}"></image>
+			<view class="redDot" wx:if="{{valueUnpaid!=0}}"></view>
+		</view>
+		<view class="nameBox">
+			<text class="name">{{dealer.name}}</text>
+			<view class="btnField">
+				<button bindtap="disconnect">{{'取消关注'}}
+				</button>
+				<button bindtap="contactToPay">联系付款
+				</button>
+			</view>
+		</view>
+	</view>
+	<view class="rightBox">
+		<view>
+			<text wx:if='{{dealer}}'>欠款：</text>
+			<text wx:elif='{{customer}}'>未结算：</text>
+			<text class="unpaid amount">￥{{valueUnpaid}}</text>
+		</view>
+	</view>
+</view>
+<view class="main">
+	<view class="tabBar">
+		<view class="tabBarLeft {{tab===1 ? 'selected ' : ' '}}" bindtap="toChangeTab" data-tab="1">
+			<text>订单记录</text>
+		</view>
+		<view class="tabBarRight {{tab===2 ? 'selected ' : ' '}}" bindtap="toChangeTab" data-tab="2">
+			<text>产品橱窗</text>
+		</view>
+	</view>
+	<scroll-view scroll-y="true" wx:if="{{tab===1}}" style='height: {{scrollHeight + "px"}} ' class="tabOne">
+		<view wx:if="{{orders.length===0}}" class="empty">
+			<image src='../../../image/empty_orders.png' class="noOrders"></image>
+				<text>
+					暂无订单</text>
+		</view>
+		<block wx:for="{{orders}}" wx:key="id" wx:for-item="order" wx:if="{{orders.length>0}}">
+			<view class="orderBox card">
+				<view class="boxHeader">
+					<view>
+						<text class="label">下单时间: </text>
+						<text class="value">{{order.createdAt}}</text>
+					</view>
+					<image wx:if="{{customer}}" src="../../../image/share.png" class="share" bindtap="toOrderShare"
+						data-order="{{order}}"></image>
+				</view>
+				<view class="productList" bindtap="bindToDetail" data-order="{{order}}">
+					<block wx:for="{{order.orderProducts}}" wx:key="id" wx:for-item="product">
+						<view class="productCard">
+							<image src="{{product.coverImageURL}}"></image>
+							<view class="productInfo">
+								<text class="price">￥{{product.price}}</text>
+								<text class="name">{{product.productName}}</text>
+								<text>数量：{{product.quantity}}</text>
+							</view>
+						</view>
+					</block>
+				</view>
+				<view class="boxFooter">
+					<view class="footerInner">
+						<view>
+							<text class="label">订单号:</text>
+							<text class="value">{{order.orderNumber}}</text>
+						</view>
+						<view class="item">
+							<text class="totalPrice label">总价: </text>
+							<text class="totalPrice amount">￥{{order.totalPrice}}</text>
+						</view>
+					</view>
+					<view class="divLine"></view>
+					<view class="footerInner alignRight">
+						<view class="item">
+							<text>订单状态: </text>
+							<text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
+							<text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
+						</view>
+					</view>
+				</view>
+			</view>
+		</block>
+	</scroll-view>
+	<scroll-view scroll-y="true" wx:if="{{tab===2}}" style='height: {{scrollHeight + "px"}} ' class="tabTwo">
+		<view class="itemContainer saleProduct horizontal">
+			<block wx:for="{{products}}" wx:key="id" wx:for-item="product">
+				<view class="productCard saleProduct horizontal"
+					bindtap="toProductDetail" data-product="{{product}}">
+					<image src="{{product.coverImageURL}}"></image>
+					<block>
+						<text wx:if="{{dealer}}" class="name store">{{product.productName}}</text>
+						<view wx:elif="{{customer}}" class="saleProductBox horizontal">
+							<view class="productInfo">
+								<text>￥{{product.dealerSale.price}}</text>
+								<text class="name">{{product.productName}}</text>
+							</view>
+							<button bindtap="updateChildPrice" data-product="{{product}}">修改定价</button>
+						</view>
+					</block>
+				</view>
+			</block>
+		</view>
+	</scroll-view>
+</view>

@@ -1,0 +1,96 @@
+.arrowBtn {
+  width: 50rpx;
+  height: 50rpx;
+  flex-shrink: 0;
+  align-self: center;
+  margin: 50rpx 2px;
+}
+
+.orderList {
+  margin-bottom: 89px;
+}
+
+.productCard {
+  position: relative;
+}
+
+.productCard.order:first-child {
+  border-top: 1px solid #e5e5e5;
+}
+
+.amount {
+  position: absolute;
+  bottom: 18px;
+  right: 38px;
+  color: #6d7278;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.comment {
+  flex-grow: 1;
+  margin-left: 5px;
+  padding-left: 6px;
+}
+
+.comment.value {
+  font-size: 14px;
+  color: #999999;
+}
+
+.editing {
+  margin-left: 11px;
+  background-color: #fff;
+  border-radius: 5px;
+  margin-right: -12rpx;
+  padding: 6px;
+}
+
+.editing.value {
+  color: #333333;
+}
+
+.noAddress {
+  margin-top: 14px;
+}
+
+.noAddress text {
+  color: #999999;
+}
+
+.popBox {
+  padding: 12px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.popBox image {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.popBox .bold {
+  font-weight: 600;
+}
+
+.popBox text {
+  margin-left: 8px;
+  color: #333333;
+  align-self: center;
+}
+
+.label,
+.value {
+  font-size: 18px;
+  color: #6D7278;
+}
+
+.value {
+  font-weight: 600;
+}
+
+@media (min-height: 720px) {
+  .btnBox {
+    padding-bottom: 40px;
+  }
+}

@@ -1,0 +1,25 @@
+<view class="hint">
+  <text>订单已创立，请联系以下商家完成订单付款</text>
+</view>
+<scroll-view>
+  <view class="dealerList">
+    <block wx:for="{{dealers}}" wx:key="id" wx:for-item="dealer">
+      <view class="dealerCard list">
+        <view class="imgBox">
+          <image class="avatar" src="{{dealer.avatar}}"></image>
+        </view>
+        <view class="dealerInfo">
+          <text>{{dealer.name}}</text>
+          <text>应付：{{dealer.payment}}</text>
+        </view>
+        <view bindtap="toContact" data-dealer="{{dealer.name}}" class="copyBtn">
+          <image class="copy" src="../../image/copy.png"></image>
+          <text>复制</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</scroll-view>
+<view class="btnArea">
+  <button class="confirm" bindtap="toHome">返回首页</button>
+</view>

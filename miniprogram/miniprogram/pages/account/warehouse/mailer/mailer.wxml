@@ -1,0 +1,13 @@
+<view class="container">
+  <text>微帮微账号已绑定您的手机号{{phone}}</text>
+  <image src='../../../image/vbv_screen.png' mode="aspectFit" class="icon"></image>
+  <view class="text">
+    <text>请在电脑端打开</text>
+    <text class="underline bold">vbangv.com</text>
+    <text>使用此手机号码进行登录</text>
+  </view>
+  <view class="btnField">
+    <button bindtap="bindResend">号码错误，重新输入手机号</button>
+    <button bindtap="confirm" class="confirm">确认</button>
+  </view>
+</view>

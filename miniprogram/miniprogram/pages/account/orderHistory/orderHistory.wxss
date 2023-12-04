@@ -1,0 +1,266 @@
+page {
+  background-color: #F8F8F8;
+}
+
+.tabBar {
+  width: calc(100% - 30px);
+  padding: 0 15px;
+}
+
+.tab {
+  display: inline-block;
+  width: calc(50% - 40px);
+  text-align: center;
+  padding: 18px 20px 8px 20px;
+  position: relative;
+}
+
+.tabBar text {
+  font-size: 14px;
+  color: #6d7278;
+}
+
+.tabBar .selected text {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.indicator {
+  position: absolute;
+  bottom: 0;
+  left: 85rpx;
+  right: 85rpx;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #02A69F;
+  display: none;
+}
+
+.selected .indicator {
+  display: block;
+}
+
+.tab-box {
+  height: 1100rpx;
+}
+
+.tab-box swiper-item {
+  overflow: auto;
+}
+
+.orderList,
+.orderBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.orderList text,
+button {
+  color: #6d7278;
+  font-size: 14px;
+  font-family: "PingFang SC";
+}
+
+.orderBox {
+  background-color: #fff;
+  margin: 12px;
+  border-radius: 10px;
+}
+
+.orderBox .boxHeader,
+.boxFooter {
+  display: flex;
+}
+
+.boxHeader {
+  padding: 8px 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.orderBox .copy {
+  width: 14px;
+  height: 13px;
+  margin: 3px 5px;
+}
+
+.editIcon {
+  width: 32rpx;
+  height: 32rpx;
+  padding: 2rpx 8rpx;
+  flex-shrink: 0;
+}
+
+.comment {
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.comment .value {
+  align-self: stretch;
+  word-break: break-word;
+  font-weight: 600;
+  flex-grow: 1;
+}
+
+.comment .value.disabled {
+  font-weight: 400;
+}
+
+.editing {
+  margin-left: 8rpx;
+  font-size: 14px;
+  padding: 4rpx;
+}
+
+.dotBox {
+  width: 50px;
+  padding: 9px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0;
+  background-color: #fff;
+}
+
+.dotBox[disabled] {
+  background-color: #f7f7f7 !important;
+}
+
+.dotBox view {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d8d8d8;
+}
+
+.productCard {
+  padding: 8px 26px;
+}
+
+.productCard image {
+  width: 200rpx;
+  height: 200rpx;
+}
+
+.productCard .productInfo .price {
+  color: #02a69f;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.tagBox {
+  flex-grow: 1;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 2px;
+}
+
+.tagBox .tag {
+  color: #6D7278;
+}
+
+.boxFooter {
+  padding: 6px 28px;
+  flex-direction: column;
+}
+
+.footerInner {
+  display: flex;
+  margin-bottom: 10px;
+  margin-top: 4px;
+  justify-content: space-between;
+}
+
+.footerInner view {
+  display: flex;
+  align-items: center;
+}
+
+.item button {
+  font-size: 12px;
+  padding: 3px 30px;
+  border-radius: 12px;
+  background-color: #E6F6F6;
+  box-shadow: 0 2px 4px 0 rgba(202, 218, 218, 0.59);
+}
+
+.item .toPay{
+  background-color: #02A69F;
+  color: #fff;
+}
+
+.item button:active {
+  box-shadow: none;
+}
+
+.label {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.value,
+.amount {
+  margin-left: 6px;
+}
+
+.name {
+  max-width: 24.6vw;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis
+}
+
+text.amount {
+  color: #02A69F;
+
+}
+
+text.unpaid {
+  margin-left: 3px;
+  color: #D03434;
+}
+
+text.paid {
+  margin-left: 3px;
+}
+
+.divLine {
+  background: #F1F1F1;
+  width: 100%;
+  margin-bottom: 10px;
+  height: 1px;
+}
+
+.empty {
+  display: flex;
+  height: 90vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty text {
+  color: #6d7278;
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.bottomDialogBody view text {
+  font-size: 14px;
+  color: #000;
+}
+
+.bottomDialogBody view .cancel {
+  color: #ff8080;
+}
+
+.bottomDialogBody view:last-child {
+  border-top: 7px solid #f2f2f2;
+}
+
+@media (min-height: 720px) {
+  .tab-box {
+    height: 1340rpx;
+  }
+}

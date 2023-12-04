@@ -1,0 +1,81 @@
+text {
+  font-size: 16px;
+  letter-spacing: 0.24px;
+  line-height: 22px;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 9px;
+  background-color: #f1f1f1;
+}
+
+.filterBtn text {
+  color: #85898e;
+  margin-right: 10px;
+}
+
+.dealerList {
+  display: flex;
+  flex-direction: column;
+}
+
+.dealerCard {
+  display: flex;
+  padding: 20px 18px 22px 35px;
+  align-items: center;
+}
+
+.dealerCard .imgBox {
+  width: 62px;
+  height: 62px;
+  position: relative;
+}
+
+.redDot {
+  top: 0;
+  right: 0;
+}
+
+.dealerCard .avatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+}
+
+.dealerCard .name {
+  color: #6d7278;
+  flex: 1;
+  margin-left: 24px;
+}
+
+.dealerCard .arrow {
+  width: 28px;
+  height: 25px;
+  object-fit: fill;
+}
+
+.groupBox.empty {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #adadad;
+}
+
+.groupBox.empty image {
+  width: 210rpx;
+  height: 210rpx;
+  margin-bottom: 22px;
+}
+
+.groupBox.empty text {
+  text-align: center;
+}
+
+.groupBox.empty .link {
+  text-decoration: underline;
+}
