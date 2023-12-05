@@ -42,9 +42,9 @@ export default {
         WHERE "openId" = $1
         GROUP BY "openId", "loginPhoneNumber", "email", "loginPhoneNumberCountryCode"; `,
 	getWarehouseId: `
-        SELECT "warehouse"."email", "warehouse"."loginPhoneNumberCountryCode", "warehouse"."loginPhoneNumber", "warehouse"."openId", "warehouse"."warehouseId", "warehouse"."smsService", "warehouse"."emailService", "user"."name"
-        FROM "warehouse", "user"
-        WHERE "loginPhoneNumber" = $1 AND "loginPhoneNumberCountryCode" = $2 AND "warehouse"."openId" = "user"."openId";`,
+        SELECT "warehouses"."email", "warehouses"."loginPhoneNumberCountryCode", "warehouses"."loginPhoneNumber", "warehouses"."openId", "warehouses"."warehouseId", "warehouses"."smsService", "warehouses"."emailService", "users"."username"
+        FROM "warehouses", "users"
+        WHERE "loginPhoneNumber" = $1 AND "loginPhoneNumberCountryCode" = $2 AND "warehouses"."openId" = "users"."openId";`,
 	updatePhone: `
         UPDATE "warehouse"
         SET "notificationPhoneNumber" = $1, "notificationPhoneNumberCountryCode" = $2

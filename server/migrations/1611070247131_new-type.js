@@ -4,4 +4,6 @@ exports.up = pgm => {
 	pgm.createType('country_code', ['CA', 'US', 'CN'])
 }
 
-exports.down = pgm => {}
+exports.up = pgm => {
+	pgm.createType('warehouse_status', ['Active', 'NotVerified', 'Inactive'])
+}

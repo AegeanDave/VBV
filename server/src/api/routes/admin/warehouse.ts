@@ -1,29 +1,28 @@
 import { Router, Request, Response } from 'express'
-import db from '../../config/database'
-import Warehouse from '../../models/warehouse'
+import Warehouse from '../../../models/warehouse'
 const route = Router()
-import { query, Logger } from '../../services'
+import { query, Logger } from '../../../services'
 import multiparty from 'multiparty'
-import { disableWholeProductLine } from './product'
+import { disableWholeProductLine } from '../product'
 import {
 	isAuthenticated,
 	myOpenId,
 	adminAuthenticated,
 	myWarehouseId
-} from '../../api/middleware/authorization'
-import { queryName } from '../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../models'
+} from '../../../api/middleware/authorization'
+import { queryName } from '../../../services/queryName'
+import { Session, Product, WarehouseProduct } from '../../../models'
 import {
 	Status,
 	WarehouseStatus,
 	carriers,
 	countryCodes
-} from '../../constants'
-import { myCache } from '../../provider/cache'
+} from '../../../constants'
+import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
-import { sentShippingMessage, makeVerificationCode } from '../../provider'
-import { upload, downloadFile } from '../../provider/fileAction'
-import { sendRegistrationSMS } from '../../provider/twilio'
+import { sentShippingMessage, makeVerificationCode } from '../../../provider'
+import { upload, downloadFile } from '../../../provider/fileAction'
+import { sendRegistrationSMS, handleVerify } from '../../../provider/twilio'
 
 const holdOriginalProduct = (product: Product) => {
 	query(queryName.onHoldProduct, [product.productId])
@@ -81,16 +80,16 @@ const createNewProduct = async (product: WarehouseProduct) => {
 }
 
 export default (app: Router) => {
-	app.use('/warehouse', route)
+	app.use('/admin/warehouse', route)
 	route.post('/getVerificationCode', async (req: Request, res: Response) => {
-		const { phone } = req.body
-		const phoneNumber = countryCodes[phone.countryCode].value + phone.tel
+		const { phoneNumber } = req.body
 		try {
 			const todoWarehouse = await Warehouse.findOne({
 				where: {
 					loginPhoneNumber: phoneNumber
 				}
 			})
+			console.log(todoWarehouse.dataValues)
 			if (!todoWarehouse) {
 				res.send({
 					status: Status.FAIL,
@@ -98,14 +97,15 @@ export default (app: Router) => {
 				})
 				return
 			}
-			if (todoWarehouse.dataValues.status === 'Inactive') {
+			const { dataValues } = todoWarehouse
+			if (dataValues.status === 'Inactive') {
 				res.send({
 					status: Status.FAIL,
 					message: '此账户已被关闭，再次开通请联系管理人员'
 				})
 				return
 			}
-			if (todoWarehouse.dataValues.status === 'Active') {
+			if (dataValues.status === 'Active') {
 				res.send({
 					status: Status.FAIL,
 					message: '此手机号已被绑定'
@@ -121,6 +121,32 @@ export default (app: Router) => {
 				})
 				return
 			}
+			res.send({
+				status: Status.SUCCESS
+			})
+		} catch (err) {
+			console.log(err)
+			res.send({
+				status: Status.FAIL,
+				message: '网络错误'
+			})
+		}
+	})
+	route.post('/verify', async (req: Request, res: Response) => {
+		const { code, phoneNumber, password } = req.body
+		try {
+			const todoVerify = await handleVerify(phoneNumber, code)
+			if (todoVerify.status !== 'approved') {
+				res.send({
+					status: Status.FAIL,
+					message: '验证失败'
+				})
+				return
+			}
+			Warehouse.update(
+				{ password, status: 'Active' },
+				{ where: { loginPhoneNumber: phoneNumber } }
+			)
 			res.send({
 				status: Status.SUCCESS
 			})
@@ -204,13 +230,7 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.post(
-		'/hello',
-		upload.single('productImage'),
-		(req: Request, res: Response) => {
-			console.log(req.body)
-		}
-	)
+
 	route.post(
 		'/createWarehouse',
 		isAuthenticated,
