@@ -13,7 +13,7 @@ import {
 import "./style.scss";
 import { useAuth } from "../../contexts/AuthProvider";
 import { useForm, Controller } from "react-hook-form";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 type IFormInput = {
   phoneNumber: string;
@@ -22,9 +22,7 @@ type IFormInput = {
 
 export default function Login() {
   const { signin } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
       phoneNumber: "",
@@ -32,22 +30,18 @@ export default function Login() {
     },
   });
   const onSubmit = async (data: IFormInput) => {
-    try {
-      await signin(data.phoneNumber, data.password);
-      navigate(from, { replace: true });
-    } catch (err) {
-      console.log(err);
-    }
+    await signin(data.phoneNumber, data.password);
   };
   return (
     <Box className="formContainer">
-      <Card sx={{ minWidth: 400 }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Card sx={{ minWidth: 400 }}>
           <Grid
             container
             alignItems="center"
             justifyContent="center"
             direction="column"
+            p={3}
           >
             <Grid item xs>
               <Avatar alt="VBV" src={logo} className="avatar" />
@@ -57,52 +51,61 @@ export default function Login() {
                 微帮微商家仓库管理
               </Typography>
             </Grid>
-            <Grid item xs p={4}>
-              <Controller
-                name="phoneNumber"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="电话号码"
-                    variant="outlined"
-                    size="small"
-                    type="tel"
-                    required
-                  />
-                )}
-              />
+            <Grid item container direction="column" p={3} pt={6}>
+              <Grid item xs pb={3}>
+                <Controller
+                  name="phoneNumber"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="电话号码"
+                      variant="outlined"
+                      size="small"
+                      type="tel"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs>
+                <Controller
+                  name="password"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="密码"
+                      variant="outlined"
+                      size="small"
+                      type="password"
+                      fullWidth
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs p={4}>
+                <Button variant="contained" size="large" type="submit">
+                  登录
+                </Button>
+              </Grid>
+              <Grid item xs p={1}>
+                <Link to="/signup">
+                  <Button>前往注册</Button>
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item xs>
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="密码"
-                    variant="outlined"
-                    size="small"
-                    type="password"
-                    required
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs p={4}>
-              <Button variant="contained" size="large" type="submit">
-                登录
-              </Button>
-            </Grid>
-            <Grid item xs>
+            {/* <Grid item xs>
               <Divider>
                 <Typography fontSize={10}>其他登录</Typography>
               </Divider>
             </Grid>
-            <Grid item xs p={8}></Grid>
+            <Grid item xs p={8}></Grid> */}
           </Grid>
-        </form>
-      </Card>
+        </Card>
+      </form>
     </Box>
   );
 }

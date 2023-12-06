@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { Product, OrderProduct, SubOrder } from '../../models/index'
+import { Product, OrderProduct, SubOrder } from '../../models/types/index'
 import { Status, countryCodes, OrderStatus } from '../../constants'
 import { query, Logger } from '../../services'
 import { queryName } from '../../services/queryName'

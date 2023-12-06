@@ -3,8 +3,8 @@ const authToken = process.env.TWILIO_AUTH_TOKEN
 const client = require('twilio')(accountSid, authToken)
 
 export const handleVerify = (to: string, code: string) =>
-	client.verify
-		.services('YOUR VERIFY SERVICE SID')
+	client.verify.v2
+		.services('VAa0d3a7a76087133668bd18d68c53a33c')
 		.verificationChecks.create({ to: '+' + to, code })
 
 export const sendRegistrationSMS = (to: string) =>

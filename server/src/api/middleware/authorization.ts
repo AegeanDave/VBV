@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Session } from '../../models/index'
+import { Session } from '../../models/types/index'
 import { Status } from '../../constants'
 import { myCache } from '../../provider/cache'
 

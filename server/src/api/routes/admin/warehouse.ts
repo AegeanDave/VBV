@@ -11,7 +11,7 @@ import {
 	myWarehouseId
 } from '../../../api/middleware/authorization'
 import { queryName } from '../../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../../models'
+import { Session, Product, WarehouseProduct } from '../../../models/types'
 import {
 	Status,
 	WarehouseStatus,
@@ -117,7 +117,7 @@ export default (app: Router) => {
 				console.log(smsResult)
 				res.send({
 					status: Status.FAIL,
-					message: '网络错误'
+					message: '发送失败，请检查手机号'
 				})
 				return
 			}
@@ -133,9 +133,12 @@ export default (app: Router) => {
 		}
 	})
 	route.post('/verify', async (req: Request, res: Response) => {
-		const { code, phoneNumber, password } = req.body
+		const { verificationCode, phoneNumber, countryCode, password } = req.body
 		try {
-			const todoVerify = await handleVerify(phoneNumber, code)
+			const todoVerify = await handleVerify(
+				countryCode + phoneNumber,
+				verificationCode
+			)
 			if (todoVerify.status !== 'approved') {
 				res.send({
 					status: Status.FAIL,
@@ -145,7 +148,7 @@ export default (app: Router) => {
 			}
 			Warehouse.update(
 				{ password, status: 'Active' },
-				{ where: { loginPhoneNumber: phoneNumber } }
+				{ where: { loginPhoneNumber: countryCode + phoneNumber } }
 			)
 			res.send({
 				status: Status.SUCCESS
@@ -166,13 +169,27 @@ export default (app: Router) => {
 			}
 		})
 		if (!todoWarehouse) {
-			res.status(401).send({
+			res.status(400).send({
 				status: Status.FAIL,
-				message: 'Did not sign up!'
+				message: '此账号不存在'
 			})
 			return
 		}
 		const { openId, warehouseId, password, ...rest } = todoWarehouse.dataValues
+		if (rest.status === 'Not_Verified') {
+			res.status(200).send({
+				status: Status.FAIL,
+				message: '此帐号还未完成注册，请前往注册页面完成注册'
+			})
+			return
+		}
+		if (rest.status === 'Inactive') {
+			res.status(200).send({
+				status: Status.FAIL,
+				message: '此账号已关闭'
+			})
+			return
+		}
 		if (password === inputPass) {
 			const sessionKey = uuidv4()
 			const value: Session = {
@@ -185,7 +202,7 @@ export default (app: Router) => {
 		} else {
 			res.status(401).send({
 				status: Status.FAIL,
-				message: 'Authorization fail!'
+				message: '密码有误'
 			})
 			Logger.info('login fail')
 		}
@@ -295,18 +312,6 @@ export default (app: Router) => {
 					message: error
 				})
 			}
-		}
-	)
-	route.get(
-		'/myWarehouseProducts',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const result = await query(queryName.getWarehouseProductsById, [
-				myOpenId,
-				myWarehouseId
-			])
-			res.status(200).send(result.data)
-			Logger.info('warehouse products get')
 		}
 	)
 

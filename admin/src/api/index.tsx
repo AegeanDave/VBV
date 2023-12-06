@@ -22,7 +22,7 @@ axios.defaults.headers.common = {
 };
 axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 export const login = async (auth: Auth) =>
-  await axios.post("/warehouse/login", auth);
+  await axios.post("/admin/warehouse/login", auth);
 
 export const logout = (history: History) => {
   axios.delete("/warehouse/logout");
@@ -99,9 +99,11 @@ export const getVerificationCode = (countryCode: string, phoneNumber: string) =>
   axios.post("/admin/warehouse/getVerificationCode", {
     phoneNumber: countryCode + phoneNumber,
   });
-
 export const verification = (verificationCode: string) =>
   axios.post("/warehouse/phoneVerification", { verificationCode });
+
+export const signup = (data: any) =>
+  axios.post("/admin/warehouse/verify", data);
 
 export const saveSetting = (emailService: boolean, smsService: boolean) =>
   axios.post("/warehouse/updateSetting", { emailService, smsService });

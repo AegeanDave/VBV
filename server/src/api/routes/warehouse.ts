@@ -12,7 +12,7 @@ import {
 	myWarehouseId
 } from '../../api/middleware/authorization'
 import { queryName } from '../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../models'
+import { Session, Product, WarehouseProduct } from '../../models/types'
 import {
 	Status,
 	WarehouseStatus,

@@ -9,6 +9,10 @@ import {
   Drawer,
   CssBaseline,
   DialogContent,
+  Box,
+  ListItemButton,
+  List,
+  ListItemText,
 } from "@mui/material";
 import Popup from "../Popup/index";
 import { navigators } from "../../constant/index";
@@ -53,80 +57,89 @@ export default function PermanentDrawerLeft({
             微帮微仓库管理系统
           </Typography>
         </div>
-        <div className="btnGroupContainer">
-          <ButtonGroup
-            orientation="vertical"
-            color="primary"
-            variant="text"
-            className="btnGroupMenu"
-            classes={{
-              groupedVertical: "groupedVertical",
-            }}
-          >
+        <Box flex={1}>
+          <List>
             <NavLink to={navigators.productList.path}>
               {({ isActive }) => (
-                <Button
-                  className={
-                    isActive ? "selected navigatorbtn" : "navigatorbtn"
-                  }
-                >
-                  {navigators.productList.label}
-                </Button>
+                <ListItemButton selected={isActive}>
+                  <ListItemText
+                    primary={navigators.productList.label}
+                    primaryTypographyProps={{
+                      color: "white",
+                    }}
+                  ></ListItemText>
+                </ListItemButton>
               )}
             </NavLink>
-
-            <Button className="navigatorbtn upload" onClick={handleOpenDialog}>
-              上传商品
-            </Button>
+            <ListItemButton
+              className="navigatorbtn upload"
+              onClick={handleOpenDialog}
+            >
+              <ListItemText
+                primaryTypographyProps={{
+                  color: "white",
+                }}
+              >
+                上传商品
+              </ListItemText>
+            </ListItemButton>
             <NavLink to={navigators.order.path}>
               {({ isActive }) => (
-                <Button
-                  className={
-                    isActive ? "selected navigatorbtn" : "navigatorbtn"
-                  }
-                >
-                  {navigators.order.label}
-                  {orderBadge !== 0 && (
-                    <div className="badge">{orderBadge}</div>
-                  )}
-                </Button>
+                <ListItemButton selected={isActive}>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      color: "white",
+                    }}
+                  >
+                    {navigators.order.label}
+                    {orderBadge !== 0 && (
+                      <div className="badge">{orderBadge}</div>
+                    )}
+                  </ListItemText>
+                </ListItemButton>
               )}
             </NavLink>
             <NavLink to={navigators.history.path}>
               {({ isActive }) => (
-                <Button
-                  className={
-                    isActive ? "selected navigatorbtn" : "navigatorbtn"
-                  }
-                >
-                  {navigators.history.label}
-                </Button>
+                <ListItemButton selected={isActive}>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      color: "white",
+                    }}
+                  >
+                    {navigators.history.label}
+                  </ListItemText>
+                </ListItemButton>
               )}
             </NavLink>
             <NavLink to={navigators.account.path}>
               {({ isActive }) => (
-                <Button
-                  className={
-                    isActive ? "selected navigatorbtn" : "navigatorbtn"
-                  }
-                >
-                  {navigators.account.label}
-                </Button>
+                <ListItemButton selected={isActive}>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      color: "white",
+                    }}
+                  >
+                    {navigators.account.label}
+                  </ListItemText>
+                </ListItemButton>
               )}
             </NavLink>
             <NavLink to={navigators.setting.path}>
               {({ isActive }) => (
-                <Button
-                  className={
-                    isActive ? "selected navigatorbtn" : "navigatorbtn"
-                  }
-                >
-                  {navigators.setting.label}
-                </Button>
+                <ListItemButton selected={isActive}>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      color: "white",
+                    }}
+                  >
+                    {navigators.setting.label}
+                  </ListItemText>
+                </ListItemButton>
               )}
             </NavLink>
-          </ButtonGroup>
-        </div>
+          </List>
+        </Box>
         <div className="btnGroupBottom">
           <Button onClick={handleOpenPopup}>联系客服</Button>
           <Divider

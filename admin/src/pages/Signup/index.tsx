@@ -18,9 +18,10 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { countryCodes } from "../../constant/index";
 import "./style.scss";
-import { getVerificationCode } from "../../api";
+import { getVerificationCode, signup } from "../../api";
 import { useSnackbar } from "notistack";
 import useVerificationCode from "../../hooks/VerificationCode";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   phoneNumber: string;
@@ -47,6 +48,7 @@ export default function Signup() {
     },
   });
   const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const { sendCode, isSendingCode, countdown } = useVerificationCode();
   const watchFields = watch();
 
@@ -65,7 +67,20 @@ export default function Signup() {
     enqueueSnackbar("验证码已发送");
   };
 
-  const onSubmit = (data: IFormInput) => console.log(data);
+  const onSubmit = async (data: IFormInput) => {
+    try {
+      const result = await signup(data);
+      if (result.data.status === "FAIL") {
+        enqueueSnackbar(result.data.message);
+        return;
+      }
+      enqueueSnackbar("创建成功");
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.log(err);
+      enqueueSnackbar("创建失败，请检查网络");
+    }
+  };
 
   return (
     <Box className="formContainer">
@@ -83,14 +98,14 @@ export default function Signup() {
             </Grid>
             <Grid item xs pb={4}>
               <Typography className="title" variant="h5" component="h4">
-                微帮微商家仓库管理
+                微帮微商家仓库注册
               </Typography>
             </Grid>
             <Grid item container direction="column">
               <Grid item xs container direction="row" alignItems="center" p={1}>
                 <FormControl
                   className="countryCode"
-                  sx={{ mr: 2, minWidth: 120 }}
+                  sx={{ mr: 2, minWidth: 80 }}
                   size="small"
                 >
                   <InputLabel id="countryCodeLabel">区号</InputLabel>
@@ -101,9 +116,9 @@ export default function Signup() {
                     render={({ field }) => (
                       <Select
                         {...field}
-                        sx={{ minWidth: 80 }}
                         label="区号"
                         labelId="countryCodeLabel"
+                        renderValue={(value) => value}
                       >
                         {countryCodes.map((countryCode: any) => (
                           <MenuItem
@@ -148,6 +163,7 @@ export default function Signup() {
                       label="验证码"
                       size="small"
                       fullWidth
+                      inputProps={{ maxLength: 6 }}
                       InputProps={{
                         endAdornment: (
                           <Button
@@ -170,7 +186,7 @@ export default function Signup() {
                   )}
                 />
               </Grid>
-              <Grid item p={1}>
+              <Grid item p={3}>
                 <Divider></Divider>
               </Grid>
               <Grid item xs p={1}>

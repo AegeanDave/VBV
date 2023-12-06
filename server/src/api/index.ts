@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import user from './routes/user'
 import product from './routes/product'
+import productAdmin from './routes/admin/product'
 import orders from './routes/orders'
 import warehouse from './routes/warehouse'
 import warehouseAdmin from './routes/admin/warehouse'
@@ -13,6 +14,7 @@ export default () => {
 	orders(app)
 	warehouse(app)
 	warehouseAdmin(app)
+	productAdmin(app)
 
 	return app
 }

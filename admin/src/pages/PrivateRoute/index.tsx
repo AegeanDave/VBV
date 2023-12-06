@@ -7,7 +7,7 @@ import { ScreenDialog } from "../../components";
 import ProductList from "../ProductList/index";
 import Account from "../Account/index";
 import Setting from "../Setting/index";
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 
 export default function PrivateRoute() {
   const [openBackdrop, setOpenBackdrop] = React.useState(false);
@@ -17,46 +17,46 @@ export default function PrivateRoute() {
   };
 
   return (
-    <>
+    <Routes>
       <Route
         path={navigators.productList.path}
         element={
-          <ProductList
-            openBackdrop={() => setOpenBackdrop(true)}
-            closeBackdrop={() => setOpenBackdrop(false)}
-          />
+          //   <ProductList
+          //     openBackdrop={() => setOpenBackdrop(true)}
+          //     closeBackdrop={() => setOpenBackdrop(false)}
+          //   />
+          <></>
         }
       ></Route>
-      <Route
-        path={navigators.order.path}
-        element={<Orders handleCopy={handleCopy} />}
-      ></Route>
+      <Route path={navigators.order.path} element={<></>}></Route>
       <Route
         path={navigators.setting.path}
         element={
-          <Setting
-            openBackdrop={() => setOpenBackdrop(true)}
-            closeBackdrop={() => setOpenBackdrop(false)}
-          />
+          //   <Setting
+          //     openBackdrop={() => setOpenBackdrop(true)}
+          //     closeBackdrop={() => setOpenBackdrop(false)}
+          //   />
+          <></>
         }
       ></Route>
       <Route
         path={navigators.history.path}
         element={
-          <OrdersHistory
-            orders={historyOrders}
-            updateOrder={handleUpdateOrder}
-            handleCopy={handleCopy}
-          />
+          //   <OrdersHistory
+          //     orders={historyOrders}
+          //     updateOrder={handleUpdateOrder}
+          //     handleCopy={handleCopy}
+          //   />
+          <></>
         }
       ></Route>
       <Route path={navigators.account.path} element={<Account />}></Route>
-      <ScreenDialog
+      {/* <ScreenDialog
         open={openDialog}
         handleClose={handleCloseDialog}
         action={actions.submit.key}
         handleUpdateProductInfo={handleProductInfo}
-      ></ScreenDialog>
-    </>
+      ></ScreenDialog> */}
+    </Routes>
   );
 }

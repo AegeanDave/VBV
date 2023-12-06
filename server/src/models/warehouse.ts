@@ -29,6 +29,6 @@ const Warehouse = db.define('warehouses', {
 })
 
 Warehouse.sync().then(() => {
-	return console.log('Table Created')
+	return console.log('Warehouse Table Created')
 })
 export default Warehouse

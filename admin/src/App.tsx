@@ -11,8 +11,8 @@ import Layout from "./pages/PrivateRoute/Layout";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider maxSnack={3}>
+      <AuthProvider>
         <Routes>
           <Route element={<Layout />}>
             <Route
@@ -27,7 +27,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
-      </SnackbarProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </SnackbarProvider>
   );
 }
