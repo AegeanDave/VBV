@@ -20,9 +20,12 @@ import {
 } from '../../../constants'
 import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
-import { sentShippingMessage, makeVerificationCode } from '../../../provider'
+import { sentShippingMessage } from '../../../provider'
 import { upload, downloadFile } from '../../../provider/fileAction'
 import { sendRegistrationSMS, handleVerify } from '../../../provider/twilio'
+import bcrypt from 'bcrypt'
+
+const saltRounds = 10
 
 const holdOriginalProduct = (product: Product) => {
 	query(queryName.onHoldProduct, [product.productId])
@@ -81,7 +84,7 @@ const createNewProduct = async (product: WarehouseProduct) => {
 
 export default (app: Router) => {
 	app.use('/admin/warehouse', route)
-	route.post('/getVerificationCode', async (req: Request, res: Response) => {
+	route.post('/verification-code', async (req: Request, res: Response) => {
 		const { phoneNumber } = req.body
 		try {
 			const todoWarehouse = await Warehouse.findOne({
@@ -89,7 +92,6 @@ export default (app: Router) => {
 					loginPhoneNumber: phoneNumber
 				}
 			})
-			console.log(todoWarehouse.dataValues)
 			if (!todoWarehouse) {
 				res.send({
 					status: Status.FAIL,
@@ -146,10 +148,12 @@ export default (app: Router) => {
 				})
 				return
 			}
-			Warehouse.update(
-				{ password, status: 'Active' },
-				{ where: { loginPhoneNumber: countryCode + phoneNumber } }
-			)
+			bcrypt.hash(password, saltRounds, (err, hash) => {
+				Warehouse.update(
+					{ password: hash, status: 'Active' },
+					{ where: { loginPhoneNumber: countryCode + phoneNumber } }
+				)
+			})
 			res.send({
 				status: Status.SUCCESS
 			})
@@ -190,22 +194,24 @@ export default (app: Router) => {
 			})
 			return
 		}
-		if (password === inputPass) {
-			const sessionKey = uuidv4()
-			const value: Session = {
-				openId,
-				warehouseId
+		bcrypt.compare(inputPass, password, (err, result) => {
+			if (result) {
+				const sessionKey = uuidv4()
+				const value: Session = {
+					openId,
+					warehouseId
+				}
+				myCache.set(sessionKey, value, 2592000)
+				res.status(200).send({ sessionKey, ...rest })
+				Logger.info('logged in')
+			} else {
+				res.status(401).send({
+					status: Status.FAIL,
+					message: '密码有误'
+				})
+				Logger.info('login fail')
 			}
-			myCache.set(sessionKey, value, 2592000)
-			res.status(200).send({ sessionKey, ...rest })
-			Logger.info('logged in')
-		} else {
-			res.status(401).send({
-				status: Status.FAIL,
-				message: '密码有误'
-			})
-			Logger.info('login fail')
-		}
+		})
 	})
 	route.delete(
 		'/logout',
@@ -225,25 +231,6 @@ export default (app: Router) => {
 					message: 'Authorization fail!'
 				})
 				Logger.info('logout fail')
-			}
-		}
-	)
-	route.post(
-		'/newProduct',
-		upload.array('productImages', 10),
-		async (req: Request, res: Response) => {
-			console.log(req.files)
-			try {
-				const form = new multiparty.Form()
-				// form.parse(req, async (error, fields, files) => {
-				// 	if (error) throw error
-				// 	const { product } = fields
-				// })
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
 			}
 		}
 	)

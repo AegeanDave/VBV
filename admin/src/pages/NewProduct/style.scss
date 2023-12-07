@@ -1,0 +1,53 @@
+.formBox {
+	padding: 60px;
+	.textBox {
+		display: flex;
+		flex-direction: column;
+	}
+	.imagesField {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		.input {
+			display: none;
+		}
+		.previewBox {
+			width: 130px;
+			height: 130px;
+			margin: 12px;
+			background-color: #d8d8d8;
+			position: relative;
+			.preview {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+			.delete {
+				position: absolute;
+				top: 0;
+				right: 0;
+				z-index: 100px;
+			}
+		}
+	}
+	.tagField {
+		display: flex;
+		.chip {
+			margin-right: 20px;
+			background-color: #d8d8d8;
+			padding-left: 28px;
+			padding-right: 28px;
+			color: #fff;
+		}
+		.click {
+			background-color: #6bb0ad;
+		}
+	}
+	.btn {
+		padding-left: 50px;
+		padding-right: 50px;
+	}
+	.agreement {
+		text-decoration-line: none;
+	}
+}

@@ -8,6 +8,9 @@ import {
 } from '../../../api/middleware/authorization'
 import { Product } from '../../../models/types'
 import { SaleStatus, Status } from '../../../constants'
+import StoreProduct from '../../../models/store'
+import multiparty from 'multiparty'
+import { upload } from '../../../provider/fileAction'
 
 export const disableWholeProductLine = async (
 	openIdFather: string,
@@ -26,15 +29,32 @@ export const disableWholeProductLine = async (
 export default (app: Router) => {
 	app.use('/admin/products', route)
 	route.get(
-		'/myWarehouseProducts',
+		'/products',
 		adminAuthenticated,
 		async (req: Request, res: Response) => {
-			const result = await query(queryName.getWarehouseProductsById, [
-				myOpenId,
-				myWarehouseId
-			])
-			res.status(200).send(result.data)
+			const todoProducts = await StoreProduct.findAll()
+			res.status(200).send(todoProducts)
 			Logger.info('warehouse products get')
+		}
+	)
+	route.post(
+		'/new-product',
+		upload.single('coverImage'),
+		upload.array('images', 10),
+		async (req: Request, res: Response) => {
+			console.log(req.files)
+			try {
+				const form = new multiparty.Form()
+				// form.parse(req, async (error, fields, files) => {
+				// 	if (error) throw error
+				// 	const { product } = fields
+				// })
+			} catch (error) {
+				res.send({
+					status: Status.FAIL,
+					message: error
+				})
+			}
 		}
 	)
 }

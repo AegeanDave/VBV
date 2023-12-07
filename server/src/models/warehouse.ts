@@ -1,29 +1,29 @@
-import Sequelize from 'sequelize'
+import { DataTypes } from 'sequelize'
 import db from '../config/database'
 
 const Warehouse = db.define('warehouses', {
 	openId: {
-		type: Sequelize.STRING,
+		type: DataTypes.STRING,
 		references: 'users'
 	},
 	warehouseId: {
-		type: Sequelize.UUID
+		type: DataTypes.UUID
 	},
 	loginPhoneNumber: {
-		type: Sequelize.STRING
+		type: DataTypes.STRING
 	},
 	password: {
-		type: Sequelize.STRING
+		type: DataTypes.STRING
 	},
 	email: {
-		type: Sequelize.STRING
+		type: DataTypes.STRING
 	},
 	setting: {
-		type: Sequelize.JSON,
+		type: DataTypes.JSON,
 		allowNull: true
 	},
 	status: {
-		type: Sequelize.ENUM('Active', 'Inactive', 'Not_Verified'),
+		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Verified'),
 		defaultValue: 'Not_Verified'
 	}
 })

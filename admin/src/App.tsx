@@ -16,7 +16,7 @@ export default function App() {
         <Routes>
           <Route element={<Layout />}>
             <Route
-              path="/"
+              path="*"
               element={
                 <RequireAuth>
                   <PrivateRoute />

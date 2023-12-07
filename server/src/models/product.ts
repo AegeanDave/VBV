@@ -1,30 +1,35 @@
-import Sequelize from 'sequelize'
+import { DataTypes } from 'sequelize'
 import db from '../config/database'
 
 const Product = db.define('products', {
 	ownerId: {
-		type: Sequelize.STRING
+		type: DataTypes.STRING,
+		references: 'users'
+	},
+	warehouseId: {
+		type: DataTypes.UUID,
+		references: 'warehouses'
 	},
 	name: {
-		type: Sequelize.STRING
+		type: DataTypes.STRING
 	},
 	description: {
-		type: Sequelize.STRING,
+		type: DataTypes.STRING,
 		allowNull: true
 	},
 	shortDescription: {
-		type: Sequelize.STRING,
+		type: DataTypes.STRING,
 		allowNull: true
 	},
 	price: {
-		type: Sequelize.FLOAT,
+		type: DataTypes.FLOAT,
 		allowNull: true
 	},
 	setting: {
-		type: Sequelize.JSON
+		type: DataTypes.JSON
 	},
 	status: {
-		type: Sequelize.ENUM('Active', 'Inactive', 'onHold'),
+		type: DataTypes.ENUM('Active', 'Inactive', 'onHold'),
 		defaultValue: 'Active'
 	}
 })

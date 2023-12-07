@@ -1,12 +1,12 @@
 import React, { useState, useEffect, ReactNode } from "react";
 import { Product } from "../models/index";
-import { updateProductInfo, getProducts } from "../api/index";
+import { createNewProduct } from "../api/product";
 import { useSnackbar } from "notistack";
 import { snackMessage, SaleStatus } from "../constant/index";
 
 interface ProductContextType {
   products: any;
-  handleProductInfo: (order: any, action: string) => void;
+  handleCreate: (data: any, coverImage?: File, images?: File[]) => void;
 }
 
 const ProductContext = React.createContext<ProductContextType>(null!);
@@ -22,34 +22,27 @@ function ProductProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const loading = async () => {
       let result;
-      result = await getProducts();
-      setProducts(result.data);
+      //   result = await getProducts();
+      //   setProducts(result.data);
     };
     loading();
   }, []);
 
-  const handleProductInfo = async (
-    product: Product,
-    action: string,
-    uploadCoverImage?: File,
-    uploadImages?: File[]
-  ) => {
-    setOpenBackdrop(!openBackdrop);
-    const result = await updateProductInfo(product, action, uploadCoverImage);
-    if (result.status === 200) {
-      const currentProducts = [...products];
-      product = result.data;
-      product.status = SaleStatus.ENABLED;
-      currentProducts.unshift(product);
-      setProducts(currentProducts);
-      handleCloseDialog();
-    }
+  const handleCreate = async (data: Product) => {
+    console.log(data);
+    const result = await createNewProduct(data);
+    // if (result.status === 200) {
+    //   const currentProducts = [...products];
+    //   product = result.data;
+    //   product.status = SaleStatus.ENABLED;
+    //   currentProducts.unshift(product);
+    //   setProducts(currentProducts);
+    // }
     enqueueSnackbar(snackMessage.success.submit);
-    setOpenBackdrop(false);
   };
 
   return (
-    <ProductContext.Provider value={{ products, handleProductInfo }}>
+    <ProductContext.Provider value={{ products, handleCreate }}>
       {children}
     </ProductContext.Provider>
   );
