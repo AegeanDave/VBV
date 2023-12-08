@@ -10,6 +10,9 @@ export const createNewProduct = async (product: any) => {
       formData.append("images", image);
     });
   formData.append("product", JSON.stringify(rest));
-  const result = await axios.post("/admin/products/new-product", formData);
+  const result = await axios.post("/admin/product/new-product", formData);
   return result;
 };
+
+export const getProducts = async () =>
+  await axios.get("/admin/product/all-products");

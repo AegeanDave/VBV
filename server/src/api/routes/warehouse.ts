@@ -1,9 +1,8 @@
 import { Router, Request, Response } from 'express'
 import db from '../../config/database'
-import Warehouse from '../../models/warehouse'
+import { Warehouse } from '../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../services'
-import multiparty from 'multiparty'
 import { disableWholeProductLine } from './product'
 import {
 	isAuthenticated,
@@ -21,7 +20,7 @@ import {
 } from '../../constants'
 import { myCache } from '../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
-import { sentShippingMessage, makeVerificationCode } from '../../provider'
+import { sentShippingMessage } from '../../provider'
 import { upload, downloadFile } from '../../provider/fileAction'
 import { sendRegistrationSMS } from '../../provider/twilio'
 
@@ -185,32 +184,7 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.post(
-		'/newProduct',
-		upload.array('productImages', 10),
-		async (req: Request, res: Response) => {
-			console.log(req.files)
-			try {
-				const form = new multiparty.Form()
-				// form.parse(req, async (error, fields, files) => {
-				// 	if (error) throw error
-				// 	const { product } = fields
-				// })
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
-			}
-		}
-	)
-	route.post(
-		'/hello',
-		upload.single('productImage'),
-		(req: Request, res: Response) => {
-			console.log(req.body)
-		}
-	)
+
 	route.post(
 		'/createWarehouse',
 		isAuthenticated,

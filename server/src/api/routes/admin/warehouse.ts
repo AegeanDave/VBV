@@ -1,13 +1,11 @@
 import { Router, Request, Response } from 'express'
-import Warehouse from '../../../models/warehouse'
+import { Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../../services'
-import multiparty from 'multiparty'
 import { disableWholeProductLine } from '../product'
 import {
-	isAuthenticated,
-	myOpenId,
 	adminAuthenticated,
+	myOpenId,
 	myWarehouseId
 } from '../../../api/middleware/authorization'
 import { queryName } from '../../../services/queryName'
@@ -231,73 +229,6 @@ export default (app: Router) => {
 					message: 'Authorization fail!'
 				})
 				Logger.info('logout fail')
-			}
-		}
-	)
-
-	route.post(
-		'/createWarehouse',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			try {
-				const { phone, countryCode } = req.body
-				await query(queryName.createWarehouse, [myOpenId, phone, countryCode])
-				res.send({
-					status: Status.SUCCESS
-				})
-				Logger.info('warehouse created')
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
-				Logger.info('warehouse creadted fail')
-			}
-		}
-	)
-	route.get(
-		'/myWarehouse',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const checkWarehouse = await query(queryName.checkWarehouse, [myOpenId])
-			if (checkWarehouse.data.length === 0) {
-				res.send({
-					status: WarehouseStatus.NOT_REGISTERED
-				})
-				Logger.info('warehouse has not sign up')
-			} else {
-				const orderResult = await query(queryName.getWarehouseOrders, [
-					myOpenId
-				])
-				const countryCode = checkWarehouse.data[0].loginPhoneNumberCountryCode
-				checkWarehouse.data[0].loginPhoneNumberCountryCode =
-					countryCode && countryCodes[countryCode].value
-				res.send({
-					status: WarehouseStatus.REGISTERED,
-					data: {
-						warehouse: checkWarehouse.data[0],
-						order: orderResult.data
-					}
-				})
-				Logger.info('warehouse products get')
-			}
-		}
-	)
-	route.post(
-		'/updatePhone',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			try {
-				const { phone, countryCode } = req.body
-				await query(queryName.updatePhoneAdmin, [phone, countryCode, myOpenId])
-				res.send({
-					status: Status.SUCCESS
-				})
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
 			}
 		}
 	)

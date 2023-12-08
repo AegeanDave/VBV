@@ -1,15 +1,12 @@
-.outerBox {
-	left: 280px !important;
-	height: 100vh;
-	.appBar {
-		background-color: #6bb0ad;
-		.title {
-			flex-grow: 1;
-			color: #fff;
-		}
-		.cancel {
-			color: #fff;
-			margin: 10px;
-		}
+.appBar {
+	background-color: #6bb0ad;
+	.title {
+		flex-grow: 1;
+		color: #fff;
+	}
+	.cancel {
+		color: #fff;
+		margin: 10px;
 	}
 }
+

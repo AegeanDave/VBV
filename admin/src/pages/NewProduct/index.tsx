@@ -10,34 +10,35 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import "./style.scss";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { AddBoxSharp, Delete } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { useProduct } from "../../contexts/ProductProvider";
 
-const ProductForm = () => {
+interface Props {
+  onClose: () => void;
+}
+
+const ProductForm = ({ onClose }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const {
-    control,
-    handleSubmit,
-    watch,
-    register,
-    setValue,
-    formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      coverImage: undefined as any,
-      images: [] as File[],
-      isFreeShipping: false,
-      isIdRequired: false,
-    },
-  });
+  const { control, handleSubmit, watch, register, setValue, formState } =
+    useForm({
+      defaultValues: {
+        name: "",
+        description: "",
+        price: 0,
+        coverImage: undefined as any,
+        images: [] as File[],
+        isFreeShipping: false,
+        isIdRequired: false,
+      },
+    });
   const { handleCreate } = useProduct();
   const [agreementChecked, setAgreementChecked] = React.useState(false);
-  const onSubmit = (data: any) => handleCreate(data);
+  const onSubmit = async (data: any) => {
+    handleCreate(data);
+    onClose();
+  };
 
   const handleCoverImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -112,7 +113,7 @@ const ProductForm = () => {
           </div>
         </Grid>
         <Grid item xs={10} className="imagesField">
-          {watch("coverImage") && (
+          {watch("coverImage") ? (
             <div className="previewBox">
               <img
                 src={URL.createObjectURL(watch("coverImage"))}
@@ -127,22 +128,23 @@ const ProductForm = () => {
                 <Delete fontSize="small" />
               </IconButton>
             </div>
+          ) : (
+            <div>
+              <input
+                accept="image/*"
+                className="input"
+                id="cover-file"
+                type="file"
+                {...register("images", { required: true })}
+                onChange={handleCoverImageChange}
+              />
+              <label htmlFor="cover-file">
+                <IconButton aria-label="upload picture" component="span">
+                  <AddBoxSharp style={{ fontSize: 134, color: "#d8d8d8" }} />
+                </IconButton>
+              </label>
+            </div>
           )}
-          <div>
-            <input
-              accept="image/*"
-              className="input"
-              id="cover-file"
-              type="file"
-              {...register("images", { required: true })}
-              onChange={handleCoverImageChange}
-            />
-            <label htmlFor="cover-file">
-              <IconButton aria-label="upload picture" component="span">
-                <AddBoxSharp style={{ fontSize: 134, color: "#d8d8d8" }} />
-              </IconButton>
-            </label>
-          </div>
         </Grid>
         <Grid item xs={2}>
           <div className="textBox">

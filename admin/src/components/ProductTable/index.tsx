@@ -14,16 +14,10 @@ import { columns } from "../../constant/index";
 import { Product } from "../../models/index";
 
 interface Props {
-  clickOpen: (product: Product) => void;
   products: Product[];
-  handleUpdateStatus: (product: Product, action: string) => void;
 }
 
-export default function ProductTable({
-  clickOpen,
-  products,
-  handleUpdateStatus,
-}: Props) {
+export default function ProductTable({ products }: Props) {
   return (
     <Paper className="tableContainer">
       <TableContainer className="tableContainer">
@@ -59,13 +53,7 @@ export default function ProductTable({
           <TableBody>
             {products.map((row: Product, index: number) => {
               return (
-                <ProductRow
-                  product={row}
-                  index={index}
-                  key={row.productId}
-                  clickOpen={clickOpen}
-                  handleUpdateStatus={handleUpdateStatus}
-                />
+                <ProductRow product={row} index={index} key={row.productId} />
               );
             })}
           </TableBody>

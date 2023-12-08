@@ -158,7 +158,7 @@ export const snackMessage: {
 export const columns: Column[] = [
   { type: "images", label: "产品图片", align: "center", minWidth: 140 },
   {
-    type: "productName",
+    type: "name",
     label: "产品名称",
     align: "center",
     minWidth: 120,

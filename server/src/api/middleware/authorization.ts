@@ -13,14 +13,14 @@ export const isAuthenticated = async (
 ) => {
 	const sessionKey = req.headers.authorization
 	const checkSessionResult: string = myCache.get(sessionKey)
-	if (checkSessionResult) {
-		myOpenId = checkSessionResult
-		return next()
-	} else {
+	if (!checkSessionResult) {
 		res
 			.status(403)
 			.send({ status: Status.FAIL, message: 'Authorization fail!' })
+		return
 	}
+	myOpenId = checkSessionResult
+	return next()
 }
 
 export const adminAuthenticated = async (
@@ -29,16 +29,17 @@ export const adminAuthenticated = async (
 	next: NextFunction
 ) => {
 	const sessionKey = req.headers.authorization
-	if (sessionKey) {
-		const checkSessionResult: Session = myCache.get(sessionKey)
-		if (checkSessionResult) {
-			myOpenId = checkSessionResult.openId
-			myWarehouseId = checkSessionResult.warehouseId
-			return next()
-		} else {
-			res.status(403).send('Authorization fail!')
-		}
-	} else {
+	if (!sessionKey) {
 		res.status(403).send('Authorization fail!')
+		return
 	}
+	const checkSessionResult: Session = myCache.get(sessionKey)
+
+	if (!checkSessionResult) {
+		res.status(403).send('Authorization fail!')
+		return
+	}
+	req.params.myOpenId = checkSessionResult.openId
+	req.params.myWarehouseId = checkSessionResult.warehouseId
+	return next()
 }

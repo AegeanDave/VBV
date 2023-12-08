@@ -1,13 +1,11 @@
 import { DataTypes } from 'sequelize'
-import db from '../config/database'
+import db from '../../config/database'
 
 const Warehouse = db.define('warehouses', {
-	openId: {
-		type: DataTypes.STRING,
-		references: 'users'
-	},
 	warehouseId: {
-		type: DataTypes.UUID
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true
 	},
 	loginPhoneNumber: {
 		type: DataTypes.STRING
@@ -25,10 +23,12 @@ const Warehouse = db.define('warehouses', {
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Verified'),
 		defaultValue: 'Not_Verified'
-	}
+	},
+	createdAt: {
+		type: DataTypes.DATE,
+		defaultValue: DataTypes.NOW
+	},
+	updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 })
 
-Warehouse.sync().then(() => {
-	return console.log('Warehouse Table Created')
-})
 export default Warehouse

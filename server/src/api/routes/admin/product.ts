@@ -2,14 +2,11 @@ import { Router, Request, Response } from 'express'
 const route = Router()
 import { query, Logger } from '../../../services'
 import { queryName } from '../../../services/queryName'
-import {
-	adminAuthenticated,
-	myOpenId
-} from '../../../api/middleware/authorization'
-import { Product } from '../../../models/types'
+import { adminAuthenticated } from '../../../api/middleware/authorization'
+import { Product as ProductType } from '../../../models/types'
 import { SaleStatus, Status } from '../../../constants'
-import StoreProduct from '../../../models/store'
-import multiparty from 'multiparty'
+import StoreProduct from '../../../models/sequelize/store'
+import { Product, Image } from '../../../models/sequelize'
 import { upload } from '../../../provider/fileAction'
 
 export const disableWholeProductLine = async (
@@ -27,29 +24,76 @@ export const disableWholeProductLine = async (
 	}
 }
 export default (app: Router) => {
-	app.use('/admin/products', route)
+	app.use('/admin/product', route)
 	route.get(
-		'/products',
+		'/all-products',
 		adminAuthenticated,
 		async (req: Request, res: Response) => {
-			const todoProducts = await StoreProduct.findAll()
+			const { myOpenId, myWarehouseId } = req.params
+
+			const todoProducts = await StoreProduct.findAll({
+				where: { openId: myOpenId, openIdFather: myOpenId },
+				include: {
+					model: Product,
+					as: 'originalData',
+					attributes: ['coverImageUrl']
+				}
+			})
 			res.status(200).send(todoProducts)
 			Logger.info('warehouse products get')
 		}
 	)
 	route.post(
 		'/new-product',
-		upload.single('coverImage'),
-		upload.array('images', 10),
+		adminAuthenticated,
+		upload.fields([
+			{ name: 'coverImage', maxCount: 1 },
+			{ name: 'images', maxCount: 10 }
+		]),
 		async (req: Request, res: Response) => {
 			console.log(req.files)
 			try {
-				const form = new multiparty.Form()
-				// form.parse(req, async (error, fields, files) => {
-				// 	if (error) throw error
-				// 	const { product } = fields
-				// })
+				const { coverImage, images } = req.files as any
+				const {
+					name,
+					description,
+					price,
+					isFreeShipping,
+					isIdRequired,
+					shortDescription = ''
+				} = JSON.parse(req.body?.product)
+				const { myOpenId, myWarehouseId } = req.params
+				const todoProduct = await Product.create(
+					{
+						name,
+						description,
+						price,
+						coverImageUrl: coverImage[0].location,
+						setting: { isFreeShipping, isIdRequired },
+						ownerId: myOpenId,
+						warehouseId: myWarehouseId,
+						images: (images || []).map((file: any) => ({
+							url: file.location,
+							isCoverImage: false
+						}))
+					},
+					{ include: [Image] }
+				)
+				const todoStore = await StoreProduct.create({
+					productId: todoProduct.dataValues.id,
+					name,
+					description,
+					shortDescription,
+					openId: myOpenId,
+					coverImageUrl: coverImage[0].location,
+					openIdFather: myOpenId,
+					saleLevel: 0,
+					defaultPrice: price,
+					status: 'Active'
+				})
+				res.send(todoStore.dataValues)
 			} catch (error) {
+				console.log(error)
 				res.send({
 					status: Status.FAIL,
 					message: error

@@ -1,17 +1,24 @@
 import { DataTypes } from 'sequelize'
-import db from '../config/database'
+import db from '../../config/database'
 
 const Product = db.define('products', {
+	id: {
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true
+	},
 	ownerId: {
 		type: DataTypes.STRING,
-		references: 'users'
+		allowNull: false
 	},
 	warehouseId: {
 		type: DataTypes.UUID,
-		references: 'warehouses'
+		allowNull: false
 	},
+	coverImageUrl: { type: DataTypes.STRING, allowNull: true },
 	name: {
-		type: DataTypes.STRING
+		type: DataTypes.STRING,
+		allowNull: false
 	},
 	description: {
 		type: DataTypes.STRING,
@@ -31,10 +38,12 @@ const Product = db.define('products', {
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive', 'onHold'),
 		defaultValue: 'Active'
-	}
+	},
+	createdAt: {
+		type: DataTypes.DATE,
+		defaultValue: DataTypes.NOW
+	},
+	updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 })
 
-Product.sync().then(() => {
-	return console.log('Product Table Created')
-})
 export default Product

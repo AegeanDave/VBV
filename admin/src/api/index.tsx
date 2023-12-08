@@ -23,10 +23,8 @@ axios.defaults.baseURL = import.meta.env.VITE_API_URL;
 export const login = async (auth: Auth) =>
   await axios.post("/admin/warehouse/login", auth);
 
-export const logout = () => {
-  axios.delete("/warehouse/logout");
-  localStorage.clear();
-};
+export const logout = () => axios.delete("/warehouse/logout");
+
 export const getProducts = async () =>
   await axios.get("/warehouse/myWarehouseProducts");
 

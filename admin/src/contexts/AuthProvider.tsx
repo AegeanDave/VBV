@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, Navigate, useNavigate } from "react-router-dom";
-import { login } from "../api";
+import { login, logout } from "../api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 import { getStorage, setStorage } from "../utils/localStorage";
@@ -8,7 +8,7 @@ import { getStorage, setStorage } from "../utils/localStorage";
 interface AuthContextType {
   user: any;
   signin: (phoneNumber: string, password: string) => void;
-  signout: (callback: VoidFunction) => void;
+  signout: () => void;
 }
 
 let AuthContext = React.createContext<AuthContextType>(null!);
@@ -21,7 +21,7 @@ function RequireAuth({ children }: { children: JSX.Element }) {
   const auth = useAuth();
   const location = useLocation();
   const authStorage = getStorage();
-  if (!auth.user && !authStorage) {
+  if (!auth.user && !authStorage.sessionKey) {
     // Redirect them to the /login page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience
@@ -61,7 +61,12 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signout = () => {};
+  const signout = () => {
+    logout();
+    navigate("/login");
+    localStorage.clear();
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, signin, signout }}>

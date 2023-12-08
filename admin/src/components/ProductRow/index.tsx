@@ -15,18 +15,14 @@ import "./style.scss";
 interface Props {
   product: Product;
   index: number;
-  clickOpen: (product: Product) => void;
-  handleUpdateStatus: (product: Product, action: string) => void;
 }
-export default function ProductRow(props: Props) {
+export default function ProductRow({ product, index }: Props) {
   const [deletePopupOpen, setDeletePopupOpen] = React.useState(false);
   const [editPopupOpen, setEditPopupOpen] = React.useState(false);
   const [currentAction, setCurrentAction] = React.useState("");
 
   const action =
-    props.product.status === SaleStatus.ENABLED
-      ? actions.unrelease
-      : actions.release;
+    product.status === SaleStatus.ENABLED ? actions.unrelease : actions.release;
   const handlePopupOpen = (action: string) => {
     if (action === actions.edit.key) {
       setEditPopupOpen(true);
@@ -43,15 +39,15 @@ export default function ProductRow(props: Props) {
     setEditPopupOpen(false);
     setCurrentAction("");
   };
-  const popupConfirm = () => {
-    props.handleUpdateStatus(props.product, currentAction);
-    if (currentAction === actions.delete.key) {
-      setDeletePopupOpen(false);
-    } else if (currentAction === actions.edit.key) {
-      setEditPopupOpen(false);
-    }
-    setCurrentAction("");
-  };
+  //   const popupConfirm = () => {
+  //     props.handleUpdateStatus(props.product, currentAction);
+  //     if (currentAction === actions.delete.key) {
+  //       setDeletePopupOpen(false);
+  //     } else if (currentAction === actions.edit.key) {
+  //       setEditPopupOpen(false);
+  //     }
+  //     setCurrentAction("");
+  //   };
   const DeletePopupContent = () => (
     <DialogContent>
       <DialogContentText id="alert-dialog-description">
@@ -60,19 +56,18 @@ export default function ProductRow(props: Props) {
     </DialogContent>
   );
   return (
-    props.product && (
+    product && (
       <>
-        <TableRow
-          hover
-          role="checkbox"
-          tabIndex={-1}
-          key={props.product.productId}
-        >
+        <TableRow hover role="checkbox" tabIndex={-1} key={product.productId}>
           {columns.map((column) => (
             <TableCell key={column.type} align={column.align}>
               {column.type === "images" ? (
                 <img
-                  src={props.product.coverImageURL || placeholder}
+                  src={
+                    product.coverImageUrl ||
+                    product.originalData.coverImageUrl ||
+                    placeholder
+                  }
                   alt="产品图片"
                   style={{
                     width: 100,
@@ -82,29 +77,30 @@ export default function ProductRow(props: Props) {
                   }}
                 />
               ) : (
-                props.product[column.type]
+                product[column.type]
               )}
             </TableCell>
           ))}
           <TableCell key="action" align="center">
             <Button
               color="primary"
+              size="small"
               className={action === actions.unrelease ? "unrelease" : "release"}
-              onClick={() =>
-                props.handleUpdateStatus(props.product, action.key)
-              }
+              //   onClick={() =>
+              //     props.handleUpdateStatus(props.product, action.key)
+              //   }
             >
               {action.label}
             </Button>
-
             <Button
               color="primary"
-              onClick={() => props.clickOpen(props.product)}
+              //   onClick={() => props.clickOpen(props.product)}
             >
               {actions.edit.label}
             </Button>
             <Button
               color="primary"
+              size="small"
               onClick={() => handlePopupOpen(actions.delete.key)}
             >
               {actions.delete.label}
@@ -117,13 +113,13 @@ export default function ProductRow(props: Props) {
           needConfirm={true}
           Content={DeletePopupContent}
           title={"确认删除"}
-          handleConfirm={popupConfirm}
+          //   handleConfirm={popupConfirm}
         />
         <Popup
           open={editPopupOpen}
           handleClose={handleEditClose}
           needConfirm={true}
-          handleConfirm={popupConfirm}
+          //   handleConfirm={popupConfirm}
           title={"确认编辑"}
         />
       </>

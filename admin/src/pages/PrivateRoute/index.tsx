@@ -13,13 +13,7 @@ export default function PrivateRoute() {
     <Routes>
       <Route
         path={navigators.productList.path}
-        element={
-          //   <ProductList
-          //     openBackdrop={() => setOpenBackdrop(true)}
-          //     closeBackdrop={() => setOpenBackdrop(false)}
-          //   />
-          <></>
-        }
+        element={<ProductList />}
       ></Route>
       <Route path={navigators.order.path} element={<></>}></Route>
       <Route

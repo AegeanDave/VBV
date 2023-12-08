@@ -16,7 +16,7 @@ export default function Layout() {
           open={openDialog}
           onClose={() => setOpenDialog((pre) => !pre)}
         >
-          <ProductForm />
+          <ProductForm onClose={() => setOpenDialog((pre) => !pre)} />
         </ScreenDialog>
       </div>
     </ProductProvider>
