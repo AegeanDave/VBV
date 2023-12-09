@@ -1,14 +1,12 @@
 import React, { useState, useEffect, ReactNode, useContext } from "react";
 import { Product } from "../models/index";
-import { createNewProduct, getProducts } from "../api/product";
+import { getProducts } from "../api/product";
 import { useSnackbar } from "notistack";
-import { snackMessage, SaleStatus } from "../constant/index";
 
 interface ProductContextType {
   loading: boolean;
   products: any;
   error: any;
-  handleCreate: (data: any, coverImage?: File, images?: File[]) => void;
 }
 
 const ProductContext = React.createContext<ProductContextType>(null!);
@@ -38,24 +36,8 @@ function ProductProvider({ children }: { children: ReactNode }) {
     fetchProducts();
   }, []);
 
-  const handleCreate = async (data: Product) => {
-    try {
-      const result = await createNewProduct(data);
-
-      if (!result.data) {
-        enqueueSnackbar("上传失败", { variant: "error" });
-        return;
-      }
-      setProducts((preProducts) => [...preProducts, result.data]);
-      enqueueSnackbar(snackMessage.success.submit);
-    } catch (err) {
-      enqueueSnackbar("上传失败", { variant: "error" });
-      return false;
-    }
-  };
-
   return (
-    <ProductContext.Provider value={{ loading, error, products, handleCreate }}>
+    <ProductContext.Provider value={{ loading, error, products }}>
       {children}
     </ProductContext.Provider>
   );

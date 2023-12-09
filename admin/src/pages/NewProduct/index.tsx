@@ -13,7 +13,8 @@ import "./style.scss";
 import { useForm, Controller } from "react-hook-form";
 import { AddBoxSharp, Delete } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
-import { useProduct } from "../../contexts/ProductProvider";
+import { snackMessage } from "../../constant/index";
+import { createNewProduct } from "../../api/product";
 
 interface Props {
   onClose: () => void;
@@ -21,23 +22,32 @@ interface Props {
 
 const ProductForm = ({ onClose }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { control, handleSubmit, watch, register, setValue, formState } =
-    useForm({
-      defaultValues: {
-        name: "",
-        description: "",
-        price: 0,
-        coverImage: undefined as any,
-        images: [] as File[],
-        isFreeShipping: false,
-        isIdRequired: false,
-      },
-    });
-  const { handleCreate } = useProduct();
+  const { control, handleSubmit, watch, register, setValue } = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+      price: 0,
+      coverImage: undefined as any,
+      images: [] as File[],
+      isFreeShipping: false,
+      isIdRequired: false,
+    },
+  });
   const [agreementChecked, setAgreementChecked] = React.useState(false);
   const onSubmit = async (data: any) => {
-    handleCreate(data);
-    onClose();
+    try {
+      const result = await createNewProduct(data);
+
+      if (!result.data) {
+        enqueueSnackbar("上传失败", { variant: "error" });
+        return;
+      }
+      enqueueSnackbar(snackMessage.success.submit);
+      onClose();
+    } catch (err) {
+      enqueueSnackbar("上传失败", { variant: "error" });
+      return false;
+    }
   };
 
   const handleCoverImageChange = (
@@ -45,8 +55,8 @@ const ProductForm = ({ onClose }: Props) => {
   ) => {
     if (!event.target.files) return;
     const uploadedImage = event.target.files[0];
-    if (event.target.files[0].size > 1048576) {
-      enqueueSnackbar("每张图片大小不能超过 1MB", { variant: "warning" });
+    if (event.target.files[0].size > 2 * 1024 * 1024) {
+      enqueueSnackbar("每张图片大小不能超过 2MB", { variant: "warning" });
       return;
     }
     setValue("coverImage", uploadedImage as any);
@@ -61,8 +71,8 @@ const ProductForm = ({ onClose }: Props) => {
         return;
       }
       for (let i = 0; i < files.length; i++) {
-        if (files[i].size > 1048576) {
-          enqueueSnackbar("每张图片大小不能超过 1MB", { variant: "warning" });
+        if (files[i].size > 2 * 1024 * 1024) {
+          enqueueSnackbar("每张图片大小不能超过 2MB", { variant: "warning" });
           return;
         }
         currentImages.push(files[i]);
@@ -229,7 +239,9 @@ const ProductForm = ({ onClose }: Props) => {
               <Controller
                 name="isFreeShipping"
                 control={control}
-                render={({ field }) => <Checkbox {...field} />}
+                render={({ field }) => (
+                  <Checkbox {...field} checked={field.value} />
+                )}
               ></Controller>
             }
             label="包邮"
@@ -239,7 +251,9 @@ const ProductForm = ({ onClose }: Props) => {
               <Controller
                 name="isIdRequired"
                 control={control}
-                render={({ field }) => <Checkbox {...field} />}
+                render={({ field }) => (
+                  <Checkbox {...field} checked={field.value} />
+                )}
               ></Controller>
             }
             label="海外直邮"

@@ -16,3 +16,6 @@ export const createNewProduct = async (product: any) => {
 
 export const getProducts = async () =>
   await axios.get("/admin/product/all-products");
+
+export const getProductById = async (id: string) =>
+  await axios.get(`/admin/product/${id}`);

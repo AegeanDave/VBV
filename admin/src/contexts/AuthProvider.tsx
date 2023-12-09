@@ -1,5 +1,5 @@
 import React from "react";
-import { useLocation, Navigate, useNavigate } from "react-router-dom";
+import { useLocation, Navigate, useNavigate, redirect } from "react-router-dom";
 import { login, logout } from "../api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
@@ -62,8 +62,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signout = () => {
+    console.log(1111);
     logout();
-    navigate("/login");
+    navigate("/login", { replace: true });
     localStorage.clear();
     setUser(null);
   };

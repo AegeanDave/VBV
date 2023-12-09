@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import Popup from "../Popup/index";
 import { navigators } from "../../constant/index";
-import { logout } from "../../api/index";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthProvider";
 import "./style.scss";
 
 interface Props {
@@ -30,6 +30,7 @@ export default function PermanentDrawerLeft({
   orderBadge,
 }: Props) {
   const [open, setOpen] = React.useState(false);
+  const { signout } = useAuth();
   const handleOpenPopup = () => {
     setOpen(true);
   };
@@ -147,7 +148,7 @@ export default function PermanentDrawerLeft({
             flexItem
             classes={{ root: "dividerVertical" }}
           />
-          <Button onClick={() => logout(history)}>退出登录</Button>
+          <Button onClick={() => signout()}>退出登录</Button>
         </div>
       </Drawer>
       <Popup

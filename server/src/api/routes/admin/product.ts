@@ -31,18 +31,36 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { myOpenId, myWarehouseId } = req.params
 
-			const todoProducts = await StoreProduct.findAll({
-				where: { openId: myOpenId, openIdFather: myOpenId },
+			const todoProducts = await Product.findAll({
+				where: { warehouseId: myWarehouseId },
 				include: {
-					model: Product,
-					as: 'originalData',
-					attributes: ['coverImageUrl']
+					model: StoreProduct,
+					as: 'storeRecord',
+					where: { openId: myOpenId, openIdFather: myOpenId },
+					attributes: ['defaultPrice', 'status']
 				}
 			})
 			res.status(200).send(todoProducts)
 			Logger.info('warehouse products get')
 		}
 	)
+	route.get('/:id', adminAuthenticated, async (req: Request, res: Response) => {
+		const { myOpenId, id } = req.params
+		console.log(id)
+		const todoProducts = await Product.findByPk(id, {
+			include: [
+				{
+					model: StoreProduct,
+					as: 'storeRecord',
+					where: { openId: myOpenId, openIdFather: myOpenId },
+					attributes: ['defaultPrice', 'status']
+				},
+				{ model: Image }
+			]
+		})
+		res.status(200).send(todoProducts)
+		Logger.info('warehouse product get')
+	})
 	route.post(
 		'/new-product',
 		adminAuthenticated,

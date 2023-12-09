@@ -28,7 +28,6 @@ const ProductList = () => {
     setTabIndex(newValue);
   };
   const { products } = useProduct();
-  console.log(products);
   //   const handleProductInfo = async (
   //     product: Product,
   //     action: string,
@@ -99,7 +98,7 @@ const ProductList = () => {
     (product: Product) => product.status === "Active"
   );
   const unpublishedProducts = products.filter(
-    (product: Product) => product.status !== "Inactive"
+    (product: Product) => product.status === "Inactive"
   );
   return (
     <div className="mainBox">
