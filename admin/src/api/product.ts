@@ -14,6 +14,20 @@ export const createNewProduct = async (product: any) => {
   return result;
 };
 
+export const updateProduct = async (product: any) => {
+  const formData = new FormData();
+  const { images, coverImage, ...rest } = product;
+  coverImage.newFile && formData.append("coverImage", coverImage.newFile);
+  images &&
+    images.length > 0 &&
+    images.forEach((image: File) => {
+      formData.append("images", image);
+    });
+  formData.append("product", JSON.stringify(rest));
+  const result = await axios.post("/admin/product/edit", formData);
+  return result;
+};
+
 export const getProducts = async () =>
   await axios.get("/admin/product/all-products");
 

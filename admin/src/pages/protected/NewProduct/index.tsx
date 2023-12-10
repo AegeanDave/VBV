@@ -13,8 +13,8 @@ import "./style.scss";
 import { useForm, Controller } from "react-hook-form";
 import { AddBoxSharp, Delete } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
-import { snackMessage } from "../../constant/index";
-import { createNewProduct } from "../../api/product";
+import { snackMessage } from "../../../constant/index";
+import { createNewProduct } from "../../../api/product";
 
 interface Props {
   onClose: () => void;

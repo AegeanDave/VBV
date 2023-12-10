@@ -1,9 +1,9 @@
-import React from "react";
-import { useLocation, Navigate, useNavigate, redirect } from "react-router-dom";
+import React, { ReactNode, useEffect, useMemo } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { login, logout } from "../api";
 import axios from "axios";
 import { useSnackbar } from "notistack";
-import { getStorage, setStorage } from "../utils/localStorage";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface AuthContextType {
   user: any;
@@ -17,23 +17,12 @@ function useAuth() {
   return React.useContext(AuthContext);
 }
 
-function RequireAuth({ children }: { children: JSX.Element }) {
-  const auth = useAuth();
-  const location = useLocation();
-  const authStorage = getStorage();
-  if (!auth.user && !authStorage.sessionKey) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  return children;
+interface Props {
+  userData: any;
+  children: ReactNode;
 }
-
-function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = React.useState<any>(null);
+function AuthProvider({ userData, children }: Props) {
+  const [user, setUser] = useLocalStorage("user", userData || null);
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
@@ -50,7 +39,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         enqueueSnackbar(result.data.message, { variant: "error" });
         return;
       }
-      setStorage(result.data);
       setUser(result.data);
       axios.defaults.headers.common = { authorization: result.data.sessionKey };
       enqueueSnackbar("登录成功", { variant: "success" });
@@ -62,19 +50,22 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signout = () => {
-    console.log(1111);
     logout();
-    navigate("/login", { replace: true });
-    localStorage.clear();
     setUser(null);
+    navigate("/login", { replace: true });
   };
 
-  return (
-    <AuthContext.Provider value={{ user, signin, signout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({
+      user,
+      signin,
+      signout,
+    }),
+    [user]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthProvider;
-export { useAuth, RequireAuth };
+export { useAuth };

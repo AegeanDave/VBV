@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { LoaderFunctionArgs, json, useLoaderData } from "react-router-dom";
-import { useSnackbar } from "notistack";
-import ProductEditor from "./productForm";
-import { getProductById } from "../../api/product";
+import ProductEditor from "./productEditor";
+import { getProductById } from "../../../api/product";
 
 const loader = async ({ params }: LoaderFunctionArgs) => {
   try {
@@ -16,12 +15,14 @@ const loader = async ({ params }: LoaderFunctionArgs) => {
     const {
       setting: { isFreeShipping, isIdRequired },
       coverImageUrl,
+      images,
       ...restData
     } = result.data;
     return json({
       isFreeShipping,
       isIdRequired,
-      coverImage: coverImageUrl,
+      coverImage: { coverImageUrl, newFile: null },
+      images: images.map((image: any) => ({ hasDeleted: false, ...image })),
       ...restData,
     });
   } catch (err: any) {
@@ -33,15 +34,7 @@ const loader = async ({ params }: LoaderFunctionArgs) => {
 };
 const ProductDetail = () => {
   const product = useLoaderData();
-  const { enqueueSnackbar } = useSnackbar();
 
-  //   if (isLoading)
-  //     return (
-  //       <Box p={4}>
-  //         <CircularProgress></CircularProgress>
-  //       </Box>
-  //     );
-  //   if (!product && !isLoading) return <Navigate to="/product"></Navigate>;
   if (!product) return <></>;
 
   return <ProductEditor product={product} />;

@@ -14,13 +14,14 @@ import {
   Button,
   FormControlLabel,
 } from "@mui/material";
-import { Product } from "../../models/index";
-import { useProduct } from "../../contexts/ProductProvider";
+import { Product } from "../../../models/index";
+import { useProduct } from "../../../contexts/ProductProvider";
 import { useForm, Controller } from "react-hook-form";
-import { getProductById } from "../../api/product";
+import { getProductById } from "../../../api/product";
 import { useParams } from "react-router-dom";
 import { Delete, AddBoxSharp } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
+import { v4 as uuidv4 } from "uuid";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -42,10 +43,11 @@ const ProductEditor = ({ product }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
   const { control, handleSubmit, watch, register, setValue, formState } =
     useForm({
-      defaultValues: { ...product, newImages: [] as File[] },
+      defaultValues: product,
     });
-  const onSubmit = (data) => {};
-  console.log(product);
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   const handleCoverImageChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -56,7 +58,7 @@ const ProductEditor = ({ product }: Props) => {
       enqueueSnackbar("每张图片大小不能超过 2MB", { variant: "warning" });
       return;
     }
-    setValue("coverImage", uploadedImage as any);
+    setValue("coverImage", { newFile: uploadedImage } as any);
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,28 +74,21 @@ const ProductEditor = ({ product }: Props) => {
           enqueueSnackbar("每张图片大小不能超过 2MB", { variant: "warning" });
           return;
         }
-        currentImages.push(files[i]);
+        currentImages.push({ newFile: files[i], id: uuidv4() });
       }
       setValue("images", currentImages);
     }
   };
-  const handleDeleteOldImage = (id: number) => {
+
+  const handleDeleteImage = (id: string) => {
     setValue(
       "images",
       watch("images").map((image: any) => {
-        if (image.id === id) {
-          image.status === "Deleted";
+        if (id === image.id) {
+          return { ...image, hasDeleted: true, newFile: null };
         }
-        console.log(image);
         return image;
       })
-    );
-  };
-
-  const handleDeleteNewImage = (index: number) => {
-    setValue(
-      "images",
-      watch("newImages").filter((_, i) => i !== index)
     );
   };
 
@@ -181,14 +176,10 @@ const ProductEditor = ({ product }: Props) => {
               <Typography variant="subtitle1">封面图片</Typography>
             </Grid>
             <Grid item xs={12} textAlign="left" p={2} className="imagesField">
-              {watch("coverImage") ? (
+              {watch("coverImage")?.coverImageUrl && (
                 <div className="previewBox">
                   <img
-                    src={
-                      typeof watch("coverImage") === "string"
-                        ? watch("coverImage")
-                        : URL.createObjectURL(watch("coverImage"))
-                    }
+                    src={watch("coverImage").coverImageUrl}
                     className="preview"
                     alt="preview"
                   />
@@ -200,7 +191,24 @@ const ProductEditor = ({ product }: Props) => {
                     <Delete fontSize="small" />
                   </IconButton>
                 </div>
-              ) : (
+              )}
+              {watch("coverImage")?.newFile && (
+                <div className="previewBox">
+                  <img
+                    src={URL.createObjectURL(watch("coverImage").newFile)}
+                    className="preview"
+                    alt="preview"
+                  />
+                  <IconButton
+                    aria-label="delete"
+                    className="delete"
+                    onClick={() => setValue("coverImage", undefined as any)}
+                  >
+                    <Delete fontSize="small" />
+                  </IconButton>
+                </div>
+              )}
+              {!watch("coverImage") && (
                 <IconButton component="label">
                   <AddBoxSharp style={{ fontSize: 100, color: "#d8d8d8" }} />
                   <VisuallyHiddenInput
@@ -215,35 +223,26 @@ const ProductEditor = ({ product }: Props) => {
               )}
             </Grid>
             <Grid item xs={12} className="imagesField">
-              {watch("images").map((image: any, index: number) => (
-                <div className="previewBox" key={index}>
-                  <img src={image.url} className="preview" alt="preview" />
-                  <IconButton
-                    aria-label="delete"
-                    className="delete"
-                    onClick={() => handleDeleteOldImage(image.id)}
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </div>
-              ))}
-              {watch("newImages").map((image: File, index: number) => (
-                <div className="previewBox" key={index}>
-                  <img
-                    src={URL.createObjectURL(image)}
-                    className="preview"
-                    alt="preview"
-                  />
-                  <IconButton
-                    aria-label="delete"
-                    className="delete"
-                    onClick={() => handleDeleteNewImage(index)}
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </div>
-              ))}
-              {watch("images").concat(watch("newImages")).length < 10 && (
+              {watch("images").map(
+                (image: any) =>
+                  !image.hasDeleted && (
+                    <div className="previewBox" key={image.id}>
+                      <img
+                        src={image.url || URL.createObjectURL(image.newFile)}
+                        className="preview"
+                        alt="preview"
+                      />
+                      <IconButton
+                        aria-label="delete"
+                        className="delete"
+                        onClick={() => handleDeleteImage(image.id)}
+                      >
+                        <Delete fontSize="small" />
+                      </IconButton>
+                    </div>
+                  )
+              )}
+              {watch("images").length < 10 && (
                 <div>
                   <input
                     accept="image/*"
@@ -293,8 +292,10 @@ const ProductEditor = ({ product }: Props) => {
                 label="海外直邮"
               />
             </Grid>
-            <Grid item>
-              <Button type="submit">提交更改</Button>
+            <Grid item xs={12} p={3} textAlign="right">
+              <Button type="submit" variant="contained" size="large">
+                提交更改
+              </Button>
             </Grid>
           </Grid>
           <Grid item xs></Grid>

@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Grid } from "@mui/material";
 import { isRouteErrorResponse, useRouteError } from "react-router-dom";
 
-export default function ProducttErrorBoundary() {
+export default function ProductErrorBoundary() {
   let error = useRouteError();
   // We only care to handle 401's at this level, so if this is not a 401
   // ErrorResponse, re-throw to let the RootErrorBoundary handle it
