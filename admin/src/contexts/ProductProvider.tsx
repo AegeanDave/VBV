@@ -25,7 +25,6 @@ function ProductProvider({ children }: { children: ReactNode }) {
     const fetchProducts = async () => {
       try {
         const result = await getProducts();
-        console.log(result);
         setProducts(result.data);
       } catch (err) {
         setError(error);

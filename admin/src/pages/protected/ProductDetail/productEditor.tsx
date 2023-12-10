@@ -15,10 +15,8 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import { Product } from "../../../models/index";
-import { useProduct } from "../../../contexts/ProductProvider";
 import { useForm, Controller } from "react-hook-form";
-import { getProductById } from "../../../api/product";
-import { useParams } from "react-router-dom";
+import { updateProduct } from "../../../api/product";
 import { Delete, AddBoxSharp } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
@@ -46,7 +44,7 @@ const ProductEditor = ({ product }: Props) => {
       defaultValues: product,
     });
   const onSubmit = (data) => {
-    console.log(data);
+    updateProduct(data);
   };
 
   const handleCoverImageChange = (

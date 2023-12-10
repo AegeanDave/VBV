@@ -17,15 +17,23 @@ export const createNewProduct = async (product: any) => {
 export const updateProduct = async (product: any) => {
   const formData = new FormData();
   const { images, coverImage, ...rest } = product;
+  const removedImages: any = [];
   coverImage.newFile && formData.append("coverImage", coverImage.newFile);
   images &&
     images.length > 0 &&
-    images.forEach((image: File) => {
-      formData.append("images", image);
+    images.forEach((image: any) => {
+      if (image.hasDeleted) {
+        removedImages.push(image);
+      }
+      if (image.newFile) {
+        formData.append(
+          "images",
+          new File([image.newFile], image.id, { type: image.newFile.type })
+        );
+      }
     });
-  formData.append("product", JSON.stringify(rest));
-  const result = await axios.post("/admin/product/edit", formData);
-  return result;
+  formData.append("product", JSON.stringify({ ...rest, removedImages }));
+  return axios.post("/admin/product/edit", formData);
 };
 
 export const getProducts = async () =>

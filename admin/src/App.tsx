@@ -51,7 +51,7 @@ const router = createBrowserRouter(
           }
         ></Route>
         <Route
-          path="product:id"
+          path="product/:id"
           element={<ProductDetail />}
           loader={loader}
           errorElement={<ProductErrorBoundary />}

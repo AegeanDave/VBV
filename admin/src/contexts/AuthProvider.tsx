@@ -40,6 +40,7 @@ function AuthProvider({ userData, children }: Props) {
         return;
       }
       setUser(result.data);
+      localStorage.setItem("sessionKey", result.data.sessionKey);
       axios.defaults.headers.common = { authorization: result.data.sessionKey };
       enqueueSnackbar("登录成功", { variant: "success" });
       navigate(from, { replace: true });
