@@ -9,11 +9,11 @@ interface Auth {
 axios.interceptors.response.use(
   (response) => response,
   (err) => {
-    if (!err.response.status || err.response.status === 403) {
+    if (err.response && err.response.status === 403) {
       localStorage.clear();
       window.location.href = "/login";
     }
-    return Promise.resolve(err);
+    return Promise.reject(err);
   }
 );
 axios.defaults.headers.common = {
@@ -24,12 +24,6 @@ export const login = async (auth: Auth) =>
   await axios.post("/admin/warehouse/login", auth);
 
 export const logout = () => axios.delete("/warehouse/logout");
-
-export const getProducts = async () =>
-  await axios.get("/warehouse/myWarehouseProducts");
-
-export const getOrders = async () =>
-  await axios.get("/warehouse/allSaleOrders");
 
 export const updateProductStatus = async (product: Product, action: string) => {
   const result = await axios.post("/warehouse/updateSale", {

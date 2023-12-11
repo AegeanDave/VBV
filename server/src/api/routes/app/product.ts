@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express'
 const route = Router()
-import { query, Logger } from '../../services'
-import { queryName } from '../../services/queryName'
-import { isAuthenticated, myOpenId } from '../../api/middleware/authorization'
-import { Product } from '../../models/types'
-import { SaleStatus, Status } from '../../constants'
+import { query, Logger } from '../../../services'
+import { queryName } from '../../../services/queryName'
+import { isAuthenticated, myOpenId } from '../../middleware/authorization'
+import { Product } from '../../../models/types'
+import { SaleStatus, Status } from '../../../constants'
 
 export const disableWholeProductLine = async (
 	openIdFather: string,

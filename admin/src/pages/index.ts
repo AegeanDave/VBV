@@ -6,6 +6,7 @@ import Dashboard from "./protected/Dashboard";
 import Root from "./root";
 import PublicLayout from "./public/layout";
 import ProtectedLayout from "./protected/layout";
+import OrderLayout from "./protected/Orders/layout";
 export default Root;
 
 export {
@@ -17,4 +18,5 @@ export {
   ProductList,
   PublicLayout,
   ProtectedLayout,
+  OrderLayout,
 };

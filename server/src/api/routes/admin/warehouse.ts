@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../../services'
-import { disableWholeProductLine } from '../product'
+import { disableWholeProductLine } from '../app/product'
 import {
 	adminAuthenticated,
 	myOpenId,
@@ -272,21 +272,7 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.get(
-		'/allSaleOrders',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.getWarehouseOrders, [myOpenId])
-			if (queryResult.data) {
-				res.send(queryResult.data)
-				Logger.info('sale orders get')
-			} else {
-				res.send({
-					status: Status.FAIL
-				})
-			}
-		}
-	)
+
 	route.post(
 		'/updateSale',
 		adminAuthenticated,

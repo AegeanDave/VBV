@@ -1,6 +1,6 @@
 import React from "react";
-import { Order } from "../../../models/index";
-import OrderContainer from "../../../components/CardContainer";
+import { Order } from "../../../../models/index";
+import OrderContainer from "../../../../components/CardContainer";
 
 interface Props {
   orders: Order[];

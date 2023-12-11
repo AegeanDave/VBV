@@ -1,28 +1,28 @@
 import { Router, Request, Response } from 'express'
-import db from '../../config/database'
-import { Warehouse } from '../../models/sequelize'
+import db from '../../../config/database'
+import { Warehouse } from '../../../models/sequelize'
 const route = Router()
-import { query, Logger } from '../../services'
+import { query, Logger } from '../../../services'
 import { disableWholeProductLine } from './product'
 import {
 	isAuthenticated,
 	myOpenId,
 	adminAuthenticated,
 	myWarehouseId
-} from '../../api/middleware/authorization'
-import { queryName } from '../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../models/types'
+} from '../../middleware/authorization'
+import { queryName } from '../../../services/queryName'
+import { Session, Product, WarehouseProduct } from '../../../models/types'
 import {
 	Status,
 	WarehouseStatus,
 	carriers,
 	countryCodes
-} from '../../constants'
-import { myCache } from '../../provider/cache'
+} from '../../../constants'
+import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
-import { sentShippingMessage } from '../../provider'
-import { upload, downloadFile } from '../../provider/fileAction'
-import { sendRegistrationSMS } from '../../provider/twilio'
+import { sentShippingMessage } from '../../../provider'
+import { upload, downloadFile } from '../../../provider/fileAction'
+import { sendRegistrationSMS } from '../../../provider/twilio'
 
 const holdOriginalProduct = (product: Product) => {
 	query(queryName.onHoldProduct, [product.productId])

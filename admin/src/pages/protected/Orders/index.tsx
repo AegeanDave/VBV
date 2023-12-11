@@ -7,6 +7,7 @@ interface Props {
   updateOrder: (order: Order, action: string) => void;
   handleCopy: () => void;
 }
+
 const Orders = ({ orders, updateOrder, handleCopy }: Props) => {
   return (
     <OrderContainer

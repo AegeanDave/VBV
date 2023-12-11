@@ -36,7 +36,7 @@ const Product = db.define('products', {
 		type: DataTypes.JSON
 	},
 	status: {
-		type: DataTypes.ENUM('Active', 'Inactive', 'onHold'),
+		type: DataTypes.ENUM('Active', 'Inactive', 'Onhold'),
 		defaultValue: 'Active'
 	},
 	createdAt: {

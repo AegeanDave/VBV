@@ -17,6 +17,12 @@ const User = db.define('users', {
 		type: DataTypes.INTEGER,
 		defaultValue: 5
 	},
+	idPhotoFrontUrl: {
+		type: DataTypes.TEXT
+	},
+	idPhotoBackUrl: {
+		type: DataTypes.TEXT
+	},
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW
