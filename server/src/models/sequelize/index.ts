@@ -6,6 +6,9 @@ import StoreProduct from './store'
 import Order from './order'
 import OrderDetail from './orderDetail'
 import Address from './address'
+import Invitation from './invitation'
+import Connection from './connection'
+import Price from './price'
 
 User.hasOne(Warehouse, { foreignKey: 'openId' })
 Warehouse.belongsTo(User, { foreignKey: 'openId' })
@@ -26,6 +29,12 @@ Address.belongsTo(User, { foreignKey: 'openId' })
 
 Order.belongsTo(Address)
 
+User.hasMany(Invitation, { foreignKey: 'openId' })
+Invitation.belongsTo(User, { foreignKey: 'openId' })
+
+StoreProduct.hasMany(Price, { foreignKey: 'storeProductId' })
+Price.belongsTo(StoreProduct, { foreignKey: 'storeProductId' })
+
 export {
 	Product,
 	Image,
@@ -34,5 +43,7 @@ export {
 	User,
 	Address,
 	Order,
-	OrderDetail
+	OrderDetail,
+	Invitation,
+	Connection
 }
