@@ -9,6 +9,7 @@ import StoreProduct from '../../../models/sequelize/store'
 import { Product, Image } from '../../../models/sequelize'
 import { upload } from '../../../provider/fileAction'
 import { Op } from 'sequelize'
+import db from '../../../config/database'
 
 export const disableWholeProductLine = async (
 	openIdFather: string,
@@ -38,7 +39,7 @@ export default (app: Router) => {
 					model: StoreProduct,
 					as: 'storeRecord',
 					where: { openId: myOpenId, openIdFather: myOpenId },
-					attributes: ['defaultPrice', 'status']
+					attributes: ['id', 'defaultPrice', 'status']
 				}
 			})
 			res.status(200).send(todoProducts)
@@ -71,17 +72,17 @@ export default (app: Router) => {
 		]),
 		async (req: Request, res: Response) => {
 			console.log(req.files)
+			const { coverImage, images } = req.files as any
+			const {
+				name,
+				description,
+				price,
+				isFreeShipping,
+				isIdRequired,
+				shortDescription = ''
+			} = JSON.parse(req.body?.product)
+			const { myOpenId, myWarehouseId } = req.params
 			try {
-				const { coverImage, images } = req.files as any
-				const {
-					name,
-					description,
-					price,
-					isFreeShipping,
-					isIdRequired,
-					shortDescription = ''
-				} = JSON.parse(req.body?.product)
-				const { myOpenId, myWarehouseId } = req.params
 				const todoProduct = await Product.create(
 					{
 						name,
@@ -113,7 +114,7 @@ export default (app: Router) => {
 				res.send(todoStore.dataValues)
 			} catch (error) {
 				console.log(error)
-				res.send({
+				return res.status(500).send({
 					status: Status.FAIL,
 					message: error
 				})
@@ -128,81 +129,140 @@ export default (app: Router) => {
 			{ name: 'images', maxCount: 10 }
 		]),
 		async (req: Request, res: Response) => {
-			console.log(req.files)
-			try {
-				const { coverImage, images } = req.files as any
+			console.log(JSON.parse(req.body?.product))
+			const { coverImage, images } = req.files as any
+			const {
+				id,
+				name,
+				description,
+				price,
+				isFreeShipping,
+				isIdRequired,
+				shortDescription = '',
+				removedImages
+			} = JSON.parse(req.body?.product)
+			const toUpdatedProductFields: any = {
+				id,
+				name,
+				description,
+				price,
+				setting: { isFreeShipping, isIdRequired },
+				shortDescription
+			}
+			if (coverImage) {
+				toUpdatedProductFields.coverImageUrl = coverImage[0].location
+			}
+			const { myOpenId, myWarehouseId } = req.params
 
-				const {
-					id,
-					name,
-					description,
-					price,
-					isFreeShipping,
-					isIdRequired,
-					shortDescription = '',
-					removedImages
-				} = JSON.parse(req.body?.product)
-				const toUpdatedProductFields: any = {
-					id,
-					name,
-					description,
-					price,
-					setting: { isFreeShipping, isIdRequired },
-					shortDescription
-				}
-				if (coverImage) {
-					toUpdatedProductFields.coverImageUrl = coverImage[0].location
-				}
-				const { myOpenId, myWarehouseId } = req.params
+			const t = await db.transaction()
+			try {
 				const todoProduct = await Product.update(toUpdatedProductFields, {
 					where: { id, warehouseId: myWarehouseId },
-					returning: true
+					transaction: t
 				})
-				console.log(todoProduct)
-				// if (!todoProduct?.dataValues) {
-				// 	images: (images || []).map((file: any) => ({
-				// 		url: file.location,
-				// 		isCoverImage: false
-				// 	}))
-				// 	res.send({
-				// 		status: Status.FAIL,
-				// 		message: '上传失败'
-				// 	})
-				// 	return
-				// }
-				// if (images && images.length > 0) {
-				// 	const todoImages = await Image.bulkCreate(
-				// 		images.map((image: any) => ({
-				// 			url: image.location,
-				// 			isCoverImage: false
-				// 		}))
-				// 	)
-				// }
-				// if (removedImages && removedImages.length > 0) {
-				// 	const todoImages = await Image.destroy({
-				// 		where: {
-				// 			id: { [Op.or]: removedImages.map((image: any) => image.id) }
-				// 		}
-				// 	})
-				// }
-				// const todoStore = await StoreProduct.create({
-				// 	productId: todoProduct.dataValues.id,
-				// 	name,
-				// 	description,
-				// 	shortDescription,
-				// 	openId: myOpenId,
-				// 	coverImageUrl: coverImage[0].location,
-				// 	openIdFather: myOpenId,
-				// 	saleLevel: 0,
-				// 	defaultPrice: price,
-				// 	status: 'Active'
-				// })
-				// res.send(todoStore.dataValues)
-			} catch (error) {
-				console.log(error)
+				if (images && images.length > 0) {
+					await Image.bulkCreate(
+						images.map((image: any) => ({
+							productId: id,
+							url: image.location,
+							isCoverImage: false
+						})),
+						{ transaction: t }
+					)
+				}
+				if (removedImages && removedImages.length > 0) {
+					await Image.destroy({
+						where: {
+							id: { [Op.or]: removedImages.map((image: any) => image.id) }
+						},
+						transaction: t
+					})
+				}
+				await StoreProduct.update(
+					{
+						name,
+						description,
+						shortDescription,
+						defaultPrice: price,
+						status: 'Active'
+					},
+					{
+						where: {
+							productId: id,
+							openIdFather: myOpenId,
+							openId: myOpenId,
+							saleLevel: 0
+						},
+						transaction: t
+					}
+				)
+				await t.commit()
 				res.send({
+					status: Status.SUCCESS,
+					message: '更新成功'
+				})
+			} catch (error) {
+				await t.rollback()
+				console.log(error)
+				return res.status(500).send({
 					status: Status.FAIL,
-					message: error
+					message: '更新失败'
+				})
+			}
+		}
+	)
+	route.post(
+		'/status',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id, action } = req.body
+
+			const { myOpenId, myWarehouseId } = req.params
+			const t = await db.transaction()
+
+			try {
+				let todoProduct
+				if (action === 'Publish') {
+					todoProduct = await StoreProduct.update(
+						{ status: 'Active' },
+						{
+							where: { productId: id, openIdFather: myOpenId, openId: myOpenId }
+						}
+					)
+				}
+				if (action === 'Unpublish') {
+					todoProduct = await StoreProduct.update(
+						{ status: 'Inactive' },
+						{
+							where: { productId: id, openIdFather: myOpenId, openId: myOpenId }
+						}
+					)
+				}
+				if (action === 'Delete') {
+					await Product.update(
+						{ status: 'Inactive' },
+						{ where: { id, warehouseId: myWarehouseId }, transaction: t }
+					)
+					await StoreProduct.update(
+						{ status: 'Not_Available' },
+						{
+							where: { productId: id, openIdFather: myOpenId, openId: myOpenId }
+						}
+					)
+					await t.commit()
+				}
+				if (todoProduct[0] === 0) {
+					return res.status(204).end()
+				}
+				return res.send({
+					status: Status.SUCCESS,
+					message: '更新成功'
+				})
+			} catch (error) {
+				await t.rollback()
+				return res.status(500).send({
+					status: Status.FAIL,
+					message: '更新失败'
 				})
 			}
 		}

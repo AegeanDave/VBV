@@ -1,9 +1,13 @@
 import React from "react";
-import { CustomizedSwitch, CustomizedSelect } from "../../components/index";
+import { CustomizedSwitch, CustomizedSelect } from "../../../components/index";
 import { TextField, Grid, Typography, Button } from "@mui/material";
-import { sendSMSVerifcation, verification, saveSetting } from "../../api/index";
-import { Status, snackMessage, countryCodes } from "../../constant/index";
-import { SnackBarProps } from "../../models/index";
+import {
+  sendSMSVerifcation,
+  verification,
+  saveSetting,
+} from "../../../api/index";
+import { Status, snackMessage, countryCodes } from "../../../constant/index";
+import { SnackBarProps } from "../../../models/index";
 import { useNavigate } from "react-router-dom";
 import "./style.scss";
 

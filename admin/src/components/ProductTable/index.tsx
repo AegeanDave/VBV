@@ -52,9 +52,7 @@ export default function ProductTable({ products }: Props) {
           </TableHead>
           <TableBody>
             {products.map((row: Product, index: number) => {
-              return (
-                <ProductRow product={row} index={index} key={row.productId} />
-              );
+              return <ProductRow product={row} index={index} key={row.id} />;
             })}
           </TableBody>
         </Table>
