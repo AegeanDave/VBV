@@ -1,5 +1,4 @@
-import React from "react";
-import { Add } from "@mui/icons-material";
+import React, { useState } from "react";
 import "./style.scss";
 import {
   Box,
@@ -7,8 +6,8 @@ import {
   TextField,
   InputAdornment,
   Typography,
-  FormLabel,
   Checkbox,
+  CircularProgress,
   IconButton,
   styled,
   Button,
@@ -20,6 +19,7 @@ import { updateProduct } from "../../../api/product";
 import { Delete, AddBoxSharp } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -39,12 +39,22 @@ interface Props {
 
 const ProductEditor = ({ product }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { control, handleSubmit, watch, register, setValue, formState } =
-    useForm({
-      defaultValues: product,
-    });
-  const onSubmit = (data) => {
-    updateProduct(data);
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const { control, handleSubmit, watch, register, setValue } = useForm({
+    defaultValues: product,
+  });
+  const onSubmit = async (data: any) => {
+    setIsLoading(true);
+    const result = await updateProduct(data);
+    if (result.data.status === "FAIL") {
+      enqueueSnackbar(result.data.message, { variant: "error" });
+      return;
+    }
+    enqueueSnackbar(result.data.message, { variant: "success" });
+    setIsLoading((pre) => !pre);
+    navigate(-1);
   };
 
   const handleCoverImageChange = (
@@ -104,7 +114,12 @@ const ProductEditor = ({ product }: Props) => {
                 control={control}
                 name="name"
                 render={({ field }) => (
-                  <TextField {...field} size="small" fullWidth></TextField>
+                  <TextField
+                    {...field}
+                    size="small"
+                    fullWidth
+                    disabled={isLoading}
+                  ></TextField>
                 )}
               ></Controller>
             </Grid>
@@ -122,6 +137,7 @@ const ProductEditor = ({ product }: Props) => {
                     type="number"
                     size="small"
                     fullWidth
+                    disabled={isLoading}
                     inputProps={{ step: 0.01 }}
                     InputProps={{
                       startAdornment: (
@@ -144,6 +160,7 @@ const ProductEditor = ({ product }: Props) => {
                     {...field}
                     size="small"
                     multiline
+                    disabled={isLoading}
                     value={field.value || ""}
                     rows={3}
                     fullWidth
@@ -163,6 +180,7 @@ const ProductEditor = ({ product }: Props) => {
                     {...field}
                     multiline
                     rows={5}
+                    disabled={isLoading}
                     value={field.value || ""}
                     size="small"
                     fullWidth
@@ -184,6 +202,7 @@ const ProductEditor = ({ product }: Props) => {
                   <IconButton
                     aria-label="delete"
                     className="delete"
+                    disabled={isLoading}
                     onClick={() => setValue("coverImage", undefined as any)}
                   >
                     <Delete fontSize="small" />
@@ -214,6 +233,7 @@ const ProductEditor = ({ product }: Props) => {
                     className="input"
                     id="cover-file"
                     type="file"
+                    disabled={isLoading}
                     {...register("images", { required: true })}
                     onChange={handleCoverImageChange}
                   />
@@ -233,6 +253,7 @@ const ProductEditor = ({ product }: Props) => {
                       <IconButton
                         aria-label="delete"
                         className="delete"
+                        disabled={isLoading}
                         onClick={() => handleDeleteImage(image.id)}
                       >
                         <Delete fontSize="small" />
@@ -252,7 +273,11 @@ const ProductEditor = ({ product }: Props) => {
                     onChange={handleImageChange}
                   />
                   <label htmlFor="icon-button-file">
-                    <IconButton aria-label="upload picture" component="span">
+                    <IconButton
+                      aria-label="upload picture"
+                      component="span"
+                      disabled={isLoading}
+                    >
                       <AddBoxSharp
                         style={{ fontSize: 134, color: "#d8d8d8" }}
                       />
@@ -283,7 +308,11 @@ const ProductEditor = ({ product }: Props) => {
                     name="isIdRequired"
                     control={control}
                     render={({ field }) => (
-                      <Checkbox {...field} checked={field.value} />
+                      <Checkbox
+                        {...field}
+                        checked={field.value}
+                        disabled={isLoading}
+                      />
                     )}
                   ></Controller>
                 }
@@ -291,7 +320,13 @@ const ProductEditor = ({ product }: Props) => {
               />
             </Grid>
             <Grid item xs={12} p={3} textAlign="right">
-              <Button type="submit" variant="contained" size="large">
+              <Button
+                type="submit"
+                variant="contained"
+                size="large"
+                disabled={isLoading}
+                startIcon={isLoading && <CircularProgress size="small" />}
+              >
                 提交更改
               </Button>
             </Grid>

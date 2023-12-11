@@ -35,7 +35,7 @@ export const updateProductStatus = async (product: Product, action: string) => {
   const result = await axios.post("/warehouse/updateSale", {
     product: {
       saleId: product.inStoreProductId,
-      productId: product.productId,
+      productId: product.id,
       price: product.price,
     },
     action: action,

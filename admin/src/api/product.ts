@@ -36,6 +36,11 @@ export const updateProduct = async (product: any) => {
   return axios.post("/admin/product/edit", formData);
 };
 
+export const updateProductStatus = (
+  id: string,
+  action: "Publish" | "Unpublish" | "Delete"
+) => axios.post("/admin/product/status", { id, action });
+
 export const getProducts = async () =>
   await axios.get("/admin/product/all-products");
 
