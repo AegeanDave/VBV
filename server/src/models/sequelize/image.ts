@@ -2,6 +2,11 @@ import { DataTypes } from 'sequelize'
 import db from '../../config/database'
 
 const Image = db.define('images', {
+	id: {
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true
+	},
 	productId: {
 		type: DataTypes.UUID
 	},

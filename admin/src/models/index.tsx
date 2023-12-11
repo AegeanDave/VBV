@@ -1,6 +1,6 @@
 export type Product = {
+  id: string;
   name: string;
-  productId?: string;
   inStoreProductId?: string;
   description: string;
   images: Image[];
@@ -8,7 +8,7 @@ export type Product = {
   price: number;
   quantity?: number;
   status?: string;
-  originalData: any;
+  storeRecord: any;
   createdAt?: string;
   updatedAt?: string;
   setting: { isIdRequired: boolean; isFreeShipping: boolean };

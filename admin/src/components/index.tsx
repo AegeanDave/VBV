@@ -1,4 +1,3 @@
-import NewProduct from "./NewProduct/index";
 import ProductTable from "./ProductTable/index";
 import OrderCard from "./OrderCard/index";
 import Navigator from "./Navigator/index";
@@ -9,7 +8,6 @@ import CustomizedSwitch from "./CustomSwitch";
 import CustomizedSelect from "./PhoneInput";
 
 export {
-  NewProduct,
   ProductTable,
   OrderCard,
   Navigator,

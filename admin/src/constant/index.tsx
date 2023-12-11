@@ -60,23 +60,23 @@ export const StatusLabel: any = {
 export const navigators = {
   productList: {
     label: "货品管理",
-    path: "/",
+    path: "product",
   },
   order: {
     label: "订单发货",
-    path: "/order",
+    path: "order",
   },
   history: {
     label: "历史订单",
-    path: "/history",
+    path: "history",
   },
   account: {
     label: "插件",
-    path: "/account",
+    path: "account",
   },
   setting: {
     label: "设置",
-    path: "/setting",
+    path: "setting",
   },
 };
 

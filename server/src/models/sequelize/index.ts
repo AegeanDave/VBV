@@ -11,7 +11,7 @@ Product.hasMany(Image, {
 	foreignKey: 'productId'
 })
 Image.belongsTo(Product)
-Product.hasMany(StoreProduct, { foreignKey: 'productId' })
-StoreProduct.belongsTo(Product, { foreignKey: 'productId', as: 'originalData' })
+Product.hasMany(StoreProduct, { foreignKey: 'productId', as: 'storeRecord' })
+StoreProduct.belongsTo(Product, { foreignKey: 'productId' })
 
 export { Product, Image, Warehouse, StoreProduct, User }

@@ -11,6 +11,7 @@ import { Popup } from "../index";
 import { Product } from "../../models/index";
 import placeholder from "../../assets/images/cover_image_placeholder.png";
 import "./style.scss";
+import { Link } from "react-router-dom";
 
 interface Props {
   product: Product;
@@ -63,11 +64,7 @@ export default function ProductRow({ product, index }: Props) {
             <TableCell key={column.type} align={column.align}>
               {column.type === "images" ? (
                 <img
-                  src={
-                    product.coverImageUrl ||
-                    product.originalData.coverImageUrl ||
-                    placeholder
-                  }
+                  src={product.coverImageUrl || placeholder}
                   alt="产品图片"
                   style={{
                     width: 100,
@@ -92,12 +89,16 @@ export default function ProductRow({ product, index }: Props) {
             >
               {action.label}
             </Button>
-            <Button
-              color="primary"
-              //   onClick={() => props.clickOpen(props.product)}
-            >
-              {actions.edit.label}
-            </Button>
+            <Link to={`/product/${product.id}`}>
+              <Button
+                color="primary"
+                size="small"
+                //   onClick={() => props.clickOpen(props.product)}
+              >
+                {actions.edit.label}
+              </Button>
+            </Link>
+
             <Button
               color="primary"
               size="small"
@@ -112,7 +113,7 @@ export default function ProductRow({ product, index }: Props) {
           handleClose={handleDeleteClose}
           needConfirm={true}
           Content={DeletePopupContent}
-          title={"确认删除"}
+          title="确认删除"
           //   handleConfirm={popupConfirm}
         />
         <Popup
@@ -120,7 +121,7 @@ export default function ProductRow({ product, index }: Props) {
           handleClose={handleEditClose}
           needConfirm={true}
           //   handleConfirm={popupConfirm}
-          title={"确认编辑"}
+          title="确认编辑"
         />
       </>
     )

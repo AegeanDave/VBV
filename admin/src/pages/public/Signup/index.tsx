@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/images/logo.png";
+import logo from "../../../assets/images/logo.png";
 import {
   Avatar,
   Typography,
@@ -16,11 +16,11 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
-import { countryCodes } from "../../constant/index";
+import { countryCodes } from "../../../constant/index";
 import "./style.scss";
-import { getVerificationCode, signup } from "../../api";
+import { getVerificationCode, signup } from "../../../api";
 import { useSnackbar } from "notistack";
-import useVerificationCode from "../../hooks/VerificationCode";
+import useVerificationCode from "../../../hooks/useVerificationCode";
 import { useNavigate } from "react-router-dom";
 
 interface IFormInput {

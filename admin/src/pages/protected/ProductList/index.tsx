@@ -1,18 +1,18 @@
 import React from "react";
-import { ProductTable, ScreenDialog } from "../../components/index";
+import { ProductTable, ScreenDialog } from "../../../components/index";
 import { Add } from "@mui/icons-material";
 import { Fab, AppBar, Tabs, Tab } from "@mui/material";
-import { Product } from "../../models/index";
-import { updateProductStatus, updateProductInfo } from "../../api/index";
+import { Product } from "../../../models/index";
+import { updateProductStatus } from "../../../api/index";
 import {
   SaleStatus,
   actions,
   snackMessage,
   productStatusTabs,
-} from "../../constant";
+} from "../../../constant";
 import { Backdrop, CircularProgress } from "@mui/material";
 import "./style.scss";
-import { useProduct } from "../../contexts/ProductProvider";
+import { useProduct } from "../../../contexts/ProductProvider";
 
 interface Props {
   openBackdrop: () => void;
@@ -28,7 +28,6 @@ const ProductList = () => {
     setTabIndex(newValue);
   };
   const { products } = useProduct();
-  console.log(products);
   //   const handleProductInfo = async (
   //     product: Product,
   //     action: string,
@@ -99,7 +98,7 @@ const ProductList = () => {
     (product: Product) => product.status === "Active"
   );
   const unpublishedProducts = products.filter(
-    (product: Product) => product.status !== "Inactive"
+    (product: Product) => product.status === "Inactive"
   );
   return (
     <div className="mainBox">

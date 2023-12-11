@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/images/logo.png";
+import logo from "../../../assets/images/logo.png";
 import {
   Avatar,
   Typography,
@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@mui/material";
 import "./style.scss";
-import { useAuth } from "../../contexts/AuthProvider";
+import { useAuth } from "../../../contexts/AuthProvider";
 import { useForm, Controller } from "react-hook-form";
 import { Link } from "react-router-dom";
 
