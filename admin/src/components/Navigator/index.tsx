@@ -31,10 +31,9 @@ export default function PermanentDrawerLeft({
   orderBadge,
 }: Props) {
   const [open, setOpen] = React.useState(false);
-
   const [nestOpen, setNestOpen] = React.useState(false);
-
   const { signout } = useAuth();
+
   const handleOpenPopup = () => {
     setOpen(true);
   };
@@ -183,7 +182,7 @@ export default function PermanentDrawerLeft({
         needConfirm={false}
         onClose={handleClose}
       >
-        PopupContent
+        <PopupContent />
       </Popup>
     </>
   );
