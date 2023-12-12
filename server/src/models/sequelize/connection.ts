@@ -6,7 +6,7 @@ const Connection = db.define('connections', {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
-	openIdChildren: {
+	openIdChild: {
 		type: DataTypes.STRING,
 		allowNull: false
 	},

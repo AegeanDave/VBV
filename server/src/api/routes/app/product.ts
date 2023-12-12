@@ -54,13 +54,10 @@ export default (app: Router) => {
 					status: 'Active'
 				}
 			})
-			res.send({
-				status: Status.SUCCESS,
-				data: todoProducts
-			})
+			res.send({ alias: todoAlias, products: todoProducts })
 			Logger.info('products get')
 		} catch (error) {
-			res.send({
+			res.status(500).send({
 				status: Status.FAIL,
 				message: error
 			})
@@ -92,6 +89,35 @@ export default (app: Router) => {
 						openIdFather: {
 							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
 						}
+					}
+				})
+				res.send(todoProduct)
+				Logger.info('all saleProducts get')
+			} catch (err) {
+				res.send({
+					status: Status.FAIL,
+					message: err
+				})
+				Logger.info(err)
+			}
+		}
+	)
+	route.get(
+		'/my-store',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoProduct = await StoreProduct.findAll({
+					include: {
+						model: Price,
+						as: 'specialPrice',
+						where: {
+							openIdChild: myOpenId
+						}
+					},
+					where: {
+						openId: myOpenId
 					}
 				})
 				res.send(todoProduct)
