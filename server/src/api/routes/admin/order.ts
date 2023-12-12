@@ -2,13 +2,12 @@ import { Router, Request, Response } from 'express'
 import { Product, OrderProduct, SubOrder } from '../../../models/types/index'
 import { Status, countryCodes, OrderStatus } from '../../../constants'
 import { adminAuthenticated } from '../../../api/middleware/authorization'
-import { query, Logger } from '../../../services'
+import { Logger } from '../../../services'
 import { sendNewOrderSMS } from '../../../provider/twilio'
 import { makeOrderNumber, sendSubscribeMessage } from '../../../provider/index'
 import { newOrderMail } from '../../../provider/mailer'
 import moment from 'moment-timezone'
 import { Order, OrderDetail, Address } from '../../../models/sequelize/'
-import { where } from 'sequelize'
 
 const route = Router()
 

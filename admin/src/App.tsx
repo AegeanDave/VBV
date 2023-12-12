@@ -24,6 +24,7 @@ import {
   defer,
 } from "react-router-dom";
 import { logout } from "./api";
+import Setting from "./pages/protected/Setting";
 
 const getUserData = () =>
   new Promise((resolve) => {
@@ -61,8 +62,8 @@ const router = createBrowserRouter(
           <Route index element={<div>111111</div>}></Route>
           <Route path="history" element={<>22222</>}></Route>
         </Route>
-        <Route path="setting" element={<ProductDetail />}></Route>
-        <Route path="account" element={<ProductDetail />}></Route>
+        <Route path="setting" element={<Account />}></Route>
+        <Route path="account" element={<Setting />}></Route>
       </Route>
       <Route
         path="/logout"

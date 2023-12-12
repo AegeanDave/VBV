@@ -32,6 +32,7 @@ const StoreProduct = db.define('inStoreProducts', {
 		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Available'),
 		defaultValue: 'Active'
 	},
+	warehouseId: { type: DataTypes.UUID },
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW

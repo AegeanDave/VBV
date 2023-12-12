@@ -25,7 +25,7 @@ interface Props {
     statusOptions: string[];
   };
 }
-export default function CardContainer({
+export default function SearchBar({
   search,
   disabled,
   handleStatusFilter,
@@ -70,7 +70,7 @@ export default function CardContainer({
           onClose={() => setAnchorTime(null)}
         >
           <MenuItem key="all" onClick={() => handleTimeSelect("time")}>
-            {"显示全部"}
+            "显示全部"
           </MenuItem>
           {options.timeOptions.map((option) => (
             <MenuItem key={option} onClick={() => handleTimeSelect(option)}>
@@ -106,7 +106,6 @@ export default function CardContainer({
           anchorEl={anchorStatus}
           keepMounted
           open={Boolean(anchorStatus)}
-          getContentAnchorEl={null}
           anchorOrigin={{
             vertical: "bottom",
             horizontal: "center",

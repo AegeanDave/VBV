@@ -4,7 +4,7 @@ import { query, Logger } from '../../../services'
 import { queryName } from '../../../services/queryName'
 import { adminAuthenticated } from '../../../api/middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
-import { SaleStatus, Status } from '../../../constants'
+import { Status } from '../../../constants'
 import StoreProduct from '../../../models/sequelize/store'
 import { Product, Image } from '../../../models/sequelize'
 import { upload } from '../../../provider/fileAction'
@@ -71,7 +71,6 @@ export default (app: Router) => {
 			{ name: 'images', maxCount: 10 }
 		]),
 		async (req: Request, res: Response) => {
-			console.log(req.files)
 			const { coverImage, images } = req.files as any
 			const {
 				name,
@@ -105,6 +104,7 @@ export default (app: Router) => {
 					description,
 					shortDescription,
 					openId: myOpenId,
+					warehouseId: myWarehouseId,
 					coverImageUrl: coverImage[0].location,
 					openIdFather: myOpenId,
 					saleLevel: 0,
@@ -246,7 +246,7 @@ export default (app: Router) => {
 					await StoreProduct.update(
 						{ status: 'Not_Available' },
 						{
-							where: { productId: id, openIdFather: myOpenId, openId: myOpenId }
+							where: { productId: id }
 						}
 					)
 					await t.commit()

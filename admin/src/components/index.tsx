@@ -4,7 +4,7 @@ import LoginForm from "./LoginForm/index";
 import ScreenDialog from "./Dialog/index";
 import Popup from "./Popup/index";
 import CustomizedSwitch from "./CustomSwitch";
-import CustomizedSelect from "./PhoneInput";
+import PhoneInput from "./PhoneInput";
 
 export {
   ProductTable,
@@ -13,5 +13,5 @@ export {
   ScreenDialog,
   Popup,
   CustomizedSwitch,
-  CustomizedSelect,
+  PhoneInput,
 };

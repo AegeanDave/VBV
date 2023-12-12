@@ -160,7 +160,11 @@ const ProductEditor = ({ product }: Props) => {
                     {...field}
                     size="small"
                     multiline
+                    placeholder="最多100字"
                     disabled={isLoading}
+                    inputProps={{
+                      maxLength: 100,
+                    }}
                     value={field.value || ""}
                     rows={3}
                     fullWidth
@@ -180,6 +184,10 @@ const ProductEditor = ({ product }: Props) => {
                     {...field}
                     multiline
                     rows={5}
+                    placeholder="最多250字"
+                    inputProps={{
+                      maxLength: 100,
+                    }}
                     disabled={isLoading}
                     value={field.value || ""}
                     size="small"
@@ -320,6 +328,15 @@ const ProductEditor = ({ product }: Props) => {
               />
             </Grid>
             <Grid item xs={12} p={3} textAlign="right">
+              <Button
+                size="large"
+                disabled={isLoading}
+                onClick={() => {
+                  navigate(-1);
+                }}
+              >
+                取消
+              </Button>
               <Button
                 type="submit"
                 variant="contained"

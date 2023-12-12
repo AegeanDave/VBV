@@ -8,17 +8,18 @@ const Warehouse = db.define('warehouses', {
 		primaryKey: true
 	},
 	loginPhoneNumber: {
-		type: DataTypes.STRING
+		type: DataTypes.STRING,
+		allowNull: false
 	},
 	password: {
 		type: DataTypes.STRING
 	},
+	secondaryPhoneNumber: { type: DataTypes.STRING },
 	email: {
 		type: DataTypes.STRING
 	},
 	setting: {
-		type: DataTypes.JSON,
-		allowNull: true
+		type: DataTypes.JSON
 	},
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Verified'),

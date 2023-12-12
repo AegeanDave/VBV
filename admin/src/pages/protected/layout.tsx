@@ -4,6 +4,7 @@ import { Outlet, Navigate } from "react-router-dom";
 import { ScreenDialog } from "../../components";
 import ProductForm from "./NewProduct";
 import { useAuth } from "../../contexts/AuthProvider";
+import { Box } from "@mui/material";
 
 export default function ProtectedLayout() {
   const [openDialog, setOpenDialog] = useState(false);
@@ -13,15 +14,17 @@ export default function ProtectedLayout() {
   }
 
   return (
-    <div className="root">
+    <Box width="100%" display="flex" minHeight="100vh">
       <Navigator handleOpenDialog={() => setOpenDialog(true)} />
-      <Outlet />
+      <Box flex={1}>
+        <Outlet />
+      </Box>
       <ScreenDialog
         open={openDialog}
         onClose={() => setOpenDialog((pre) => !pre)}
       >
         <ProductForm onClose={() => setOpenDialog((pre) => !pre)} />
       </ScreenDialog>
-    </div>
+    </Box>
   );
 }

@@ -1,50 +1,39 @@
-import React from "react";
-import { Select, TextField, MenuItem } from "@mui/material";
-import { countryCodes } from "../../constant/index";
-import "./style.scss";
+import React, { ChangeEvent } from "react";
+import { TextField } from "@mui/material";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 interface Props {
-  countryCode: { label: string; value: string; key: string };
-  tel: string;
-  disabled?: boolean;
-  onChangeCountryCode: (e: React.ChangeEvent<{ value: any }>) => void;
-  onChangeTel: (e: React.ChangeEvent<{ value: any }>) => void;
+  label?: string;
+  name?: string;
+  value: string;
+  onChange: (value: string) => void;
 }
-export default function CustomizedSelect({
-  countryCode,
-  tel,
-  disabled,
-  onChangeCountryCode,
-  onChangeTel,
+export default function PhoneInputField({
+  label,
+  value,
+  name,
+  onChange,
 }: Props) {
+  const handlePhoneChange = (newValue: string) => {
+    onChange(newValue);
+  };
+
   return (
-    <>
-      <Select
-        id="countryCode"
-        value={countryCode.key}
-        className="select"
-        classes={{ outlined: "outlined" }}
-        variant="outlined"
-        disabled={disabled || false}
-        renderValue={() => "+ " + countryCode.value}
-        onChange={onChangeCountryCode}
-      >
-        {Object.values(countryCodes).map((option: any) => (
-          <MenuItem value={option.key} key={option.key}>
-            + {option.value} {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      <TextField
-        id="tel"
-        onChange={onChangeTel}
-        className="input"
-        disabled={disabled || false}
-        classes={{ root: "inputRoot" }}
-        value={tel}
-        type="tel"
-        variant="outlined"
-      />
-    </>
+    <TextField
+      label={label}
+      name={name || "phoneNumber"}
+      variant="outlined"
+      fullWidth
+      InputProps={{
+        inputComponent: PhoneInput as any,
+        inputProps: {
+          value,
+          onChange: (e: ChangeEvent<HTMLInputElement>) =>
+            handlePhoneChange(e.target.value),
+          placeholder: "Enter phone number",
+        },
+      }}
+    />
   );
 }
