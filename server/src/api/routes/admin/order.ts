@@ -8,6 +8,7 @@ import { makeOrderNumber, sendSubscribeMessage } from '../../../provider/index'
 import { newOrderMail } from '../../../provider/mailer'
 import moment from 'moment-timezone'
 import { Order, OrderDetail, Address } from '../../../models/sequelize/'
+import { where } from 'sequelize'
 
 const route = Router()
 
@@ -33,4 +34,63 @@ export default (app: Router) => {
 			})
 		}
 	})
+	route.post(
+		'/update',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const {
+				order: {
+					id,
+					orderNumber,
+					shipment: { carrier, trackingNumber, status }
+				},
+				action
+			} = req.body
+			try {
+				if (action === 'REJECT') {
+					Order.update(
+						{ status: 'Cancelled' },
+						{
+							where: {
+								id
+							}
+						}
+					)
+					Logger.info('order update success')
+				} else if (action === 'SHIP' || action === 'EDIT') {
+					Order.update(
+						{
+							status: 'Shipped',
+							shipment: {
+								carrier,
+								trackingNumber,
+								status: status || 'Shipping'
+							}
+						},
+						{
+							where: {
+								id
+							}
+						}
+					)
+					// handleUnitMessage(
+					// 	orderNumber,
+					// 	trackingNumber,
+					// 	carrier,
+					// 	order.originOrderId
+					// )
+					res.send({
+						status: Status.SUCCESS
+					})
+					Logger.info('order update success')
+				}
+			} catch (err) {
+				res.send({
+					status: Status.FAIL,
+					message: err
+				})
+				Logger.info('order update fail')
+			}
+		}
+	)
 }

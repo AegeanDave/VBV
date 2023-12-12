@@ -29,6 +29,7 @@ const Order = db.define('orders', {
 			'Onhold',
 			'Processing',
 			'Unpaid',
+			'Cancelled',
 			'Completed',
 			'Shipped'
 		),

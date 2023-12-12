@@ -32,7 +32,10 @@ Order.belongsTo(Address)
 User.hasMany(Invitation, { foreignKey: 'openId' })
 Invitation.belongsTo(User, { foreignKey: 'openId' })
 
-StoreProduct.hasMany(Price, { foreignKey: 'storeProductId' })
+StoreProduct.hasMany(Price, {
+	foreignKey: 'storeProductId',
+	as: 'specialPrice'
+})
 Price.belongsTo(StoreProduct, { foreignKey: 'storeProductId' })
 
 export {
@@ -45,5 +48,6 @@ export {
 	Order,
 	OrderDetail,
 	Invitation,
-	Connection
+	Connection,
+	Price
 }

@@ -3,8 +3,15 @@ const route = Router()
 import { query, Logger } from '../../../services'
 import { queryName } from '../../../services/queryName'
 import { isAuthenticated, myOpenId } from '../../middleware/authorization'
-import { Product } from '../../../models/types'
+import { Product as ProductType } from '../../../models/types'
 import { SaleStatus, Status } from '../../../constants'
+import {
+	Connection,
+	Product,
+	StoreProduct,
+	Price
+} from '../../../models/sequelize'
+import { Op } from 'sequelize'
 
 export const disableWholeProductLine = async (
 	openIdFather: string,
@@ -23,45 +30,71 @@ export const disableWholeProductLine = async (
 export default (app: Router) => {
 	app.use('/products', route)
 
-	route.get(
-		'/productList',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			try {
-				const queryResult = await query(queryName.getProductList, [myOpenId])
-				const products: Product[] = queryResult.data
-				res.send({ status: Status.SUCCESS, data: products })
-				Logger.info(queryResult)
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
-				Logger.info(error)
-			}
+	route.get('/all', isAuthenticated, async (req: Request, res: Response) => {
+		const { myOpenId } = req.params
+		try {
+			const todoAlias = await Connection.findAll({
+				where: {
+					openIdChild: myOpenId,
+					status: 'Active'
+				}
+			})
+			const todoProducts = await StoreProduct.findAll({
+				include: {
+					model: Price,
+					as: 'specialPrice',
+					where: {
+						openIdChild: myOpenId
+					}
+				},
+				where: {
+					openId: {
+						[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
+					},
+					status: 'Active'
+				}
+			})
+			res.send({
+				status: Status.SUCCESS,
+				data: todoProducts
+			})
+			Logger.info('products get')
+		} catch (error) {
+			res.send({
+				status: Status.FAIL,
+				message: error
+			})
+			Logger.info(error)
 		}
-	)
+	})
 	route.get(
-		'/myPublishedProducts',
+		'/available-products',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
 			try {
-				const queryResult = await query(queryName.getProductList, [myOpenId])
-
-				const myInStoreProducts: Product[] = []
-				const outStoreProducts: Product[] = []
-
-				queryResult.data.forEach((product: Product) => {
-					if (
-						product.mySale &&
-						product.mySale.status === SaleStatus.PUBLISHED
-					) {
-						myInStoreProducts.push(product)
-					} else {
-						outStoreProducts.push(product)
+				const todoAlias = await Connection.findAll({
+					where: {
+						openIdChild: myOpenId,
+						status: 'Active'
 					}
 				})
-				res.send({ myInStoreProducts, outStoreProducts })
+
+				const todoProduct = await StoreProduct.findAll({
+					include: {
+						model: Price,
+						as: 'specialPrice',
+						where: {
+							openIdChild: myOpenId
+						}
+					},
+					where: {
+						openIdFather: {
+							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
+						}
+					}
+				})
+				res.send(todoProduct)
 				Logger.info('all saleProducts get')
 			} catch (err) {
 				res.send({
@@ -81,7 +114,7 @@ export default (app: Router) => {
 				queryName.mySaleProductListWithSepcificPrice,
 				[myOpenId, openIdChild]
 			)
-			const products: Product[] = queryResult.data
+			const products: ProductType[] = queryResult.data
 			res.send({
 				status: Status.SUCCESS,
 				data: products
@@ -98,7 +131,7 @@ export default (app: Router) => {
 				myOpenId,
 				openIdFather
 			])
-			const products: Product[] = queryResult.data
+			const products: ProductType[] = queryResult.data
 			res.send({
 				status: Status.SUCCESS,
 				data: products
@@ -211,7 +244,7 @@ export default (app: Router) => {
 						message: 'product not exist'
 					})
 				} else {
-					const product: Product = queryResult.data[0]
+					const product: ProductType = queryResult.data[0]
 					const findAliasResult = await query(
 						queryName.findEnableAliasByOpenID,
 						[product.dealerSale.openId, myOpenId]
