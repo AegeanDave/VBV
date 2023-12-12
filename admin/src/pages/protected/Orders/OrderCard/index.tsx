@@ -1,27 +1,28 @@
 import React from "react";
 import { Paper, Grid, Typography, IconButton } from "@mui/material";
-import { Product, Order } from "../../models/index";
+import { Product, Order } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { OrderStatus } from "../../constant/index";
+import { OrderStatus } from "../../../../constant/index";
 import { FileCopy, GetApp } from "@mui/icons-material";
 import "./style.scss";
 import ActionField from "./ActionField";
-import { download } from "../../api/index";
+import { download } from "../../../../api/index";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import moment from "moment";
+import { useSnackbar } from "notistack";
 
 interface OrderProps {
   order: Order;
-  updateOrder: (order: Order, action: string) => void;
-  handleCopy: () => void;
 }
 
-export default function OrderCard({
-  order,
-  updateOrder,
-  handleCopy,
-}: OrderProps) {
+export default function OrderCard({ order }: OrderProps) {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleCopy = () => {
+    enqueueSnackbar("信息已复制", { variant: "info" });
+  };
+
   const handleDownload = (urls: string[]) => {
     const zip = new JSZip();
     Promise.all(urls.map((url) => download(url))).then((values) => {
@@ -34,7 +35,7 @@ export default function OrderCard({
     });
   };
   const ifCredential = order.orderProducts.find(
-    (product) => product.idCardRequired
+    (product) => product.setting.isIdRequired
   );
   return (
     <Paper className="cardContainer">
@@ -52,14 +53,14 @@ export default function OrderCard({
             <Grid item>
               <img
                 className="img"
-                alt={product.productName}
-                src={product.coverImageURL}
+                alt={product.name}
+                src={product.coverImageUrl}
               />
             </Grid>
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography variant="body2" gutterBottom>
-                  {product.productName}
+                  {product.name}
                 </Typography>
               </Grid>
               <Grid item>
@@ -78,8 +79,8 @@ export default function OrderCard({
           {order.status === OrderStatus.PAID && (
             <CopyToClipboard
               text={
-                order.address.quickInputAddress ||
-                order.address.name +
+                order.address.quickInput ||
+                order.address.recipient +
                   " " +
                   order.address.phone +
                   " " +
@@ -96,11 +97,11 @@ export default function OrderCard({
                 className="copyIcon"
                 disabled={
                   !(
-                    order.address.name ||
+                    order.address.recipient ||
                     order.address.phone ||
                     order.address.province ||
                     order.address.city ||
-                    order.address.quickInputAddress
+                    order.address.quickInput
                   )
                 }
                 onClick={handleCopy}
@@ -110,12 +111,12 @@ export default function OrderCard({
             </CopyToClipboard>
           )}
         </div>
-        {order.address.quickInputAddress ? (
-          <span className="content">{order.address.quickInputAddress}</span>
+        {order.address.quickInput ? (
+          <span className="content">{order.address.quickInput}</span>
         ) : (
           <>
             <span className="content">
-              {order.address.name} {order.address.phone}
+              {order.address.recipient} {order.address.phone}
             </span>
             <span>
               {order.address.province} {order.address.city}{" "}
@@ -124,8 +125,8 @@ export default function OrderCard({
           </>
         )}
       </div>
-      {order.address.idFrontImage &&
-        order.address.idBackImage &&
+      {order.address.idPhotoFrontUrl &&
+        order.address.idPhotoBackUrl &&
         ifCredential && (
           <div className="IDimagesBox">
             <div>
@@ -136,8 +137,8 @@ export default function OrderCard({
                 className="download"
                 onClick={() =>
                   handleDownload([
-                    order.address.idFrontImage as string,
-                    order.address.idBackImage as string,
+                    order.address.idPhotoFrontUrl as string,
+                    order.address.idPhotoBackUrl as string,
                   ])
                 }
               >
@@ -145,12 +146,12 @@ export default function OrderCard({
               </IconButton>
             </div>
             <div className="imges">
-              <img src={order.address.idFrontImage} alt="front"></img>
-              <img src={order.address.idBackImage} alt="back"></img>
+              <img src={order.address.idPhotoFrontUrl} alt="front"></img>
+              <img src={order.address.idPhotoBackUrl} alt="back"></img>
             </div>
           </div>
         )}
-      <ActionField order={order} updateOrder={updateOrder} />
+      {/* <ActionField order={order} /> */}
     </Paper>
   );
 }

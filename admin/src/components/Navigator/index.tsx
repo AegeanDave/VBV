@@ -4,7 +4,6 @@ import {
   Avatar,
   Divider,
   Typography,
-  ButtonGroup,
   Button,
   Drawer,
   CssBaseline,
@@ -13,11 +12,13 @@ import {
   ListItemButton,
   List,
   ListItemText,
+  Collapse,
 } from "@mui/material";
 import Popup from "../Popup/index";
 import { navigators } from "../../constant/index";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthProvider";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import "./style.scss";
 
 interface Props {
@@ -30,7 +31,9 @@ export default function PermanentDrawerLeft({
   orderBadge,
 }: Props) {
   const [open, setOpen] = React.useState(false);
+  const [nestOpen, setNestOpen] = React.useState(false);
   const { signout } = useAuth();
+
   const handleOpenPopup = () => {
     setOpen(true);
   };
@@ -84,35 +87,57 @@ export default function PermanentDrawerLeft({
                 上传商品
               </ListItemText>
             </ListItemButton>
-            <NavLink to={navigators.order.path}>
-              {({ isActive }) => (
-                <ListItemButton selected={isActive}>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      color: "white",
-                    }}
-                  >
-                    {navigators.order.label}
-                    {orderBadge !== 0 && (
-                      <div className="badge">{orderBadge}</div>
-                    )}
-                  </ListItemText>
-                </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                setNestOpen((pre) => !pre);
+              }}
+            >
+              <ListItemText
+                primaryTypographyProps={{
+                  color: "white",
+                }}
+              >
+                仓库订单
+              </ListItemText>
+              {nestOpen ? (
+                <ExpandLess sx={{ color: "white" }} />
+              ) : (
+                <ExpandMore sx={{ color: "white" }} />
               )}
-            </NavLink>
-            <NavLink to={navigators.history.path}>
-              {({ isActive }) => (
-                <ListItemButton selected={isActive}>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      color: "white",
-                    }}
-                  >
-                    {navigators.history.label}
-                  </ListItemText>
-                </ListItemButton>
-              )}
-            </NavLink>
+            </ListItemButton>
+            <Collapse in={nestOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <NavLink to={navigators.order.path} end>
+                  {({ isActive }) => (
+                    <ListItemButton selected={isActive} sx={{ pl: 4 }}>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          color: "white",
+                        }}
+                      >
+                        {navigators.order.label}
+                        {orderBadge !== 0 && (
+                          <div className="badge">{orderBadge}</div>
+                        )}
+                      </ListItemText>
+                    </ListItemButton>
+                  )}
+                </NavLink>
+                <NavLink to={navigators.history.path}>
+                  {({ isActive }) => (
+                    <ListItemButton selected={isActive} sx={{ pl: 4 }}>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          color: "white",
+                        }}
+                      >
+                        {navigators.history.label}
+                      </ListItemText>
+                    </ListItemButton>
+                  )}
+                </NavLink>
+              </List>
+            </Collapse>
             <NavLink to={navigators.account.path}>
               {({ isActive }) => (
                 <ListItemButton selected={isActive}>
@@ -153,11 +178,12 @@ export default function PermanentDrawerLeft({
       </Drawer>
       <Popup
         open={open}
-        Content={PopupContent}
         title={"请扫描二维码联系客服"}
         needConfirm={false}
-        handleClose={handleClose}
-      />
+        onClose={handleClose}
+      >
+        <PopupContent />
+      </Popup>
     </>
   );
 }

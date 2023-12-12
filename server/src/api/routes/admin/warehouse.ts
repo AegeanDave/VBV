@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express'
 import { Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../../services'
-import { disableWholeProductLine } from '../product'
+import { disableWholeProductLine } from '../app/product'
 import {
 	adminAuthenticated,
 	myOpenId,
@@ -272,129 +272,67 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.get(
-		'/allSaleOrders',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.getWarehouseOrders, [myOpenId])
-			if (queryResult.data) {
-				res.send(queryResult.data)
-				Logger.info('sale orders get')
-			} else {
-				res.send({
-					status: Status.FAIL
-				})
-			}
-		}
-	)
-	route.post(
-		'/updateSale',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { product, action } = req.body
-			let queryResult
-			if (action === 'RELEASE') {
-				queryResult = await query(queryName.releaseProduct, [
-					product.price,
-					product.saleId
-				])
-				if (queryResult.count === 1) {
-					res.send({
-						status: 'SUCCESS'
-					})
-					Logger.info('release success')
-				} else {
-					res.send({
-						status: 'FAIL'
-					})
-					Logger.info('unrelease fail')
-				}
-			} else if (action === 'UNRELEASE') {
-				queryResult = await query(queryName.discontinueMySaleProduct, [
-					product.saleId
-				])
-				if (queryResult.count === 1) {
-					disableWholeProductLine(myOpenId, product.productId)
-					res.send({
-						status: 'SUCCESS'
-					})
-					Logger.info('unrelease success')
-				} else {
-					res.send({
-						status: 'FAIL'
-					})
-					Logger.info('unrelease fail')
-				}
-			} else if (action === 'DELETE') {
-				queryResult = await query(queryName.onHoldProduct, [product.productId])
-				if (queryResult.count === 1) {
-					disableWholeProductLine(myOpenId, product.productId)
-					res.send({
-						status: 'SUCCESS'
-					})
-					Logger.info('delete success')
-				} else {
-					res.send({
-						status: 'FAIL'
-					})
-					Logger.info('delete fail')
-				}
-			} else {
-				res.send({
-					status: Status.FAIL
-				})
-			}
-		}
-	)
-	route.post(
-		'/updateOrder',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { order, action } = req.body
-			try {
-				if (action === 'REJECT') {
-					for (const product of order.orderProducts) {
-						query(queryName.cancelOrderDetailByWarehouse, [
-							order.originOrderId,
-							product.productId
-						])
-					}
-					res.send({
-						status: 'SUCCESS'
-					})
-					Logger.info('order update success')
-				} else if (action === 'SHIP' || action === 'EDIT') {
-					const params: string[] = [
-						order.company,
-						order.trackingNumber,
-						order.originOrderId
-					]
-					for (const product of order.orderProducts) {
-						params[3] = product.productId
-						action === 'SHIP'
-							? query(queryName.updateTrackingToShipping, params)
-							: query(queryName.updateTrackingInfo, params)
-					}
-					handleUnitMessage(
-						order.orderNumber,
-						order.trackingNumber,
-						order.company,
-						order.originOrderId
-					)
-					res.send({
-						status: Status.SUCCESS
-					})
-					Logger.info('order update success')
-				}
-			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
-				})
-				Logger.info('order update fail')
-			}
-		}
-	)
+
+	// route.post(
+	// 	'/updateSale',
+	// 	adminAuthenticated,
+	// 	async (req: Request, res: Response) => {
+	// 		const { product, action } = req.body
+	// 		let queryResult
+	// 		if (action === 'RELEASE') {
+	// 			queryResult = await query(queryName.releaseProduct, [
+	// 				product.price,
+	// 				product.saleId
+	// 			])
+	// 			if (queryResult.count === 1) {
+	// 				res.send({
+	// 					status: 'SUCCESS'
+	// 				})
+	// 				Logger.info('release success')
+	// 			} else {
+	// 				res.send({
+	// 					status: 'FAIL'
+	// 				})
+	// 				Logger.info('unrelease fail')
+	// 			}
+	// 		} else if (action === 'UNRELEASE') {
+	// 			queryResult = await query(queryName.discontinueMySaleProduct, [
+	// 				product.saleId
+	// 			])
+	// 			if (queryResult.count === 1) {
+	// 				disableWholeProductLine(myOpenId, product.productId)
+	// 				res.send({
+	// 					status: 'SUCCESS'
+	// 				})
+	// 				Logger.info('unrelease success')
+	// 			} else {
+	// 				res.send({
+	// 					status: 'FAIL'
+	// 				})
+	// 				Logger.info('unrelease fail')
+	// 			}
+	// 		} else if (action === 'DELETE') {
+	// 			queryResult = await query(queryName.onHoldProduct, [product.productId])
+	// 			if (queryResult.count === 1) {
+	// 				disableWholeProductLine(myOpenId, product.productId)
+	// 				res.send({
+	// 					status: 'SUCCESS'
+	// 				})
+	// 				Logger.info('delete success')
+	// 			} else {
+	// 				res.send({
+	// 					status: 'FAIL'
+	// 				})
+	// 				Logger.info('delete fail')
+	// 			}
+	// 		} else {
+	// 			res.send({
+	// 				status: Status.FAIL
+	// 			})
+	// 		}
+	// 	}
+	// )
+
 	route.get(
 		'/download',
 		adminAuthenticated,

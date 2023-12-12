@@ -22,21 +22,25 @@ export type SaleProduct = {
   quantity: number;
   status: string;
 };
+
 export type Order = {
-  originOrderId: string;
-  orderNumber: string;
-  status: "Paid" | "Unpaid" | "Canceled" | "Deny";
   orderId: string;
+  orderNumber: string;
+  status:
+    | "Paid"
+    | "Unpaid"
+    | "Cancelled"
+    | "Processing"
+    | "Shipped"
+    | "Delivered"
+    | "Completed";
   buyer: User;
-  lastUpdatedAt: Date;
-  createdAt: Date;
   orderProducts: Product[];
   address: Address;
   comment?: string;
   newComment?: string;
-  company?: string;
-  trackingStatus: "Pending" | "Canceled" | "Shipping";
-  trackingNumber?: string;
+  updatedAt: Date;
+  createdAt: Date;
 };
 
 type User = {
@@ -44,17 +48,18 @@ type User = {
   name: string;
   avatar: string;
 };
+
 export type Address = {
   addressId: string;
-  name: string;
+  recipient: string;
   phone: string;
   country: string;
   province: string;
   city: string;
   street: string;
-  idFrontImage?: string;
-  idBackImage?: string;
-  quickInputAddress?: string;
+  idPhotoFrontUrl?: string;
+  idPhotoBackUrl?: string;
+  quickInput?: string;
 };
 export type Image = {
   id: string;

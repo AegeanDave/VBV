@@ -1,47 +1,46 @@
 import React from "react";
 import { IconButton, Button, TextField, MenuItem, Menu } from "@mui/material/";
-import { Order } from "../../models/index";
-import { actions, OrderStatus, carriers } from "../../constant/index";
+import { Order } from "../../../../models/index";
+import { actions, OrderStatus, carriers } from "../../../../constant/index";
 import { Edit, ExpandMore } from "@mui/icons-material";
 import "./style.scss";
 
 interface Props {
   order: Order;
-  updateOrder: (order: Order, action: string) => void;
 }
-export default function ShippingAction({ order, updateOrder }: Props) {
+export default function ShippingAction({ order }: Props) {
   const orderInfo = order;
 
-  const [trackingNumber, setTrackingNumber] = React.useState(
-    !order.trackingNumber || order.trackingNumber === OrderStatus.PENDING
-      ? ""
-      : order.trackingNumber
-  );
-  const [isEditing, setIsEditing] = React.useState(true);
-  const [company, setCompany] = React.useState(
-    !order.company || order.company === OrderStatus.PENDING
-      ? { key: "all", label: "快递公司" }
-      : carriers[order.company]
-  );
-  const handleEdit = () => {
-    setIsEditing(false);
-  };
-  const handleReject = () => {
-    updateOrder(orderInfo, actions.reject.key);
-  };
-  const handleShipping = (input: string) => {
-    let currentOrderInfo = { ...orderInfo };
-    currentOrderInfo.company = company.key;
-    currentOrderInfo.trackingNumber = input;
-    updateOrder(currentOrderInfo, actions.ship.key);
-  };
-  const submitEditedOrder = (input: string) => {
-    let currentOrderInfo = { ...orderInfo };
-    currentOrderInfo.company = company.key;
-    currentOrderInfo.trackingNumber = input;
-    updateOrder(currentOrderInfo, actions.edit.key);
-    setIsEditing(true);
-  };
+  // const [trackingNumber, setTrackingNumber] = React.useState(
+  //   !order.trackingNumber || order.trackingNumber === OrderStatus.PENDING
+  //     ? ""
+  //     : order.trackingNumber
+  // );
+  // const [isEditing, setIsEditing] = React.useState(true);
+  // const [company, setCompany] = React.useState(
+  //   !order.company || order.company === OrderStatus.PENDING
+  //     ? { key: "all", label: "快递公司" }
+  //     : carriers[order.company]
+  // );
+  // const handleEdit = () => {
+  //   setIsEditing(false);
+  // };
+  // const handleReject = () => {
+  //   updateOrder(orderInfo, actions.reject.key);
+  // };
+  // const handleShipping = (input: string) => {
+  //   let currentOrderInfo = { ...orderInfo };
+  //   currentOrderInfo.company = company.key;
+  //   currentOrderInfo.trackingNumber = input;
+  //   updateOrder(currentOrderInfo, actions.ship.key);
+  // };
+  // const submitEditedOrder = (input: string) => {
+  //   let currentOrderInfo = { ...orderInfo };
+  //   currentOrderInfo.company = company.key;
+  //   currentOrderInfo.trackingNumber = input;
+  //   updateOrder(currentOrderInfo, actions.edit.key);
+  //   setIsEditing(true);
+  // };
   const TrackingInfoRender = ({ disabled }: any) => {
     const [anchorCompany, setAnchorCompany] =
       React.useState<null | HTMLElement>(null);

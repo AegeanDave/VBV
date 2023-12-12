@@ -1,12 +1,12 @@
 import { Router, Request, Response } from 'express'
-import { myCache } from '../../provider/cache'
+import { myCache } from '../../../provider/cache'
 const route = Router()
-import { query, Logger } from '../../services'
-import { login, makeCode, getQRcode } from '../../provider'
-import { isAuthenticated, myOpenId } from '../../api/middleware/authorization'
-import { queryName } from '../../services/queryName'
-import { upload } from '../../provider/fileAction'
-import { Status, Image, AliasStatus, addressField } from '../../constants'
+import { query, Logger } from '../../../services'
+import { login, makeCode, getQRcode } from '../../../provider'
+import { isAuthenticated, myOpenId } from '../../middleware/authorization'
+import { queryName } from '../../../services/queryName'
+import { upload } from '../../../provider/fileAction'
+import { Status, Image, AliasStatus, addressField } from '../../../constants'
 import { disableWholeProductLine } from './product'
 
 export default (app: Router) => {

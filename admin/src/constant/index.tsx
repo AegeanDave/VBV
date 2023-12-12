@@ -8,11 +8,13 @@ export const productStatusTabs = {
   Published: 0,
   Unpublished: 1,
 };
+
 export const SaleStatus = {
   ENABLED: "Enabled",
   IDLE: "Idle",
   DISABLED: "Disabled",
 };
+
 export const carriers: any = {
   SF: {
     key: "SF",
@@ -57,6 +59,7 @@ export const StatusLabel: any = {
   DENY: "已驳回",
   ALL: "状态",
 };
+
 export const navigators = {
   productList: {
     label: "货品管理",
@@ -64,11 +67,11 @@ export const navigators = {
   },
   order: {
     label: "订单发货",
-    path: "order",
+    path: "order/",
   },
   history: {
     label: "历史订单",
-    path: "history",
+    path: "order/history",
   },
   account: {
     label: "插件",

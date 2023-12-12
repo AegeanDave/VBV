@@ -19,7 +19,7 @@ export const isAuthenticated = async (
 			.send({ status: Status.FAIL, message: 'Authorization fail!' })
 		return
 	}
-	myOpenId = checkSessionResult
+	req.params.myOpenId = checkSessionResult
 	return next()
 }
 
