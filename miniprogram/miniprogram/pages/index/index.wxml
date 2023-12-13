@@ -58,7 +58,7 @@
 <view wx:elif="{{productList.length===0 && dealers.length===0}}" class="empty">
 	<text>您还没有关注任何商家</text>
 	<text>请通过邀请码添加好友</text>
-	<button bindtap="toAddCode">去添加好友</button>
+	<button bindtap="onConnectAlias">去添加好友</button>
 </view>
 <view wx:elif="{{productList.length===0 && dealers.length>0}}" class="empty">
 	<image src='../image/empty_products.png' class="noProducts"></image>

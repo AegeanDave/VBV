@@ -1,4 +1,4 @@
-import { getOrdersFromFather, getProductsFromFather, unlockRelation } from '../../../../api/api'
+import { getOrdersFromFather, getProductsFromFather, unlockRelation } from '../../../../services/api/api'
 import { Product, IAppOption, DealerOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"

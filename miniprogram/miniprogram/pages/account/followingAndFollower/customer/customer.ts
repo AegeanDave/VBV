@@ -1,4 +1,4 @@
-import { getOrdersFromChild, getMyPublishedProductsForChild, unlockRelation, markPaid } from '../../../../api/api'
+import { getOrdersFromChild, getMyPublishedProductsForChild, unlockRelation, markPaid } from '../../../../services/api/api'
 import { Product, IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"

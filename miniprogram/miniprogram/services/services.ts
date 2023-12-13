@@ -1,4 +1,4 @@
-import { updateUserInfo, getSession } from "../api/api";
+import { updateUserInfo, getSession } from "./api/api";
 import { IAppOption } from "../models/index";
 const app = getApp<IAppOption>()
 

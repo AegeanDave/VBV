@@ -1,4 +1,4 @@
-import { reLogin } from "../services/services";
+import { reLogin } from "../services";
 
 const { miniProgram: { envVersion } } = wx.getAccountInfoSync()
 
@@ -88,7 +88,7 @@ const request = {
           }
           else {
             var result = res.data;
-            resolve(result);
+            resolve(result as any);
           }
         },
         fail: function (err) {

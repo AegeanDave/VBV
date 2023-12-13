@@ -1,7 +1,7 @@
-import { getPublishedProducts, unreleaseProduct } from "../../../api/api"
-import { Product, IAppOption } from "../../../models/index"
-import { Status, Mode } from "../../../constant/index"
-import { generateQRcode } from '../../../services/QRcode'
+import { getMyStore, unreleaseProduct } from "../../services/api/api"
+import { Product, IAppOption } from "../../models/index"
+import { Status, Mode } from "../../constant/index"
+import { generateQRcode } from '../../services/QRcode'
 
 const app = getApp<IAppOption>()
 
@@ -41,10 +41,10 @@ Page({
     posterHeight: 0,
   },
   onShow: async function () {
-    const result: any = await getPublishedProducts()
+    const { myProducts, availableProducts }: any = await getMyStore()
     this.setData({
-      myProductList: result.myInStoreProducts,
-      allFathersProducts: result.outStoreProducts
+      myProductList: myProducts,
+      allFathersProducts: availableProducts
     })
   },
   bindUpdatePrice: function () {

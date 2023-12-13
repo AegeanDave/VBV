@@ -1,4 +1,4 @@
-import { newRelation, updateUserInfo } from '../../../api/api'
+import { newRelation, updateUserInfo } from '../../../services/api/api'
 import { handleUpdateUserInfo } from "../../../services/services";
 import { IAppOption } from '../../../models/index'
 import { Status } from '../../../constant/index'

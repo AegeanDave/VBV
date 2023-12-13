@@ -17,6 +17,10 @@ const User = db.define('users', {
 		type: DataTypes.INTEGER,
 		defaultValue: 5
 	},
+	status: {
+		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Verified'),
+		defaultValue: 'Not_Verified'
+	},
 	idPhotoFrontUrl: {
 		type: DataTypes.TEXT
 	},

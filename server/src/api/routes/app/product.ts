@@ -108,7 +108,18 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
 			try {
-				const todoProduct = await StoreProduct.findAll({
+				const todoAlias = await Connection.findAll({
+					where: {
+						openIdChild: myOpenId,
+						status: 'Active'
+					}
+				})
+				const todoMyProducts = StoreProduct.findAll({
+					where: {
+						openId: myOpenId
+					}
+				})
+				const todoAvailableProducts = StoreProduct.findAll({
 					include: {
 						model: Price,
 						as: 'specialPrice',
@@ -117,10 +128,18 @@ export default (app: Router) => {
 						}
 					},
 					where: {
-						openId: myOpenId
+						openIdFather: {
+							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
+						},
+						status: 'Active'
 					}
 				})
-				res.send(todoProduct)
+				const [myProducts, availableProducts] = await Promise.all([
+					todoMyProducts,
+					todoAvailableProducts
+				])
+				console.log(availableProducts)
+				res.send({ myProducts, availableProducts })
 				Logger.info('all saleProducts get')
 			} catch (err) {
 				res.send({

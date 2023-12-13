@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 import db from '../../../config/database'
-import { Warehouse } from '../../../models/sequelize'
+import { Order, Product, Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../../services'
 import { disableWholeProductLine } from './product'
@@ -11,7 +11,11 @@ import {
 	myWarehouseId
 } from '../../middleware/authorization'
 import { queryName } from '../../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../../models/types'
+import {
+	Session,
+	Product as ProductType,
+	WarehouseProduct
+} from '../../../models/types'
 import {
 	Status,
 	WarehouseStatus,
@@ -24,7 +28,7 @@ import { sentShippingMessage } from '../../../provider'
 import { upload, downloadFile } from '../../../provider/fileAction'
 import { sendRegistrationSMS } from '../../../provider/twilio'
 
-const holdOriginalProduct = (product: Product) => {
+const holdOriginalProduct = (product: ProductType) => {
 	query(queryName.onHoldProduct, [product.productId])
 	disableWholeProductLine(myOpenId, product.productId)
 }
@@ -81,109 +85,6 @@ const createNewProduct = async (product: WarehouseProduct) => {
 
 export default (app: Router) => {
 	app.use('/warehouse', route)
-	route.post('/getVerificationCode', async (req: Request, res: Response) => {
-		const { phone } = req.body
-		const phoneNumber = countryCodes[phone.countryCode].value + phone.tel
-		try {
-			const todoWarehouse = await Warehouse.findOne({
-				where: {
-					loginPhoneNumber: phoneNumber
-				}
-			})
-			if (!todoWarehouse) {
-				res.send({
-					status: Status.FAIL,
-					message: '账户不存在，请前往微帮微小程序申请注册仓库'
-				})
-				return
-			}
-			if (todoWarehouse.dataValues.status === 'Inactive') {
-				res.send({
-					status: Status.FAIL,
-					message: '此账户已被关闭，再次开通请联系管理人员'
-				})
-				return
-			}
-			if (todoWarehouse.dataValues.status === 'Active') {
-				res.send({
-					status: Status.FAIL,
-					message: '此手机号已被绑定'
-				})
-				return
-			}
-			const smsResult = await sendRegistrationSMS(phoneNumber)
-			if (smsResult.errorCode) {
-				console.log(smsResult)
-				res.send({
-					status: Status.FAIL,
-					message: '网络错误'
-				})
-				return
-			}
-			res.send({
-				status: Status.SUCCESS
-			})
-		} catch (err) {
-			console.log(err)
-			res.send({
-				status: Status.FAIL,
-				message: '网络错误'
-			})
-		}
-	})
-	route.post('/login', async (req: Request, res: Response) => {
-		const { phoneNumber, password: inputPass } = req.body
-		const todoWarehouse = await Warehouse.findOne({
-			where: {
-				loginPhoneNumber: phoneNumber
-			}
-		})
-		if (!todoWarehouse) {
-			res.status(401).send({
-				status: Status.FAIL,
-				message: 'Did not sign up!'
-			})
-			return
-		}
-		const { openId, warehouseId, password, ...rest } = todoWarehouse.dataValues
-		if (password === inputPass) {
-			const sessionKey = uuidv4()
-			const value: Session = {
-				openId,
-				warehouseId
-			}
-			myCache.set(sessionKey, value, 2592000)
-			res.status(200).send({ sessionKey, ...rest })
-			Logger.info('logged in')
-		} else {
-			res.status(401).send({
-				status: Status.FAIL,
-				message: 'Authorization fail!'
-			})
-			Logger.info('login fail')
-		}
-	})
-	route.delete(
-		'/logout',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { authorization } = req.headers
-			const result = myCache.del(authorization)
-			if (result === 1) {
-				res.status(200).send({
-					status: Status.SUCCESS,
-					message: 'logout success'
-				})
-				Logger.info('logout success')
-			} else {
-				res.status(403).send({
-					status: Status.FAIL,
-					message: 'Authorization fail!'
-				})
-				Logger.info('logout fail')
-			}
-		}
-	)
 
 	route.post(
 		'/createWarehouse',
@@ -206,30 +107,33 @@ export default (app: Router) => {
 		}
 	)
 	route.get(
-		'/myWarehouse',
+		'/my-warehouse',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const checkWarehouse = await query(queryName.checkWarehouse, [myOpenId])
-			if (checkWarehouse.data.length === 0) {
-				res.send({
-					status: WarehouseStatus.NOT_REGISTERED
+			const { myOpenId } = req.params
+			try {
+				const todoWarehouse = await Warehouse.findOne({
+					where: { openId: myOpenId },
+					attributes: {
+						exclude: ['password', 'setting', 'secondaryPhoneNumber']
+					},
+					include: Product
 				})
-				Logger.info('warehouse has not sign up')
-			} else {
-				const orderResult = await query(queryName.getWarehouseOrders, [
-					myOpenId
-				])
-				const countryCode = checkWarehouse.data[0].loginPhoneNumberCountryCode
-				checkWarehouse.data[0].loginPhoneNumberCountryCode =
-					countryCode && countryCodes[countryCode].value
-				res.send({
-					status: WarehouseStatus.REGISTERED,
-					data: {
-						warehouse: checkWarehouse.data[0],
-						order: orderResult.data
+				const todoOrder = await Order.findAll({
+					where: {
+						dealerId: myOpenId,
+						status: 'Processing'
 					}
 				})
-				Logger.info('warehouse products get')
+				res.send({
+					warehouse: todoWarehouse.dataValues,
+					orders: todoOrder
+				})
+				Logger.info('Warehouse get')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send()
+				Logger.info('Catch warehouse fail')
 			}
 		}
 	)

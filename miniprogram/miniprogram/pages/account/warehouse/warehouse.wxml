@@ -1,117 +1,113 @@
-<view wx:if="{{mode==='NOT_REGISTERED'}}">
-	<view class="instruction">
-		<image src="../../image/warehouse.svg" mode="aspectFit"></image>
-		<text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
-	</view>
-	<view class="card register">
-		<form bindsubmit="submitRegistration">
-			<text class="title">请输入您的手机号码</text>
-			<view class="phoneInputGroup">
-				<view class="regionCode">
-					<picker bindchange="bindPickerChange" name="countryIndex" value="{{currentCode}}" range="{{countryCodes}}"
-						range-key="{{'name'}}">
-						<view class="picker">
-							+{{countryCodes[currentCode].value}}
-						</view>
-					</picker>
-				</view>
-				<view class="phone">
-					<input name="phone" bindinput="handleValidation" type='number' maxlength='11'></input>
-				</view>
-			</view>
-			<view class="btnArea">
-				<button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
-			</view>
-			<pop-up show="{{showPopup}}">
-				<view class="container">
-					<view class="text">确认与手机号<text class="bold">+{{countryCodes[currentCode].value}}
-							{{phone}}</text>绑定？登录仓库端将需要该号码接收验证码
-					</view>
-					<button class="confirm submit" formType="submit">确认无误</button>
-				</view>
-			</pop-up>
-		</form>
-	</view>
-</view>
-<view wx:elif="{{mode==='REGISTERED'}}" class="main">
-	<view class="card padding">
-		<view class="cardHeader">
-			<text>仓库信息</text>
-			<image src="../../image/setting.svg" mode="aspectFit" class="setting" bindtap="openSheet"></image>
-		</view>
-		<view class="divider"></view>
-		<view class="cardContent">
-			<view class="warehouseInfo">
-				<view class="nameBox">
-					<text>用户名：</text>
-					<open-data class="userInfoNickname" type="userNickName" lang="zh_CN"></open-data>
-				</view>
-				<view class="nameBox">
-					<text class="label">电话号码：</text>
-					<text class="value"
-						wx:if="{{warehouse.loginPhoneNumberCountryCode && warehouse.loginPhoneNumber}}">+{{warehouse.loginPhoneNumberCountryCode}} {{warehouse.loginPhoneNumber}}</text>
-					<text class="value" wx:else>无</text>
-				</view>
-				<view class="nameBox">
-					<text class="label">仓库状态：</text>
-					<text class="value">已激活</text>
-				</view>
-			</view>
-		</view>
-	</view>
-	<view class="card padding">
-		<view class="cardHeader">
-			<text>订单发货</text>
-		</view>
-		<view class="divider"></view>
-		<view class="cardContent">
-			<view class="orderState">
-				<view>
-					<text class="label">待发货：</text>
-					<text class="amount">{{pendingCount}}</text>
-				</view>
-				<view>
-					<text class="label">已发货：</text>
-					<text class="amount">{{shippingCount}}</text>
-				</view>
-			</view>
-		</view>
-	</view>
-	<view class="card products">
-		<view class="cardHeader products">
-			<view class="tab" bindtap="handleChangeTab" data-index="0">
-				<text class="{{tab==='1' && 'unselected'}}">已上架产品</text>
-			</view>
-			<view class="tab" bindtap="handleChangeTab" data-index="1">
-				<text class="{{tab==='0' && 'unselected'}}">未上架产品</text>
-			</view>
-		</view>
-		<view class="divider"></view>
-		<view wx:if="{{warehouse.products.length>0}}" class="cardContent">
-			<scroll-view scroll-y="true" class="scrollView">
-				<view class="productsBox">
-					<block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
-						<view class="productCard" wx:if="{{tab==='0' && product.mySale.status === 'Enabled'}}">
-							<image class="pic" src='{{product.coverImageURL}}'></image>
-							<text class="name">{{product.productName}}</text>
-							<text class="price">￥{{product.mySale.price}}</text>
-						</view>
-						<view class="productCard" wx:elif="{{tab==='1' && product.mySale.status ==='Idle'}}">
-							<image class="pic" src='{{product.coverImageURL}}'></image>
-							<text class="name">{{product.productName}}</text>
-							<text class="price">￥{{product.mySale.price}}</text>
-						</view>
-					</block>
-				</view>
-			</scroll-view>
-		</view>
-		<view wx:else class="cardContent empty">
-			<image src='../../image/empty_products.png' class="noProducts"></image>
-			<text>
-				暂无上架产品</text>
-			<text>登录vbangv.com上架您的专属产品吧</text>
-		</view>
-	</view>
-</view>
+<block wx:if="{{warehouse.status==='Active'}}">
+  <view class="main">
+    <view class="card padding">
+      <view class="cardHeader">
+        <text>仓库信息</text>
+        <mp-icon icon="setting" size="{{16}}" class="setting" bindtap="openSheet"></mp-icon>
+      </view>
+      <view class="divider"></view>
+      <view class="cardContent">
+        <view class="warehouseInfo">
+          <view class="nameBox">
+            <text>用户名：</text>
+            <open-data class="userInfoNickname" type="userNickName" lang="zh_CN"></open-data>
+          </view>
+          <view class="nameBox">
+            <text class="label">电话号码：</text>
+            <text class="value">{{warehouse.loginPhoneNumber}}</text>
+          </view>
+          <view class="nameBox">
+            <text class="label">仓库状态：</text>
+            <text class="value">已激活</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="card padding">
+      <view class="cardHeader">
+        <text>订单发货</text>
+      </view>
+      <view class="divider"></view>
+      <view class="cardContent">
+        <view class="orderState">
+          <view>
+            <text class="label">您有待处理订单{{processingOrderNum}}个</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="card products">
+      <view class="cardHeader products">
+        <view class="tab" bindtap="handleChangeTab" data-index="0">
+          <text class="{{tab==='1' && 'unselected'}}">已上架产品</text>
+        </view>
+        <view class="tab" bindtap="handleChangeTab" data-index="1">
+          <text class="{{tab==='0' && 'unselected'}}">未上架产品</text>
+        </view>
+      </view>
+      <view class="divider"></view>
+      <view wx:if="{{warehouse.products.length>0}}" class="cardContent">
+        <scroll-view scroll-y="true" class="scrollView">
+          <view class="productsBox">
+            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+              <view class="productCard" wx:if="{{tab==='0' && product.status === 'Active'}}">
+                <image class="pic" src='{{product.coverImageUrl}}'></image>
+                <text class="name">{{product.name}}</text>
+                <text class="price">￥{{product.price}}</text>
+              </view>
+              <view class="productCard" wx:elif="{{tab==='1' && product.status ==='Idle'}}">
+                <image class="pic" src='{{product.coverImageUrl}}'></image>
+                <text class="name">{{product.name}}</text>
+                <text class="price">￥{{product.price}}</text>
+              </view>
+            </block>
+          </view>
+        </scroll-view>
+      </view>
+      <view wx:else class="cardContent empty">
+        <image src='../../image/empty_products.png' class="noProducts"></image>
+        <text>
+          暂无上架产品</text>
+        <text>登录vbangv.com上架您的专属产品吧</text>
+      </view>
+    </view>
+  </view>
+</block>
+<block wx:else>
+  <view>
+    <view class="instruction">
+      <image src="../../image/warehouse.svg" mode="aspectFit"></image>
+      <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
+    </view>
+    <view class="card register">
+      <form bindsubmit="submitRegistration">
+        <text class="title">请输入您的手机号码</text>
+        <view class="phoneInputGroup">
+          <view class="regionCode">
+            <picker bindchange="bindPickerChange" name="countryIndex" value="{{currentCode}}" range="{{countryCodes}}" range-key="{{'name'}}">
+              <view class="picker">
+                +{{countryCodes[currentCode].value}}
+              </view>
+            </picker>
+          </view>
+          <view class="phone">
+            <input name="phone" bindinput="handleValidation" type='number' maxlength='11'></input>
+          </view>
+        </view>
+        <view class="btnArea">
+          <button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
+        </view>
+        <pop-up show="{{showPopup}}">
+          <view class="container">
+            <view class="text">确认与手机号<text class="bold">+{{countryCodes[currentCode].value}}
+                {{phone}}</text>绑定？登录仓库端将需要该号码接收验证码
+            </view>
+            <button class="confirm submit" formType="submit">确认无误</button>
+          </view>
+        </pop-up>
+      </form>
+    </view>
+  </view>
+</block>
 <mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}" actions="{{groups}}">
 </mp-actionSheet>

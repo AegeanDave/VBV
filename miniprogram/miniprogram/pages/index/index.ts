@@ -1,6 +1,6 @@
 import { Product, IAppOption } from "../../models/index"
-import { Status, Mode, Tabs } from "../../constant/index"
-import { getProductList, getFathers } from '../../api/api'
+import { Mode, Tabs } from "../../constant/index"
+import { getProductList } from '../../services/api/api'
 
 const app = getApp<IAppOption>()
 
@@ -14,27 +14,21 @@ Page({
   },
   onLoad() {
     app.userInfoReadyCallback = async () => {
-      const getProductsResult: any = await getProductList()
-      const dealers: any = await getFathers()
-      if (getProductsResult.status !== Status.FAIL || dealers.status !== Status.FAIL) {
-        this.setData({
-          productList: getProductsResult.data,
-          searchList: getProductsResult.data,
-          dealers: dealers.data,
-        })
-      }
-      app.globalData.products = getProductsResult.data
+      const { products, alias }: any = await getProductList()
+      this.setData({
+        productList: products,
+        searchList: products,
+        dealers: alias,
+      })
     }
   },
   onPullDownRefresh: async function () {
     wx.showNavigationBarLoading()
-    const getProductsResult: any = await getProductList()
-    const dealers: any = await getFathers()
+    const { products, alias }: any = await getProductList()
     this.setData({
-      productList: getProductsResult.data,
-      dealers: dealers.data
+      productList: products,
+      dealers: alias
     })
-    app.globalData.products = getProductsResult.data
     setTimeout(() => {
       wx.stopPullDownRefresh()
       wx.hideNavigationBarLoading()
@@ -51,16 +45,6 @@ Page({
       wx.removeTabBarBadge({
         index: Tabs.CART
       })
-    }
-    if (app.globalData.reload) {
-      const getProductsResult: any = await getProductList()
-      const dealers: any = await getFathers()
-      this.setData({
-        productList: getProductsResult.data,
-        dealers: dealers.data
-      })
-      app.globalData.products = getProductsResult.data
-      app.globalData.reload = false
     }
   },
   handleProductsSearching: function (e: any) {
@@ -134,7 +118,12 @@ Page({
       url: './productDetail/productDetail?mode=' + Mode.NORMAL,
     })
   },
-  toAddCode: function () {
+  onConnectAlias: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '/pages/register/register',
+      })
+    }
     wx.navigateTo({
       url: '/pages/account/inputCode/inputCode',
     })

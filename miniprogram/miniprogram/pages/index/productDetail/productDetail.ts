@@ -1,6 +1,6 @@
 import { Product, IAppOption } from "../../../models/index"
 import { Status, Mode } from "../../../constant/index"
-import { updateSale, updatePriceForChild } from "../../../api/api"
+import { updateSale, updatePriceForChild } from "../../../services/api/api"
 
 const app = getApp<IAppOption>()
 

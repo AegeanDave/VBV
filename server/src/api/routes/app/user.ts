@@ -8,23 +8,59 @@ import { queryName } from '../../../services/queryName'
 import { upload } from '../../../provider/fileAction'
 import { Status, Image, AliasStatus, addressField } from '../../../constants'
 import { disableWholeProductLine } from './product'
+import { Invitation, User } from '../../../models/sequelize'
 
 export default (app: Router) => {
 	app.use('/users', route)
 
 	route.post('/login', async (req: Request, res: Response) => {
-		const code = req.body.code
-		const result = await login(code)
-		console.log(result)
-		if (!result.data) {
+		const { code } = req.body
+		try {
+			const {
+				data: { session_key, openid }
+			} = await login(code)
+			myCache.set(session_key, openid, 10000)
+			const [{ dataValues }] = await User.upsert({ openId: openid })
+			const { username, status, avatarUrl } = dataValues
+			res.send({ session_key, openid, username, avatarUrl, status })
+			Logger.info('Login Success')
+		} catch (err) {
 			res.send({ success: false, message: 'Login fail' })
 			return
 		}
-		query(queryName.login, [result.data.openid])
-		myCache.set(result.data.session_key, result.data.openid, 10000)
-		res.send(result.data)
-		Logger.info('Login Success')
 	})
+	route.post(
+		'/signup',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { username, avatarUrl } = req.body
+			const { myOpenId } = req.params
+			try {
+				const todoSignup = await User.update(
+					{ username, avatarUrl, status: 'Active' },
+					{ where: { openId: myOpenId }, returning: true }
+				)
+				const newUser = todoSignup[1][0].dataValues
+				res.send({
+					username: newUser.username,
+					avatarUrl: newUser.avatarUrl,
+					status: newUser.status
+				})
+				Invitation.bulkCreate(
+					Array.from({ length: 5 }, () => ({
+						code: makeCode(),
+						openId: myOpenId,
+						status: 'Active'
+					}))
+				)
+				Logger.info('Signup Success')
+			} catch (err) {
+				console.log(err)
+				res.send({ success: false, message: 'Login fail' })
+				return
+			}
+		}
+	)
 	route.post(
 		'/updateUserInfo',
 		isAuthenticated,
@@ -274,12 +310,23 @@ export default (app: Router) => {
 		}
 	)
 	route.get(
-		'/myCodes',
+		'/my-codes',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.myCodes, [myOpenId])
-			res.send(queryResult.data)
-			Logger.info('codes loaded success')
+			const { myOpenId } = req.params
+			try {
+				const todoCodes = await Invitation.findAll({
+					where: {
+						openId: myOpenId,
+						status: 'Active'
+					}
+				})
+				res.send(todoCodes)
+				Logger.info('Codes loaded successfully')
+			} catch (err) {
+				console.log(err)
+				Logger.info('Codes loaded failed')
+			}
 		}
 	)
 	route.post(

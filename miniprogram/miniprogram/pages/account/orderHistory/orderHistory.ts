@@ -1,4 +1,4 @@
-import { getAllPurchaseOrders, markPaid } from '../../../api/api'
+import { getAllPurchaseOrders, markPaid } from '../../../services/api/api'
 import { PurchasedOrder, OrderProduct, IAppOption } from "../../../models/index"
 import { Status } from "../../../constant/index"
 import { parseTime } from "../../../utils/util"

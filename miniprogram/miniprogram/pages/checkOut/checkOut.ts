@@ -1,6 +1,6 @@
 import { Product, Address, IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
-import { getAddress, submitOrder } from '../../api/api'
+import { getAddress, submitOrder } from '../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({

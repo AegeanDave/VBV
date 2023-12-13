@@ -1,4 +1,4 @@
-import { updatePhone } from '../../../../api/api'
+import { updatePhone } from '../../../../services/api/api'
 import { Status } from "../../../../constant/index"
 
 Page({

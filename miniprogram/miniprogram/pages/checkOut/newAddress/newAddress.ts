@@ -1,7 +1,7 @@
 import { Address, IAppOption } from "../../../models/index"
 import { Status, AddressField } from "../../../constant/index"
 const app = getApp<IAppOption>()
-import { addAddress } from '../../../api/api'
+import { addAddress } from '../../../services/api/api'
 
 Page({
   data: {
