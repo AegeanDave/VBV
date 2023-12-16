@@ -87,8 +87,8 @@
   color: #333;
 }
 
-.scrollUnused {
-  height: 38vh;
+.scroll-code {
+  height: 52vh;
 }
 
 .scrollUsed {

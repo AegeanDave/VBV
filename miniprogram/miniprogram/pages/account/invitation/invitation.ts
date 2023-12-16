@@ -48,7 +48,7 @@ Page({
       // 来自页面内转发按钮
       return {
         title: '快关注我的微帮微吧',
-        path: '/pages/account/inputCode/inputCode?code=' + that.data.currentCode,
+        path: '/pages/account/inputCode/inputCode?code=' + that.data.selectedCode,
         imageUrl: '../../image/artboard.jpg'
       }
     }

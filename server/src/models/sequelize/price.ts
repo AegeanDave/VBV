@@ -9,6 +9,7 @@ const Price = db.define('price', {
 	},
 	openIdChild: {
 		type: DataTypes.STRING,
+		references: { model: 'users', key: 'openId' },
 		allowNull: false
 	},
 	productId: {
@@ -16,6 +17,10 @@ const Price = db.define('price', {
 	},
 	storeProductId: {
 		type: DataTypes.UUID,
+		references: {
+			model: 'inStoreProducts',
+			key: 'id'
+		},
 		allowNull: false
 	},
 	price: {

@@ -87,16 +87,21 @@ export default (app: Router) => {
 	app.use('/warehouse', route)
 
 	route.post(
-		'/createWarehouse',
+		'/create',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			try {
-				const { phone, countryCode } = req.body
-				await query(queryName.createWarehouse, [myOpenId, phone, countryCode])
+				const { phoneNumber } = req.body
+				const { myOpenId } = req.params
+				await Warehouse.create({
+					openId: myOpenId,
+					loginPhoneNumber: phoneNumber,
+					status: 'Not_Verified'
+				})
 				res.send({
 					status: Status.SUCCESS
 				})
-				Logger.info('warehouse created')
+				Logger.info('Raw Warehouse created')
 			} catch (error) {
 				res.send({
 					status: Status.FAIL,
@@ -126,7 +131,7 @@ export default (app: Router) => {
 					}
 				})
 				res.send({
-					warehouse: todoWarehouse.dataValues,
+					warehouse: todoWarehouse?.dataValues,
 					orders: todoOrder
 				})
 				Logger.info('Warehouse get')
@@ -168,45 +173,45 @@ export default (app: Router) => {
 		}
 	)
 
-	route.post(
-		'/phoneVerification',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { verificationCode } = req.body
-			if (myCache.has(myWarehouseId)) {
-				const cacheValue: {
-					verificationCode: string
-					tel: string
-					countryCode: string
-				} = myCache.get(myWarehouseId)
-				if (cacheValue.verificationCode === verificationCode) {
-					res.send({
-						status: Status.SUCCESS
-					})
-					query(queryName.updatePhone, [
-						cacheValue.tel,
-						cacheValue.countryCode,
-						myOpenId,
-						myWarehouseId
-					])
-					myCache.del(myWarehouseId)
+	// route.post(
+	// 	'/phoneVerification',
+	// 	adminAuthenticated,
+	// 	async (req: Request, res: Response) => {
+	// 		const { verificationCode } = req.body
+	// 		if (myCache.has(myWarehouseId)) {
+	// 			const cacheValue: {
+	// 				verificationCode: string
+	// 				tel: string
+	// 				countryCode: string
+	// 			} = myCache.get(myWarehouseId)
+	// 			if (cacheValue.verificationCode === verificationCode) {
+	// 				res.send({
+	// 					status: Status.SUCCESS
+	// 				})
+	// 				query(queryName.updatePhone, [
+	// 					cacheValue.tel,
+	// 					cacheValue.countryCode,
+	// 					myOpenId,
+	// 					myWarehouseId
+	// 				])
+	// 				myCache.del(myWarehouseId)
 
-					Logger.info('verify success')
-				} else {
-					res.send({
-						status: Status.FAIL,
-						message: 'verificationCode Wrong'
-					})
-					Logger.info('verification code wrong')
-				}
-			} else {
-				res.send({
-					status: Status.FAIL
-				})
-				Logger.info('verify fail')
-			}
-		}
-	)
+	// 				Logger.info('verify success')
+	// 			} else {
+	// 				res.send({
+	// 					status: Status.FAIL,
+	// 					message: 'verificationCode Wrong'
+	// 				})
+	// 				Logger.info('verification code wrong')
+	// 			}
+	// 		} else {
+	// 			res.send({
+	// 				status: Status.FAIL
+	// 			})
+	// 			Logger.info('verify fail')
+	// 		}
+	// 	}
+	// )
 	route.get(
 		'/allSaleOrders',
 		adminAuthenticated,

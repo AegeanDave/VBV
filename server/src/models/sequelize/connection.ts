@@ -4,11 +4,19 @@ import db from '../../config/database'
 const Connection = db.define('connections', {
 	openId: {
 		type: DataTypes.STRING,
-		allowNull: false
+		allowNull: false,
+		references: {
+			model: 'users',
+			key: 'openId'
+		}
 	},
 	openIdChild: {
 		type: DataTypes.STRING,
-		allowNull: false
+		allowNull: false,
+		references: {
+			model: 'users',
+			key: 'openId'
+		}
 	},
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive'),

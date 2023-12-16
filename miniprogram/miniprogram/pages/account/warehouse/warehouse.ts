@@ -5,7 +5,7 @@ Page({
   data: {
     showActionsheet: false,
     warehouse: {},
-    phone: undefined,
+    phone: '',
     disabled: true,
     tab: '0',
     countryCodes: [{
@@ -34,7 +34,7 @@ Page({
   async onLoad() {
     const { warehouse, order }: any = await getWarehouse()
     wx.setNavigationBarTitle({
-      title: warehouse.status === 'Active' ? '仓库管理' : '仓库申请'
+      title: warehouse?.status === 'Active' ? '仓库管理' : '仓库申请'
     })
     this.setData({
       warehouse: warehouse,
@@ -67,25 +67,24 @@ Page({
       tab: index
     })
   },
-  submitRegistration: async function (e: any) {
-    const value = e.detail.value
-    this.setData({
-      showPopup: false
-    })
-    wx.showLoading({
-      title: '正在提交',
-    })
-    const result = await createWarehouse(value.phone, this.data.countryCodes[value.countryIndex].id)
-    wx.hideLoading()
-    if (result.status === Status.SUCCESS) {
-      wx.redirectTo({
-        url: './mailer/mailer?phone=' + e.detail.value.phone
+  async onDialogTap(e) {
+    const { detail: { index } } = e
+    if (index === 1) {
+      const result = await createWarehouse(this.data.phone, this.data.countryCodes[this.data.currentCode].value)
+      this.setData({
+        showPopup: false
       })
-    } else {
-      wx.showToast({
-        title: '手机号有误',
-        duration: 2000,
-        icon: 'none',
+      if (result?.status === 'FAIL') {
+        wx.showToast({
+          title: '创建失败',
+          icon: 'error',
+          duration: 2000
+        })
+      }
+    }
+    else {
+      this.setData({
+        showPopup: false
       })
     }
   },
@@ -101,7 +100,7 @@ Page({
   },
   toSetting() {
     wx.navigateTo({
-      url: './setting/setting?phone='+ this.data.warehouse.loginPhoneNumber
+      url: './setting/setting?phone=' + this.data.warehouse.loginPhoneNumber
     })
   },
   openSheet() {

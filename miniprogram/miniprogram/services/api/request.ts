@@ -115,21 +115,18 @@ const request = {
         })
     })
   },
-  uploadImage: function (endPoint: string, filePath: string, id: string, imageSide: string) {
+  uploadImage: function (endPoint: string, filePath: string, data: any) {
     const sessionKey = wx.getStorageSync('sessionKey');
     return new Promise(function (resolve: any, reject: any) {
       wx.uploadFile({
         url: url + "/" + endPoint,
         filePath: filePath,
-        name: 'image',
+        name: 'avatar',
         header: {
           'content-type': 'multipart/form-data',
           'Authorization': sessionKey
         },
-        formData: {
-          'id': id,
-          'imageSide': imageSide
-        },
+        formData: data,
         success: function (res) {
           var result = res.data;
           resolve(result);

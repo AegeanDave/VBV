@@ -251,7 +251,7 @@ export default (app: Router) => {
 					)
 					await t.commit()
 				}
-				if (todoProduct[0] === 0) {
+				if (todoProduct && todoProduct[0] === 0) {
 					return res.status(204).end()
 				}
 				return res.send({

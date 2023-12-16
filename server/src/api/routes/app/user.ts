@@ -6,9 +6,16 @@ import { login, makeCode, getQRcode } from '../../../provider'
 import { isAuthenticated, myOpenId } from '../../middleware/authorization'
 import { queryName } from '../../../services/queryName'
 import { upload } from '../../../provider/fileAction'
-import { Status, Image, AliasStatus, addressField } from '../../../constants'
-import { disableWholeProductLine } from './product'
-import { Invitation, User } from '../../../models/sequelize'
+import { Status, Image, DBStatus, addressField } from '../../../constants'
+import {
+	Address,
+	Connection,
+	Invitation,
+	StoreProduct,
+	User
+} from '../../../models/sequelize'
+import db from '../../../config/database'
+import { Op } from 'sequelize'
 
 export default (app: Router) => {
 	app.use('/users', route)
@@ -32,12 +39,14 @@ export default (app: Router) => {
 	route.post(
 		'/signup',
 		isAuthenticated,
+		upload.single('avatar'),
 		async (req: Request, res: Response) => {
-			const { username, avatarUrl } = req.body
+			const avatar = req.file as any
+			const { username } = req.body
 			const { myOpenId } = req.params
 			try {
 				const todoSignup = await User.update(
-					{ username, avatarUrl, status: 'Active' },
+					{ username, avatarUrl: avatar.location, status: DBStatus.ACTIVE },
 					{ where: { openId: myOpenId }, returning: true }
 				)
 				const newUser = todoSignup[1][0].dataValues
@@ -61,6 +70,45 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.get(
+		'/account',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoUser = await User.findByPk(myOpenId, {
+					include: [
+						{
+							model: User,
+							as: 'customer',
+							through: {
+								where: {
+									openId: myOpenId,
+									status: DBStatus.ACTIVE
+								}
+							}
+						},
+						{
+							model: User,
+							as: 'dealer',
+							through: {
+								where: {
+									openIdChild: myOpenId,
+									status: DBStatus.ACTIVE
+								}
+							}
+						}
+					]
+				})
+				res.send(todoUser)
+				Logger.info('Account fetch successfully')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send()
+				Logger.info('Account fetch error')
+			}
+		}
+	)
 	route.post(
 		'/updateUserInfo',
 		isAuthenticated,
@@ -75,237 +123,168 @@ export default (app: Router) => {
 			Logger.info('Upload Success')
 		}
 	)
-	route.get(
-		'/fatherAndChildNumber',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryResultChild = await query(queryName.getChildrenNumber, [
-				myOpenId
-			])
-			const queryResultFather = await query(queryName.getFatherNumber, [
-				myOpenId
-			])
-			res.send({
-				fatherNumber: queryResultFather.data[0],
-				childNumber: queryResultChild.data[0]
-			})
-			Logger.info('Father and children #get')
-		}
-	)
-	route.get(
-		'/basicInfo',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryArray = [
-				query(queryName.getAllChildren, [myOpenId]),
-				query(queryName.getAllFathers, [myOpenId]),
-				query(queryName.checkWarehouse, [myOpenId])
-			]
 
-			Promise.all(queryArray)
-				.then(value => {
-					const userInfo = {
-						childNumber: value[0].count,
-						childrenList: value[0].data,
-						fatherNumber: value[1].count,
-						fathersList: value[1].data,
-						warehouse: value[2].data
-					}
-					res.send({
-						status: Status.SUCCESS,
-						data: userInfo
-					})
-					Logger.info('user basic info #get')
-				})
-				.catch(err => {
-					res.send({
-						status: Status.FAIL,
-						message: err
-					})
-				})
-		}
-	)
 	route.get(
-		'/allChildren',
+		'/customers',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.getAllChildren, [myOpenId])
-			res.send({ status: Status.SUCCESS, data: queryResult.data })
-			Logger.info('all children get')
-		}
-	)
-	route.get(
-		'/allFathers',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.getAllFathers, [myOpenId])
-			res.send({ status: Status.SUCCESS, data: queryResult.data })
-			Logger.info('all fathers get')
-		}
-	)
-	route.post(
-		'/newRelationship',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const code = req.body.code
-			const findFather = await query(queryName.findOpenIdAndCode, [code])
-			if (findFather.data.length === 0) {
-				res.send({
-					status: Status.FAIL,
-					messege: '邀请码有误'
-				})
-			} else if (findFather.data[0].openId === myOpenId) {
-				res.send({
-					status: Status.FAIL,
-					messege: '不能关注自己'
-				})
-			} else if (findFather.data[0].status === AliasStatus.DISABLED) {
-				res.send({
-					status: Status.FAIL,
-					messege: '邀请码已被使用'
-				})
-			} else {
-				const queryResult = await query(queryName.createOrUpdateAlias, [
-					findFather.data[0].openId,
-					myOpenId
-				])
-				if (
-					queryResult.data[0] &&
-					queryResult.data[0].openId === findFather.data[0].openId
-				) {
-					const openIDFather = queryResult.data[0].openId
-					query(queryName.usedCode, [code, openIDFather])
-					res.send({
-						status: Status.SUCCESS
-					})
-					Logger.info('success')
-				} else {
-					res.send({
-						status: Status.FAIL,
-						message: '关注失败'
-					})
-					Logger.info('failed')
-				}
-			}
-		}
-	)
-	route.get(
-		'/getAddress',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.allAddress, [myOpenId])
-			res.send(queryResult.data)
-			Logger.info('address loaded success')
-		}
-	)
-	route.get(
-		'/getAddressById',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const id = req.query.id
-			const queryResult = await query(queryName.getAddressByID, [id as string])
-			res.send(queryResult.data[0])
-			Logger.info('address loaded success')
-		}
-	)
-	route.post(
-		'/newAddress',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const { address, selectedField } = req.body
+			const { myOpenId } = req.params
 			try {
-				let queryResult
-				if (selectedField === addressField.NORMALFORM) {
-					queryResult = await query(queryName.addAddressWithoutFile, [
-						myOpenId,
-						address.street,
-						address.city,
-						address.province,
-						'中国',
-						address.name,
-						address.phone
-					])
-				} else if (selectedField === addressField.QUICKFORM) {
-					queryResult = await query(queryName.addAddressWithComment, [
-						myOpenId,
-						address.quickInputAddress
-					])
-				}
-				res.send(queryResult.data)
-				Logger.info('address added')
-			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
+				const todoCustomers = await Connection.findAll({
+					where: {
+						openId: myOpenId,
+						status: DBStatus.ACTIVE
+					},
+					include: {
+						model: User,
+						as: 'customer',
+						attributes: ['username', 'avatarUrl']
+					}
 				})
-				Logger.info('address add fail')
-			}
-		}
-	)
-	route.post(
-		'/updateAddress',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const fileUrl = req.body.file
-			const id = req.body.id
-			const queryResult = await query(queryName.updateAddressWithFile, [
-				fileUrl,
-				id,
-				myOpenId
-			])
-			res.send(queryResult.data)
-			Logger.info('update success')
-		}
-	)
-	route.post(
-		'/uploadFile',
-		isAuthenticated,
-		upload.single('image'),
-		async (req: Request, res: Response) => {
-			const { id, imageSide } = req.body
-			const file: any = req.file
-			if (imageSide === Image.FRONT) {
-				const queryResult = await query(queryName.updateAddressWithImageOne, [
-					file.location,
-					id,
-					myOpenId
-				])
-				if (queryResult.count === 1) {
-					res.send(file.location)
-					Logger.info('upload image #1 success')
-				} else {
-					res.send({
-						status: Status.FAIL
-					})
-				}
-			} else if (imageSide === Image.BACK) {
-				const queryResult = await query(queryName.updateAddressWithImageTwo, [
-					file.location,
-					id,
-					myOpenId
-				])
-				if (queryResult.count === 1) {
-					res.send(file.location)
-					Logger.info('upload image #2 success')
-				} else {
-					res.send({
-						status: Status.FAIL
-					})
-				}
-			} else {
-				res.send({
+				res.send(todoCustomers)
+				Logger.info('all children get')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send({
 					status: Status.FAIL
 				})
+				Logger.info('Children fetch failed')
+			}
+		}
+	)
+	route.get(
+		'/dealers',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoDealers = await Connection.findAll({
+					where: {
+						openIdChild: myOpenId,
+						status: DBStatus.ACTIVE
+					},
+					include: {
+						model: User,
+						as: 'dealer',
+						attributes: ['username', 'avatarUrl']
+					}
+				})
+				res.send(todoDealers)
+				Logger.info('all fathers get')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send({
+					status: Status.FAIL
+				})
+				Logger.info('Fathers get failed')
+			}
+		}
+	)
+
+	route.get(
+		'/addresses',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoAddress = await Address.findAll({
+					where: {
+						openId: myOpenId
+					}
+				})
+				res.send(todoAddress)
+				Logger.info('address loaded ')
+			} catch (err) {
+				res.status(500).send()
+				Logger.info('address loading fail')
+			}
+		}
+	)
+	route.get(
+		'/address/:id',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id, myOpenId } = req.params
+			const todoAddress = await Address.findOne({
+				where: { id, openId: myOpenId }
+			})
+			res.send(todoAddress)
+			Logger.info('address loaded success')
+		}
+	)
+	// route.post(
+	// 	'/newAddress',
+	// 	isAuthenticated,
+	// 	async (req: Request, res: Response) => {
+	// 		const { address, selectedField } = req.body
+	// 		try {
+	// 			let queryResult
+	// 			if (selectedField === addressField.NORMALFORM) {
+	// 				queryResult = await query(queryName.addAddressWithoutFile, [
+	// 					myOpenId,
+	// 					address.street,
+	// 					address.city,
+	// 					address.province,
+	// 					'中国',
+	// 					address.name,
+	// 					address.phone
+	// 				])
+	// 			} else if (selectedField === addressField.QUICKFORM) {
+	// 				queryResult = await query(queryName.addAddressWithComment, [
+	// 					myOpenId,
+	// 					address.quickInputAddress
+	// 				])
+	// 			}
+	// 			res.send(queryResult.data)
+	// 			Logger.info('address added')
+	// 		} catch (err) {
+	// 			res.send({
+	// 				status: Status.FAIL,
+	// 				message: err
+	// 			})
+	// 			Logger.info('address add fail')
+	// 		}
+	// 	}
+	// )
+
+	route.post(
+		'/update-address',
+		isAuthenticated,
+		upload.fields([
+			{ name: 'idFront', maxCount: 1 },
+			{ name: 'idBack', maxCount: 1 }
+		]),
+		async (req: Request, res: Response) => {
+			const { id } = req.body
+			const { idFront, idBack } = req.files as any
+			try {
+				const todoAddress = await Address.update(
+					{
+						idPhotoFrontUrl: idFront[0].location,
+						idPhotoBackUrl: idBack[0].location
+					},
+					{ where: { id } }
+				)
+				res.send()
+				Logger.info('Address update successfully')
+			} catch (err) {
+				res.status(500).send({
+					status: Status.FAIL
+				})
+				Logger.info('Address update failed')
 			}
 		}
 	)
 	route.delete(
-		'/deleteAddress',
+		'/address',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const id = req.body.id
-			const queryResult = await query(queryName.deleteAddress, [id, myOpenId])
-			res.send(queryResult)
+			const { id } = req.body
+			const { myOpenId } = req.params
+			await Address.destroy({
+				where: { id, openId: myOpenId }
+			})
+			res.send()
 			Logger.info('update success')
 		}
 	)
@@ -318,7 +297,7 @@ export default (app: Router) => {
 				const todoCodes = await Invitation.findAll({
 					where: {
 						openId: myOpenId,
-						status: 'Active'
+						status: DBStatus.ACTIVE
 					}
 				})
 				res.send(todoCodes)
@@ -330,82 +309,31 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
-		'/newCode',
+		'/new-code',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const newCode: string = makeCode()
-			const queryResult = await query(queryName.newCode, [myOpenId, newCode])
-			if (queryResult.count === 1) {
-				query(queryName.updateCodeNumber, [queryResult.count, myOpenId])
-				res.send(newCode)
-				Logger.info('codes created')
-			} else {
-				res.send({
+			const { myOpenId } = req.params
+			// should be updated for security
+			const { length } = req.body
+			try {
+				const todoInvitation = await Invitation.bulkCreate(
+					Array.from({ length }, () => ({
+						openId: myOpenId,
+						code: makeCode(),
+						status: 'Active'
+					}))
+				)
+				res.send(todoInvitation)
+				Logger.info('Codes created')
+			} catch (err) {
+				res.status(500).send({
 					status: Status.FAIL
 				})
-				Logger.info('codes created failed')
+				Logger.info('Codes created failed')
 			}
 		}
 	)
 
-	route.post(
-		'/updateCodeStatus',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const code = req.body.code
-			const queryResult = await query(queryName.usedCode, [code, myOpenId])
-			if (queryResult.count === 1) {
-				res.send('updated')
-				Logger.info('codes delete')
-			}
-			res.send({
-				status: Status.FAIL
-			})
-			Logger.info('codes delete failed')
-		}
-	)
-	route.delete(
-		'/removeConnection',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const id = req.body.id
-			try {
-				const queryResult = await query(queryName.removeConnection, [id])
-				if (queryResult.count === 1) {
-					res.send({
-						status: Status.SUCCESS
-					})
-					const queryProduct = await query(queryName.getSaleProductsByFather, [
-						queryResult.data[0].openIdChild,
-						queryResult.data[0].openId
-					])
-					if (queryProduct.data.length > 0) {
-						queryProduct.data.forEach(product => {
-							query(queryName.updateProductToDELETEDByOpenIDFather, [
-								product.inStoreProductId
-							])
-							disableWholeProductLine(
-								queryResult.data[0].openIdChild,
-								product.productId
-							)
-						})
-					}
-					Logger.info('unlock success')
-				} else {
-					res.send({
-						status: Status.FAIL
-					})
-					Logger.info('unlock fail')
-				}
-			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
-				})
-				Logger.info('unlock fail')
-			}
-		}
-	)
 	route.get(
 		'/wxQRcode',
 		isAuthenticated,
@@ -417,49 +345,150 @@ export default (app: Router) => {
 			})
 		}
 	)
-	route.post(
-		'/connectionWithoutCode',
+	route.delete(
+		'/connection',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { openIDFather } = req.body
-			const checkAliasResult = await query(queryName.checkAliasExist, [
-				openIDFather,
-				myOpenId
-			])
-			if (!checkAliasResult.data[0]) {
-				const queryResult = await query(queryName.createRelationship, [
-					openIDFather,
-					myOpenId
-				])
-				if (
-					queryResult.data[0] &&
-					queryResult.data[0].openIDFather === openIDFather
-				) {
-					res.send({
-						status: Status.SUCCESS
-					})
-					Logger.info('success')
-				} else {
-					res.send({
+			const { id } = req.body
+			const { myOpenId } = req.params
+
+			const t = await db.transaction()
+			try {
+				const todoConnection = await Connection.update(
+					{ status: DBStatus.INACTIVE },
+					{
+						where: {
+							id,
+							[Op.or]: [{ openId: myOpenId }, { openIdChild: myOpenId }]
+						},
+						transaction: t,
+						returning: true
+					}
+				)
+				const { openId, openIdChild } = todoConnection[1][0].dataValues
+				await StoreProduct.update(
+					{ status: 'Not_Available' },
+					{
+						where: {
+							openId: openIdChild,
+							openIdFather: openId
+						},
+						transaction: t
+					}
+				)
+				await t.commit()
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('Remove connection successfully')
+			} catch (err) {
+				await t.rollback()
+				res.status(500).send({
+					status: Status.FAIL,
+					message: '解除关系失败'
+				})
+				Logger.info('Remove connection fail')
+			}
+		}
+	)
+
+	route.post(
+		'/delete-connection',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id } = req.body
+			const { myOpenId } = req.params
+
+			const t = await db.transaction()
+			try {
+				const todoConnection = await Connection.update(
+					{ status: 'Inactive' },
+					{
+						where: {
+							id,
+							[Op.or]: [{ openId: myOpenId }, { openIdChild: myOpenId }]
+						},
+						transaction: t,
+						returning: true
+					}
+				)
+				const { openId, openIdChild } = todoConnection[1][0].dataValues
+				await StoreProduct.update(
+					{ status: 'Not_Available' },
+					{
+						where: {
+							openId: openIdChild,
+							openIdFather: openId
+						},
+						transaction: t
+					}
+				)
+				await t.commit()
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('Remove connection successfully')
+			} catch (err) {
+				await t.rollback()
+				res.status(500).send({
+					status: Status.FAIL,
+					message: '解除关系失败'
+				})
+				Logger.info('Remove connection fail')
+			}
+		}
+	)
+
+	route.post(
+		'/new-connection',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { code } = req.body
+			const { myOpenId } = req.params
+			try {
+				const todoDealer = await Invitation.findOne({ where: { code } })
+				if (!todoDealer?.dataValues?.code) {
+					return res.send({
 						status: Status.FAIL,
-						message: '关注失败'
+						message: '邀请码有误'
 					})
-					Logger.info('failed')
 				}
-			} else if (checkAliasResult.data[0].status === AliasStatus.DISABLED) {
-				const queryResult = await query(queryName.enableAlias, [
-					openIDFather,
-					myOpenId
-				])
-				if (
-					queryResult.data[0] &&
-					queryResult.data[0].openIDFather === openIDFather
-				) {
-					res.send({
-						status: Status.SUCCESS
+				if (todoDealer?.dataValues?.openId === myOpenId) {
+					return res.send({
+						status: Status.FAIL,
+						message: '您不能关注自己'
 					})
-					Logger.info('success')
 				}
+				const todoConnection = await Connection.findOne({
+					where: { openId: todoDealer.dataValues.openId, openIdChild: myOpenId }
+				})
+				if (todoConnection?.dataValues.status === 'Active') {
+					return res.send({
+						status: Status.FAIL,
+						message: '您已关注此经销商'
+					})
+				}
+				await Connection.findOrCreate({
+					where: {
+						openId: todoDealer.dataValues.openId,
+						openIdChild: myOpenId
+					},
+					defaults: {
+						status: 'Active',
+						invitationId: todoDealer.dataValues.id
+					}
+				})
+				await Invitation.update({ status: 'Inactive' }, { where: { code } })
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('Build connection successfully')
+			} catch (err) {
+				Logger.info('Build connection failed')
+				return res.status(500).send({
+					status: Status.FAIL,
+					message: '关注失败'
+				})
 			}
 		}
 	)

@@ -39,14 +39,14 @@
 		<view class="productsBox">
 			<block wx:for="{{allFathersProducts}}" wx:key="id" wx:for-item="product">
 				<view class="productCard" bindtap="bindtoSale" data-product="{{product}}">
-					<image class='pic store' src='{{product.coverImageURL}}'>
+					<image class='pic store' src='{{product.coverImageUrl}}'>
 					</image>
 					<view class="dealerBox">
 						<image src="{{product.dealerSale.avatar}}"></image>
 						<text>{{product.dealerSale.name}}</text>
 					</view>
-					<text class="name">{{product.productName}}</text>
-					<text class="price">￥{{product.dealerSale.price}}</text>
+					<text class="name">{{product.name}}</text>
+					<text class="price">￥{{product.defaultPrice}}</text>
 				</view>
 			</block>
 		</view>

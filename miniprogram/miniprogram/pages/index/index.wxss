@@ -3,41 +3,12 @@ text {
   font-size: 12px;
 }
 
-.searchTop {
-  padding: 18px;
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  background-color: #fff;
-  z-index: 999;
-  box-shadow: 0px 2px 4px #f2f2f2;
-}
-
-.searchForm {
-  display: flex;
-  justify-content: space-between;
-  border: 1px solid #979797;
-}
-
-.searchInput {
-  width: 80%;
-  margin: 8px;
-}
-
-.searchIcon {
-  width: 12%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .dealerContainer {
   display: flex;
   flex-direction: column;
   padding-left: 18px;
   padding-bottom: 16px;
-  margin-top: 84px;
+  margin-top: 14px;
 }
 
 .dealerContainer .title {

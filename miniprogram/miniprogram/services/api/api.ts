@@ -1,6 +1,6 @@
 import request from './request'
 import { getProductList, getMyStore } from './product'
-import { getAuth, getSignup, getCodes, getWarehouse } from './user'
+import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse } from './user'
 import { Address, Product, SaleOrder } from "../../models/index"
 
 const updateUserInfo = (userInfo: {}) => request.postRequest("users/updateUserInfo", userInfo)
@@ -8,17 +8,11 @@ const getFatherAndChildNumber = () => request.getRequest("users/fatherAndChildNu
 const getAddress = () => request.getRequest("users/getAddress")
 const addAddress = (address: Address, selectedField: number) => request.postRequest("users/newAddress", { address, selectedField })
 const deleteAddress = (id: string) => request.deleteRequest("users/deleteAddress", { id: id })
-const getFathers = () => request.getRequest("users/allFathers")
-const getChildren = () => request.getRequest("users/allChildren")
-
 const newCode = () => request.postRequest("users/newCode")
-const newRelation = (code: string) => request.postRequest("users/newRelationship", { code: code })
 const uploadImage = (filePath: string, id: string, imageSide: string) => request.uploadImage("users/uploadFile", filePath, id, imageSide)
 const getCountriesData = () => request.getRequest("users/countries")
 const submitOrder = (order: Product[], addressID: string, comment: string) => request.postRequest("orders/submitOrder", { order, addressID, comment })
-const createWarehouse = (phone: string, countryCode: string) => request.postRequest("warehouse/createWarehouse", { phone: phone, countryCode: countryCode })
 const updatePhone = (phone: string, countryCode: string) => request.postRequest("warehouse/updatePhone", { phone: phone, countryCode: countryCode })
-
 const updateSale = (product: Product) => request.postRequest("products/updateSale", { product: product })
 const unreleaseProduct = (product: Product) => request.postRequest("products/unreleaseProduct", { product: product })
 const getOrdersFromFather = (openID: string) => request.postRequest("orders/myOrderFromFather", { openID: openID })
@@ -37,8 +31,7 @@ const preOrder = () => request.postRequest("orders/preOrder")
 const charge = (params: object) => request.paymentRequest(params)
 const getQRcode = (serialID: number) => request.getRequest("users/wxQRcode", { serialID: serialID })
 const getProductInfoBySerialID = (serialID: number) => request.getRequest("products/productsBySerialID", { serialID: serialID })
-const getUserInfo = () => request.getRequest("users/basicInfo")
-const makeConnectionWithoutCode = (openIDFather: string) => request.postRequest("users/connectionWithoutCode", { openIDFather })
+
 
 
 export {
@@ -50,10 +43,9 @@ export {
   getAddressByID,
   addAddress,
   deleteAddress,
-  getFathers,
-  getChildren,
+  getAlias,
   newCode,
-  newRelation,
+  getAccount,
   getCountriesData,
   uploadImage,
   submitOrder,
@@ -77,7 +69,6 @@ export {
   getAllPurchaseOrders,
   getQRcode,
   getProductInfoBySerialID,
-  getUserInfo,
-  makeConnectionWithoutCode,
+  makeNewConnection,
   hideOrder, getSignup, getCodes
 }

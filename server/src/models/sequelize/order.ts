@@ -7,6 +7,7 @@ const Order = db.define('orders', {
 		defaultValue: DataTypes.UUIDV4,
 		primaryKey: true
 	},
+	groupId: { type: DataTypes.UUID, allowNull: false },
 	orderNumber: {
 		type: DataTypes.STRING
 	},
@@ -20,8 +21,7 @@ const Order = db.define('orders', {
 	userId: { type: DataTypes.STRING, allowNull: false },
 	dealerId: { type: DataTypes.STRING, allowNull: false },
 	payment: {
-		type: DataTypes.JSON,
-		allowNull: false
+		type: DataTypes.JSON
 	},
 	status: {
 		type: DataTypes.ENUM(

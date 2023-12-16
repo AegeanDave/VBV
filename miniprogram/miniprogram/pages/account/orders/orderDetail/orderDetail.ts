@@ -1,43 +1,66 @@
-import { SaleOrder, PurchasedOrder, DealerOrder, Product, IAppOption } from "../../../../models/index"
-
-const app = getApp<IAppOption>()
-
+// pages/account/orders/orderDetail/orderDetail.ts
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    order: {},
-    percent: 0 as number
+
   },
 
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: async function () {
-    const order: SaleOrder | PurchasedOrder | DealerOrder = app.globalData.queryParameter.pop()
-    this.setData({
-      order: order,
-    })
+  onLoad() {
+
   },
-  bindCopy(e: any) {
-    wx.setClipboardData({
-      data: e.currentTarget.dataset.name,
-      success: function () {
-        wx.hideToast()
-        wx.showToast({
-          title: '已成功复制',
-          icon: 'success',
-          duration: 2000
-        })
-      }
-    })
+
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady() {
+
   },
-  showDetail(e: any) {
-    const updateArrayLabel = `order.subOrders[${e.currentTarget.dataset.firstindex}].orderProducts[${e.currentTarget.dataset.secondindex}].showDetail`
-    this.setData({
-      [updateArrayLabel]: e.currentTarget.dataset.showdetail
-    })
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page unload
+   */
+  onUnload() {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * Called when page reach bottom
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage() {
+
   }
 })

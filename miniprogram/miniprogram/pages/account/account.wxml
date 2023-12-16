@@ -1,7 +1,7 @@
 <view class="header">
-  <view class="tapLeft" bindtap="onNavigate" data-path="customer">
+  <view class="tapLeft" bindtap="toCustomer" data-path="customer">
     <image src="../../image/follower.png"></image>
-    <text>客户端 | {{childNumber}}</text>
+    <text>客户端 | {{customerNum}}</text>
     <view wx:if="{{waitForPayment}}" class="redDot follower"></view>
   </view>
   <view class="openData">
@@ -10,41 +10,41 @@
         <image src="{{avatarUrl}}" class='user-info-avatar'></image>
       </block>
       <block wx:else>
-        <mp-icon icon='me' size='25'></mp-icon>
+        <mp-icon icon='me' size='40' color="grey"></mp-icon>
       </block>
     </view>
     <text class="nickname" lang="zh_CN">{{username}}</text>
   </view>
-  <view class="tapRight" bindtap="onNavigate" data-path="dealer">
+  <view class="tapRight" bindtap="toDealer">
     <image src="../../image/follows.png"></image>
-    <text>供应端 | {{fatherNumber}}</text>
+    <text>供应端 | {{dealerNum}}</text>
     <view wx:if="{{needToPay}}" class="redDot"></view>
   </view>
 </view>
 <view class="nav account">
-  <view class="item" bindtap="onNavigate" data-path="store">
-    <image src="../../image/store.png"></image>
+  <view class="item" bindtap="toStore">
+    <image src="../../image/store.png" mode="widthFix"></image>
     <text>我的在售</text>
   </view>
-  <view class="item" bindtap="onNavigate" data-path="warehouse">
-    <image src="../../image/warehouse.png"></image>
+  <view class="item" bindtap="toWarehouse">
+    <image src="../../image/warehouse.png" mode="widthFix"></image>
     <text>{{hasWarehouse?"仓库管理":"我要买货"}}</text>
   </view>
-  <view class="item myOrder" bindtap="onNavigate" data-path="order">
+  <view class="item myOrder" bindtap="toOrder">
     <view wx:if="{{waitForPayment}}" class="redDot"></view>
-    <image src="../../image/order.png"></image>
+    <image src="../../image/order.png" mode="widthFix"></image>
     <text>销售记录</text>
   </view>
-  <view class="item myOrder" bindtap="onNavigate" data-path="history">
-    <image src="../../image/history.png"></image>
+  <view class="item myOrder" bindtap="toHistory">
+    <image src="../../image/history.png" mode="widthFix"></image>
     <text>采购记录</text>
   </view>
-  <view class="item" bindtap="onNavigate" data-path="invitation">
-    <image src="../../image/couponCode.png" class="couponCode"></image>
+  <view class="item" bindtap="toInvitation">
+    <image src="../../image/couponCode.png" class="couponCode" mode="widthFix"></image>
     <text>邀请客户</text>
   </view>
-  <view class="item" bindtap="onNavigate" data-path="connection">
-    <image src="../../image/plainCode.png" class="couponCode"></image>
+  <view class="item" bindtap="toConnection">
+    <image src="../../image/plainCode.png" class="couponCode" mode="widthFix"></image>
     <text>输入邀请码</text>
   </view>
 </view>

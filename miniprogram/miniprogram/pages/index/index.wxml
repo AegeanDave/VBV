@@ -1,67 +1,100 @@
 <!--index.wxml-->
-<view class="searchTop">
-	<view class="searchForm" bindsubmit="searchSubmit">
+<!-- <view class="searchForm" bindsubmit="searchSubmit">
 		<input value="{{search.searchValue}}" placeholder="搜索产品名" class="searchInput" bindinput="handleProductsSearching"
 			name="teamSearchKeyWords" />
 		<view class="searchIcon searchActive">
 			<icon type="search" size="28" color="#888"></icon>
 		</view>
-	</view>
-</view>
+	</view> -->
+<mp-searchbar placeholder="输入好友微信名搜索产品" bindinput="onSearch" bindclear="onClear"></mp-searchbar>
 <view class="dealerContainer">
-	<text class="title">关注商家</text>
-	<view class="dealerList">
-		<view class="dealer all" bindtap="chooseDealer" data-dealer="">
-			<view class="outerBorder {{!selectedDealer && 'selected'}}">
-				<view class="avatarContainer">
-					<image src="../image/people.png" class="placeholder"></image>
-				</view>
-			</view>
-			<text class="name">查看全部</text>
-		</view>
-		<scroll-view class="scrollH" scroll-x="true">
-			<view class="innerContainer">
-				<block wx:for="{{dealers}}" wx:for-item="dealer" wx:key="id">
-					<view class="dealer" bindtap="chooseDealer" data-dealer="{{dealer.name}}">
-						<view class="outerBorder {{selectedDealer===dealer.name && 'selected'}}">
-							<view class="avatarContainer">
-								<image src="{{dealer.avatar}}" wx:if="{{dealer.avatar}}" class="avatar"></image>
-								<image src="../image/people.png" class="placeholder" wx:else></image>
-							</view>
-						</view>
-						<text class="name">{{dealer.name}}</text>
-					</view>
-				</block>
-			</view>
-		</scroll-view>
-	</view>
+  <text class="title">关注商家</text>
+  <view class="dealerList">
+    <view class="dealer all" bindtap="chooseDealer" data-dealer="">
+      <view class="outerBorder {{!selectedDealer && 'selected'}}">
+        <view class="avatarContainer">
+          <image src="../../image/people.png" class="placeholder"></image>
+        </view>
+      </view>
+      <text class="name">查看全部</text>
+    </view>
+    <scroll-view class="scrollH" scroll-x="true">
+      <view class="innerContainer">
+        <block wx:if="{{searching===true}}">
+          <block wx:for="{{dealers}}" wx:for-item="dealer" wx:key="id">
+            <view class="dealer" wx:if="{{dealer.dealer.picking}}" bindtap="chooseDealer" data-dealer="{{dealer.openId}}">
+              <view class="outerBorder {{selectedDealer===dealer.name && 'selected'}}">
+                <view class="avatarContainer">
+                  <image src="{{dealer.dealer.avatarUrl||'../image/people.png'}}" class="{{dealer.dealer.avatarUrl?'avatar':'placeholder'}}"></image>
+                </view>
+              </view>
+              <text class="name">{{dealer.username}}</text>
+            </view>
+          </block>
+        </block>
+        <block wx:else>
+          <block wx:for="{{dealers}}" wx:for-item="dealer" wx:key="id">
+            <view class="dealer" bindtap="chooseDealer" data-dealer="{{dealer.openId}}">
+              <view class="outerBorder {{selectedDealer===dealer.name && 'selected'}}">
+                <view class="avatarContainer">
+                  <image src="{{dealer.dealer.avatarUrl?dealer.dealer.avatarUrl:'../image/people.png'}}" class="{{dealer.dealer.avatarUrl?'avatar':'placeholder'}}"></image>
+                </view>
+              </view>
+              <text class="name">{{dealer.dealer.username}}</text>
+            </view>
+          </block>
+        </block>
+      </view>
+    </scroll-view>
+  </view>
 </view>
 <view wx:if="{{productList.length>0}}" class="productList">
-	<view class="productCard home" wx:for="{{( inputSearch || selectedDealer) ? searchList : productList}}" wx:key="id"
-		bindtap="viewDetail" wx:for-item="product" data-product="{{product}}">
-		<image class="productCardImage" src="{{product.coverImageURL}}"></image>
-		<view class="tagField">
-			<text class="tag" wx:if="{{product.idCardRequired}}">海外直邮</text>
-			<text class="tag" wx:if="{{product.freeShipping}}">邮费到付</text>
-			<text class="tag" wx:if="{{!product.freeShipping}}">包邮</text>
-		</view>
-		<text class='name'>{{product.productName}}</text>
-		<view class='price'>
-			<text>￥{{product.dealerSale.price}}</text>
-		</view>
-		<view class="dealerBox">
-			<image src="{{product.dealerSale.avatar}}"></image>
-			<text>{{product.dealerSale.name}}</text>
-		</view>
-	</view>
+  <block wx:for="{{productList}}" wx:key="id" wx:for-item="product">
+    <block wx:if="{{selectedDealer}}">
+      <view class="productCard home" bindtap="viewDetail" wx:if="{{product.openId===selectedDealers}}">
+        <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
+        <view class="tagField">
+          <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
+          <text class="tag" wx:if="{{product.setting.isFreeShipping}}">邮费到付</text>
+          <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">包邮</text>
+        </view>
+        <text class='name'>{{product.name}}</text>
+        <view class='price'>
+          <text>￥{{product.dealerSale.price}}</text>
+        </view>
+        <view class="dealerBox">
+          <image src="{{product.dealerSale.avatar}}"></image>
+          <text>{{product.dealerSale.name}}</text>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="productCard home" bindtap="viewDetail">
+        <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
+        <view class="tagField">
+          <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
+          <text class="tag" wx:if="{{product.setting.isFreeShipping}}">邮费到付</text>
+          <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">包邮</text>
+        </view>
+        <text class='name'>{{product.name}}</text>
+        <view class='price'>
+          <text>￥{{product.defaultPrice}}</text>
+        </view>
+        <view class="dealerBox">
+          <image src="{{product.dealerSale.avatar}}"></image>
+          <text>{{product.dealerSale.name}}</text>
+        </view>
+      </view>
+    </block>
+  </block>
 </view>
 <view wx:elif="{{productList.length===0 && dealers.length===0}}" class="empty">
-	<text>您还没有关注任何商家</text>
-	<text>请通过邀请码添加好友</text>
-	<button bindtap="onConnectAlias">去添加好友</button>
+  <text>您还没有关注任何商家</text>
+  <text>请通过邀请码添加好友</text>
+  <button bindtap="onToConnection">去添加好友</button>
 </view>
 <view wx:elif="{{productList.length===0 && dealers.length>0}}" class="empty">
-	<image src='../image/empty_products.png' class="noProducts"></image>
-	<text>
-		首页暂无商品</text>
+  <image src='../../image/empty_products.png' class="noProducts"></image>
+  <text>
+    您关注的商家暂无上架任何商品</text>
 </view>

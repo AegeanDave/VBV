@@ -42,6 +42,7 @@ Page({
   },
   onShow: async function () {
     const { myProducts, availableProducts }: any = await getMyStore()
+    console.log(availableProducts)
     this.setData({
       myProductList: myProducts,
       allFathersProducts: availableProducts

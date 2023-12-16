@@ -4,7 +4,7 @@
   </view>
   <view class="codeBox avaliable">
     <text class="subtitle">我的邀请码（{{activeCodes.length}}）</text>
-    <scroll-view wx:if="{{activeCodes.length!==0}}" scroll-y="true" class="scrollUnused">
+    <scroll-view wx:if="{{activeCodes.length!==0}}" scroll-y="true" class="scroll-code">
       <view class="codeList">
         <block wx:for="{{activeCodes}}" wx:key="id" wx:for-item="code">
           <view class="code">
@@ -22,7 +22,7 @@
       <text>您暂无可用邀请码</text>
     </view>
   </view>
-  <view class="codeBox used">
+  <!-- <view class="codeBox used">
     <text class="subtitle">已用邀请码（{{InactiveCodes.length}}）</text>
     <scroll-view scroll-y="true" class="scrollUsed">
       <view class="codeList" wx:if="{{InactiveCodes.length!==0}}">
@@ -33,7 +33,7 @@
         </block>
       </view>
     </scroll-view>
-  </view>
+  </view> -->
 </view>
 <view class="btnArea">
   <button class='buyNew confirm' bindtap="buyNew">购买新的邀请码</button>

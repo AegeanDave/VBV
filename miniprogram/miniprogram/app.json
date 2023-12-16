@@ -13,7 +13,7 @@
     "pages/checkOut/address/address",
     "pages/checkOut/newAddress/newAddress",
     "pages/store/store",
-    "pages/account/orders/orders",
+    "pages/soldOrders/soldOrders",
     "pages/account/orderHistory/orderHistory",
     "pages/account/warehouse/warehouse",
     "pages/account/warehouse/mailer/mailer",

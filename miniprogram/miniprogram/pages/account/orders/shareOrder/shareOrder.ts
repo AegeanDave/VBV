@@ -1,28 +1,66 @@
-import { Order, IAppOption } from "../../../../models/index"
-
-const app = getApp<IAppOption>()
-
+// pages/account/orders/shareOrder/shareOrder.ts
 Page({
 
   /**
    * Page initial data
    */
   data: {
-    order: {} as Order
+
   },
 
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
-    const order = app.globalData.queryParameter.pop()
-    this.setData({
-      order: order
-    })
+  onLoad() {
+
   },
-  bindBack() {
-    wx.navigateBack({
-      delta: 1
-    })
+
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page unload
+   */
+  onUnload() {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh() {
+
+  },
+
+  /**
+   * Called when page reach bottom
+   */
+  onReachBottom() {
+
+  },
+
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage() {
+
   }
 })

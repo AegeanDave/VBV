@@ -11,8 +11,13 @@ export const isAuthenticated = async (
 	res: Response,
 	next: NextFunction
 ) => {
-	const sessionKey = req.headers.authorization
-	const checkSessionResult: string = myCache.get(sessionKey)
+	const { authorization } = req.headers
+	if (!authorization) {
+		return res
+			.status(403)
+			.send({ status: Status.FAIL, message: 'Authorization fail!' })
+	}
+	const checkSessionResult: string | undefined = myCache.get(authorization)
 	if (!checkSessionResult) {
 		res
 			.status(403)
@@ -33,7 +38,7 @@ export const adminAuthenticated = async (
 		res.status(403).send('Authorization fail!')
 		return
 	}
-	const checkSessionResult: Session = myCache.get(sessionKey)
+	const checkSessionResult: Session | undefined = myCache.get(sessionKey)
 
 	if (!checkSessionResult) {
 		res.status(403).send('Authorization fail!')

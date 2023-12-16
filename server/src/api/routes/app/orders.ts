@@ -10,29 +10,21 @@ import { sendNewOrderSMS } from '../../../provider/twilio'
 import { makeOrderNumber, sendSubscribeMessage } from '../../../provider/index'
 import { newOrderMail } from '../../../provider/mailer'
 import moment from 'moment-timezone'
+import {
+	Address,
+	Order,
+	OrderDetail,
+	StoreProduct,
+	User
+} from '../../../models/sequelize'
+import { Op } from 'sequelize'
+import db from '../../../config/database'
 
 const route = Router()
 
 moment.locale('zh-cn')
 moment.tz.setDefault('Asia/Shanghai')
 
-const groupProductsByDealer = (order: Product[]) => {
-	const allFathers: any = []
-	order.forEach((originProduct: Product) => {
-		if (allFathers.indexOf(originProduct.dealerSale.openId) === -1) {
-			allFathers.push(originProduct.dealerSale.openId)
-		}
-	})
-	const groupedOrders: any = []
-	allFathers.forEach((dealerOpenId: string) => {
-		const newOrder = order.filter(
-			(originalProduct: Product) =>
-				originalProduct.dealerSale.openId === dealerOpenId
-		)
-		groupedOrders.push(newOrder)
-	})
-	return { allFathers, groupedOrders }
-}
 const handleSendNewOrderMessage = async (
 	openId: string,
 	originalOrderId: string
@@ -55,150 +47,6 @@ const handleSendNewOrderMessage = async (
 			)
 		}
 	}
-}
-
-const handleCreateNonFirstOrder = async (
-	subOrders: SubOrder[],
-	addressId: string,
-	originOrderId: string,
-	orderNumber: string,
-	comment?: string
-) => {
-	const queryList: any = []
-	return new Promise((resolve, reject) => {
-		subOrders.forEach((subOrder: SubOrder) => {
-			if (subOrder.dealer.openId !== myOpenId) {
-				const orderId = uuidv4()
-				queryList.push(
-					query(queryName.newOrder, [
-						orderId,
-						originOrderId,
-						subOrder.dealer.openId,
-						myOpenId,
-						addressId,
-						orderNumber,
-						comment,
-						false
-					])
-				)
-				subOrder.orderProducts.forEach((product: OrderProduct) => {
-					query(queryName.getPriceByFatherAndProduct, [
-						product.openIdFather,
-						product.productId,
-						myOpenId
-					])
-						.then(res => {
-							if (res.count === 0) {
-								reject('product not in store')
-							}
-							queryList.push(
-								query(queryName.newOrderDetail, [
-									orderId,
-									originOrderId,
-									product.productId,
-									product.quantity,
-									res.data[0].price,
-									res.data[0].openIdFather
-								])
-							)
-						})
-						.catch(err => {
-							reject(err)
-						})
-				})
-			} else {
-				handleSendNewOrderMessage(myOpenId, originOrderId)
-			}
-		})
-		Promise.all(queryList)
-			.then((queryResult: any) => {
-				subOrders.forEach((subOrder: SubOrder) => {
-					if (myOpenId !== subOrder.dealer.openId)
-						sendSubscribeMessage(
-							orderNumber,
-							myOpenId,
-							moment().format('lll'),
-							subOrder.dealer.openId
-						)
-				})
-				resolve(true)
-			})
-			.catch(err => {
-				reject(err)
-			})
-	})
-}
-
-const handleCreateFirstOrder = async (
-	order: Product[],
-	addressID: string,
-	originalOrderID: string,
-	orderNumber: string,
-	comment?: string,
-	isOrigin?: boolean
-) => {
-	const { groupedOrders, allFathers } = groupProductsByDealer(order)
-	const queryList: any = []
-	return new Promise((resolve, reject) => {
-		groupedOrders.forEach((newOrder: any, index: number) => {
-			if (allFathers[index] !== myOpenId) {
-				const orderID = uuidv4()
-				queryList.push(
-					query(queryName.newOrder, [
-						orderID,
-						originalOrderID,
-						allFathers[index],
-						myOpenId,
-						addressID,
-						orderNumber,
-						comment,
-						isOrigin || false
-					])
-				)
-				newOrder.forEach((product: Product) => {
-					query(queryName.getPrice, [
-						product.dealerSale.inStoreProductId,
-						myOpenId
-					])
-						.then(res => {
-							if (res.count === 0) {
-								reject(false)
-							}
-							queryList.push(
-								query(queryName.newOrderDetail, [
-									orderID,
-									originalOrderID,
-									product.productId,
-									product.quantity,
-									res.data[0].price,
-									product.dealerSale.openIdFather
-								])
-							)
-						})
-						.catch(err => {
-							reject(false)
-						})
-				})
-			} else {
-				handleSendNewOrderMessage(myOpenId, originalOrderID)
-			}
-		})
-		Promise.all(queryList)
-			.then((queryResult: any) => {
-				allFathers.forEach((openIDFather: string) => {
-					sendSubscribeMessage(
-						orderNumber,
-						myOpenId,
-						moment().format('lll'),
-						openIDFather
-					)
-				})
-				resolve(queryResult)
-			})
-			.catch(err => {
-				reject(false)
-			})
-	})
 }
 
 export default (app: Router) => {
@@ -249,104 +97,149 @@ export default (app: Router) => {
 		}
 	)
 	route.get(
-		'/allSaleOrders',
+		'/all-sold',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const queryResult = await query(queryName.getAllSaleOrders, [myOpenId])
-			if (queryResult.data) {
-				queryResult.data.forEach(order => {
-					const findShippingOrder = !order.subOrders.find((subOrder: any) =>
-						subOrder.orderProducts.find(
-							(product: any) =>
-								product.status !== OrderStatus.SHIPPING &&
-								product.status !== OrderStatus.CANCELLED
-						)
-					)
-					if (findShippingOrder) {
-						order.status = OrderStatus.COMPLETE
-					}
+			const { myOpenId } = req.params
+			try {
+				const todoOrder = await Order.findAll({
+					where: {
+						dealerId: myOpenId
+					},
+					group: 'orderName',
+					include: [
+						OrderDetail,
+						Address,
+						{ model: User, attributes: ['username', 'avatarUrl'] }
+					]
 				})
-				res.send({
-					status: Status.SUCCESS,
-					data: queryResult.data
-				})
-				Logger.info('sale orders get')
-			} else {
-				res.send({
+
+				res.send(todoOrder)
+				Logger.info('Sold orders got')
+			} catch (err) {
+				res.status(500).send({
 					status: Status.FAIL
 				})
+				Logger.info('Sold orders fetch failed')
 			}
 		}
 	)
 	route.get(
-		'/myPurchase',
+		'/all-purchased',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+
 			try {
-				const queryResult = await query(queryName.myOrdersHistory, [myOpenId])
-				res.send({
-					status: Status.SUCCESS,
-					data: queryResult.data
+				const todoOrders = await Order.findAll({
+					where: {
+						userId: myOpenId
+					},
+					include: [OrderDetail, Address]
 				})
+				res.send(todoOrders)
 				Logger.info('purchased orders get')
 			} catch (err) {
-				res.send({
+				res.status(500).send({
 					status: Status.FAIL,
-					message: err
+					message: '获取失败'
 				})
 				Logger.info('orders fail')
 			}
 		}
 	)
 
-	route.post(
-		'/submitOrder',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const originOrderID = uuidv4()
-			const orderNumber = makeOrderNumber()
-			const { order, addressID, comment } = req.body
-			const result = await handleCreateFirstOrder(
-				order,
-				addressID,
-				originOrderID,
-				orderNumber,
-				comment,
-				true
-			)
-			!result
-				? res.send({
-						status: Status.FAIL
-				  })
-				: res.send({
-						status: Status.SUCCESS
-				  })
-		}
-	)
-	route.post(
-		'/markPaid',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const { orders } = req.body
-			try {
-				for (const order of orders) {
-					query(queryName.markPaidWithComment, [
-						order.orderId,
-						order.newComment || order.comment
-					])
-					await handleCreateNonFirstOrder(
-						order.subOrders,
-						order.address.addressId,
-						order.originOrderId,
-						order.orderNumber,
-						order.newComment
-					)
+	route.post('/new', isAuthenticated, async (req: Request, res: Response) => {
+		const groupId = uuidv4()
+		const { items, addressId, comment } = req.body
+		try {
+			const todoStoreProducts = await StoreProduct.findAll({
+				where: {
+					id: {
+						[Op.or]: items.map(
+							(item: { id: string; quantity: number }) => item.id
+						)
+					}
 				}
+			})
+			if (items.length !== todoStoreProducts.length) {
+				Logger.info('orders fail')
+				return res.send({
+					status: Status.FAIL,
+					message: '创建失败'
+				})
+			}
+			const orderNumber = makeOrderNumber()
+
+			const orderData: any = []
+			todoStoreProducts.forEach(({ dataValues }) => {
+				const index = orderData.findIndex(
+					(element: any) => element.dealerId! === dataValues.openId
+				)
+				const quantity = items.find(
+					(item: any) => item.id === dataValues.id
+				).quantity
+				const orderDetail = {
+					productInfo: dataValues,
+					productId: dataValues.productId,
+					quantity,
+					comment,
+					subtotal: quantity * dataValues.defaultPrice
+				}
+				if (index === -1) {
+					orderData.push({
+						orderNumber,
+						groupId,
+						userId: myOpenId,
+						dealerId: dataValues.openId,
+						addressId,
+						comment,
+						status: 'Unpaid',
+						orderDetails: [orderDetail]
+					})
+				} else {
+					orderData[index].orderDetails?.push(orderDetail)
+				}
+			})
+			await Order.bulkCreate(orderData, {
+				include: [OrderDetail]
+			})
+			res.send()
+			Logger.info('Order create successfully')
+		} catch (err) {
+			res.status(500).send({
+				status: Status.FAIL,
+				message: '创建失败'
+			})
+			Logger.info('Order create fail')
+		}
+	})
+	route.post(
+		'/mark-paid',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { order } = req.body
+			const t = await db.transaction()
+			try {
+				const todoOrderDetails = await OrderDetail.findAll({
+					where: { orderId: order.id }
+				})
+
+				const todoOrder = await Order.update(
+					{ status: 'paid' },
+					{ where: { id: order.id }, transaction: t }
+				)
+				const orderData = []
+
+				const todoOrders = await Order.create()
+
+				await t.commit()
 				res.send({
 					status: Status.SUCCESS
 				})
 				Logger.info('Success sign to paid and transfer to father')
 			} catch (error) {
+				await t.rollback()
 				res.send({
 					status: Status.FAIL,
 					message: error
@@ -356,23 +249,22 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
-		'/cancelOrder',
+		'/cancel',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { order } = req.body
 			try {
-				await query(queryName.cancelOrder, [order.orderId])
-				await query(queryName.cancelOrderDetail, [order.orderId])
+				await Order.update({ status: 'Cancel' }, { where: { id: order.id } })
 				res.send({
 					status: 'SUCCESS'
 				})
-				Logger.info('order cancel success')
+				Logger.info('order cancel successfully')
 			} catch (err) {
 				res.send({
 					status: Status.FAIL,
 					message: err
 				})
-				Logger.info('cancel order fail')
+				Logger.info('Cancel order failed')
 			}
 		}
 	)

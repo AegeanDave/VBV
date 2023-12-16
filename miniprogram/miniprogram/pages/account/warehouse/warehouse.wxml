@@ -76,7 +76,7 @@
 <block wx:else>
   <view>
     <view class="instruction">
-      <image src="../../image/warehouse.svg" mode="aspectFit"></image>
+      <image src="../../../image/warehouse.svg" mode="aspectFit"></image>
       <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
     </view>
     <view class="card register">
@@ -97,14 +97,10 @@
         <view class="btnArea">
           <button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
         </view>
-        <pop-up show="{{showPopup}}">
-          <view class="container">
-            <view class="text">确认与手机号<text class="bold">+{{countryCodes[currentCode].value}}
-                {{phone}}</text>绑定？登录仓库端将需要该号码接收验证码
-            </view>
-            <button class="confirm submit" formType="submit">确认无误</button>
+        <mp-dialog show="{{showPopup}}" mask-closable="{{false}}" title="确认绑定" buttons="{{[{text: '取消'}, {text: '确认无误'}]}}" bindbuttontap="onDialogTap">
+          <view class="text">确认后{{phone}}将用于仓库管理平台登录
           </view>
-        </pop-up>
+        </mp-dialog>
       </form>
     </view>
   </view>

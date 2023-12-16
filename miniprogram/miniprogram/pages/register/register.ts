@@ -59,7 +59,6 @@ Page({
 
   },
 
-
   onChooseAvatar(e: any) {
     const { avatarUrl } = e.detail
     this.setData({
@@ -80,7 +79,7 @@ Page({
       return
     }
     const result: any = await getSignup(username, this.data.avatarUrl)
-    app.globalData.user = { ...app.globalData.user, ...result, }
+    app.globalData.user = { ...app.globalData.user, ...JSON.parse(result) }
     wx.navigateBack()
   }
 })

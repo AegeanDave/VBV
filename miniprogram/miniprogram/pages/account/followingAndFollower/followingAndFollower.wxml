@@ -16,14 +16,24 @@
     <switch checked="{{lookingUnpaid}}" bindchange="bindFilter"></switch>
   </view>
   <view class="dealerList">
-    <block wx:for="{{!lookingUnpaid?groupList:filterGroup}}" wx:key="id" wx:for-item="dealer">
-      <view class="dealerCard list" bindtap="toDealer" data-dealer="{{dealer}}">
-        <view class="imgBox">
-          <image class="avatar" src="{{dealer.avatar}}"></image>
-          <view class="redDot" wx:if="{{dealer.ifUnpaid}}"></view>
-        </view>
-        <text class="name">{{dealer.name}}</text>
-        <image class="arrow" src="../../image/arrow.png" bindtap="toDealer" data-dealer="{{dealer}}"></image>
+    <block wx:for="{{!lookingUnpaid?groupList:filterGroup}}" wx:key="id" wx:for-item="alias">
+      <view class="dealerCard list" bindtap="toDealer" data-dealer="{{alias}}">
+        <block wx:if="{{alias.dealer.username}}">
+          <view class="imgBox">
+            <image class="avatar" src="{{alias.dealer.avatarUrl}}"></image>
+            <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
+          </view>
+          <text class="name">{{alias.dealer.username}}</text>
+          <image class="arrow" src="../../../image/arrow.png" bindtap="toDealer" data-dealer="{{alias}}"></image>
+        </block>
+        <block wx:if="{{alias.customer.username}}">
+          <view class="imgBox">
+            <image class="avatar" src="{{alias.customer.avatarUrl}}"></image>
+            <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
+          </view>
+          <text class="name">{{alias.customer.username}}</text>
+          <image class="arrow" src="../../../image/arrow.png" bindtap="toDealer" data-dealer="{{alias}}"></image>
+        </block>
       </view>
     </block>
   </view>

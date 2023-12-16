@@ -4,12 +4,13 @@ import { query, Logger } from '../../../services'
 import { queryName } from '../../../services/queryName'
 import { isAuthenticated, myOpenId } from '../../middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
-import { SaleStatus, Status } from '../../../constants'
+import { DBStatus, SaleStatus, Status } from '../../../constants'
 import {
 	Connection,
 	Product,
 	StoreProduct,
-	Price
+	Price,
+	User
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 
@@ -36,24 +37,28 @@ export default (app: Router) => {
 			const todoAlias = await Connection.findAll({
 				where: {
 					openIdChild: myOpenId,
-					status: 'Active'
-				}
-			})
-			const todoProducts = await StoreProduct.findAll({
-				include: {
-					model: Price,
-					as: 'specialPrice',
-					where: {
-						openIdChild: myOpenId
-					}
+					status: DBStatus.ACTIVE
 				},
-				where: {
-					openId: {
-						[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
-					},
-					status: 'Active'
+				include: {
+					model: User,
+					as: 'dealer',
+					attributes: ['username', 'avatarUrl']
 				}
 			})
+			const todoProducts =
+				todoAlias.length > 0
+					? await StoreProduct.findAll({
+							where: {
+								openId: {
+									[Op.or]: todoAlias.map(
+										connection => connection.dataValues.openId
+									)
+								},
+								status: 'Active'
+							},
+							include: Product
+					  })
+					: []
 			res.send({ alias: todoAlias, products: todoProducts })
 			Logger.info('products get')
 		} catch (error) {
@@ -119,26 +124,32 @@ export default (app: Router) => {
 						openId: myOpenId
 					}
 				})
-				const todoAvailableProducts = StoreProduct.findAll({
-					include: {
-						model: Price,
-						as: 'specialPrice',
-						where: {
-							openIdChild: myOpenId
-						}
-					},
-					where: {
-						openIdFather: {
-							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
-						},
-						status: 'Active'
-					}
-				})
+				const todoAvailableProducts =
+					todoAlias.length > 0
+						? StoreProduct.findAll({
+								include: {
+									model: User,
+									as: 'specialPrice',
+									through: {
+										where: {
+											openIdChild: myOpenId
+										}
+									}
+								},
+								where: {
+									openIdFather: {
+										[Op.or]: todoAlias.map(
+											connection => connection.dataValues.openId
+										)
+									},
+									status: 'Active'
+								}
+						  })
+						: []
 				const [myProducts, availableProducts] = await Promise.all([
 					todoMyProducts,
 					todoAvailableProducts
 				])
-				console.log(availableProducts)
 				res.send({ myProducts, availableProducts })
 				Logger.info('all saleProducts get')
 			} catch (err) {
@@ -148,6 +159,23 @@ export default (app: Router) => {
 				})
 				Logger.info(err)
 			}
+		}
+	)
+	route.post(
+		'/myPublishedProductsForChild',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const openIdChild = req.body.openID
+			const queryResult = await query(
+				queryName.mySaleProductListWithSepcificPrice,
+				[myOpenId, openIdChild]
+			)
+			const products: ProductType[] = queryResult.data
+			res.send({
+				status: Status.SUCCESS,
+				data: products
+			})
+			Logger.info('saleProduct with child price get')
 		}
 	)
 	route.post(
