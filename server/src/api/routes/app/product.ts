@@ -10,7 +10,9 @@ import {
 	Product,
 	StoreProduct,
 	Price,
-	User
+	User,
+	Order,
+	Image
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 
@@ -161,23 +163,7 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.post(
-		'/myPublishedProductsForChild',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const openIdChild = req.body.openID
-			const queryResult = await query(
-				queryName.mySaleProductListWithSepcificPrice,
-				[myOpenId, openIdChild]
-			)
-			const products: ProductType[] = queryResult.data
-			res.send({
-				status: Status.SUCCESS,
-				data: products
-			})
-			Logger.info('saleProduct with child price get')
-		}
-	)
+
 	route.post(
 		'/myPublishedProductsForChild',
 		isAuthenticated,
@@ -210,6 +196,45 @@ export default (app: Router) => {
 				data: products
 			})
 			Logger.info(queryResult)
+		}
+	)
+	route.get(
+		'/product/:id',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id } = req.params
+			try {
+				const todoProduct = await StoreProduct.findOne({
+					where: {
+						id
+					},
+					include: {
+						model: Product,
+						attributes: [
+							'name',
+							'description',
+							'shortDescription',
+							'setting',
+							'coverImageUrl'
+						]
+					}
+				})
+				const todoImage = await Image.findAll({
+					where: { productId: todoProduct?.dataValues.productId }
+				})
+				console.log(todoImage.map(image => ({ ...image.dataValues })))
+				res.send({
+					...todoProduct?.dataValues,
+					images: todoImage.map(image => ({ ...image.dataValues }))
+				})
+				Logger.info('product get')
+			} catch (err) {
+				res.send({
+					status: Status.FAIL,
+					message: err
+				})
+				Logger.info(err)
+			}
 		}
 	)
 	route.post(

@@ -10,7 +10,7 @@ Page({
     myProductList: undefined,
     showCanvasMask: true,
     allFathersProducts: undefined,
-    currentProduct: {} as Product,
+    selectedProduct: {} as Product,
     showActionsheet: false,
     groups: [
       { text: '生成朋友圈分享图', value: 1 },
@@ -42,14 +42,12 @@ Page({
   },
   onShow: async function () {
     const { myProducts, availableProducts }: any = await getMyStore()
-    console.log(availableProducts)
     this.setData({
       myProductList: myProducts,
       allFathersProducts: availableProducts
     })
   },
   bindUpdatePrice: function () {
-    app.globalData.queryParameter.push(this.data.currentProduct)
     wx.navigateTo({
       url: '../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
     })
@@ -61,13 +59,12 @@ Page({
     })
   },
   bindPreview: function () {
-    app.globalData.queryParameter.push(this.data.currentProduct)
     wx.navigateTo({
-      url: '../../index/productDetail/productDetail?mode=' + Mode.PREVIEW,
+      url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct.id}`,
     })
   },
   bindTakeOff: async function () {
-    const product = this.data.currentProduct
+    const product = this.data.selectedProduct
     const result: any = await unreleaseProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
@@ -90,7 +87,7 @@ Page({
     const product = e.currentTarget.dataset.product
     this.setData({
       showActionsheet: true,
-      currentProduct: product,
+      selectedProduct: product,
     })
   },
   close: function () {
@@ -111,8 +108,7 @@ Page({
         break;
     }
   },
-
-  btnClick(e: any) {
+  onActionClick(e: any) {
     const optionIndex = e.detail.index
     switch (optionIndex) {
       case 0:

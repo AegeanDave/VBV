@@ -15,6 +15,7 @@ const getAlias = (group: 'DEALER' | 'CUSTOMER') => {
   }
 }
 const createWarehouse = (phone: string, countryCode: string) => request.postRequest("warehouse/create", { phoneNumber: countryCode + phone, })
+const getCustomer = (openId: string) => request.getRequest(`users/customer/${openId}`)
+const removeConnection = (aliasId: string) => request.deleteRequest("users/connection", { id: aliasId })
 
-
-export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse }
+export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse,getCustomer,removeConnection }

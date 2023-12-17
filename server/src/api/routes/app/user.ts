@@ -12,6 +12,8 @@ import {
 	Connection,
 	Invitation,
 	StoreProduct,
+	Price,
+	Order,
 	User
 } from '../../../models/sequelize'
 import db from '../../../config/database'
@@ -314,7 +316,7 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
 			// should be updated for security
-			const { length } = req.body
+			const { length = 1 } = req.body
 			try {
 				const todoInvitation = await Invitation.bulkCreate(
 					Array.from({ length }, () => ({
@@ -345,8 +347,9 @@ export default (app: Router) => {
 			})
 		}
 	)
-	route.delete(
-		'/connection',
+
+	route.post(
+		'/remove-connection',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { id } = req.body
@@ -354,24 +357,22 @@ export default (app: Router) => {
 
 			const t = await db.transaction()
 			try {
-				const todoConnection = await Connection.update(
+				await Connection.update(
 					{ status: DBStatus.INACTIVE },
 					{
 						where: {
-							id,
-							[Op.or]: [{ openId: myOpenId }, { openIdChild: myOpenId }]
+							openIdChild: myOpenId,
+							openId: id
 						},
-						transaction: t,
-						returning: true
+						transaction: t
 					}
 				)
-				const { openId, openIdChild } = todoConnection[1][0].dataValues
 				await StoreProduct.update(
 					{ status: 'Not_Available' },
 					{
 						where: {
-							openId: openIdChild,
-							openIdFather: openId
+							openId: myOpenId,
+							openIdFather: id
 						},
 						transaction: t
 					}
@@ -392,8 +393,8 @@ export default (app: Router) => {
 		}
 	)
 
-	route.post(
-		'/delete-connection',
+	route.delete(
+		'/connection',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { id } = req.body
@@ -401,24 +402,19 @@ export default (app: Router) => {
 
 			const t = await db.transaction()
 			try {
-				const todoConnection = await Connection.update(
-					{ status: 'Inactive' },
-					{
-						where: {
-							id,
-							[Op.or]: [{ openId: myOpenId }, { openIdChild: myOpenId }]
-						},
-						transaction: t,
-						returning: true
-					}
-				)
-				const { openId, openIdChild } = todoConnection[1][0].dataValues
+				await Connection.destroy({
+					where: {
+						openIdChild: id,
+						openId: myOpenId
+					},
+					transaction: t
+				})
 				await StoreProduct.update(
 					{ status: 'Not_Available' },
 					{
 						where: {
-							openId: openIdChild,
-							openIdFather: openId
+							openId: id,
+							openIdFather: myOpenId
 						},
 						transaction: t
 					}
@@ -489,6 +485,43 @@ export default (app: Router) => {
 					status: Status.FAIL,
 					message: '关注失败'
 				})
+			}
+		}
+	)
+	route.get(
+		'/customer/:id',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id, myOpenId } = req.params
+			try {
+				const todoChildProducts = await StoreProduct.findAll({
+					include: {
+						model: User,
+						as: 'specialPrice',
+						through: {
+							where: {
+								openIdChild: id
+							}
+						}
+					},
+					where: {
+						openId: myOpenId
+					}
+				})
+				const todoChildOrders = await Order.findAll({
+					where: {
+						userId: id,
+						dealerId: myOpenId
+					}
+				})
+				res.send({
+					products: todoChildProducts,
+					orders: todoChildOrders
+				})
+				Logger.info(`Child's product and order get`)
+			} catch (err) {
+				res.status(500).send()
+				Logger.info(`Child's product and order fetch failed`)
 			}
 		}
 	)

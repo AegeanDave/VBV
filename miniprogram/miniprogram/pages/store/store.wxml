@@ -57,7 +57,7 @@
 			暂无推荐产品</text>
 	</view>
 </view>
-<mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}" actions="{{groups}}" cancel-text="返回">
+<mp-actionSheet bindactiontap="onActionClick" show="{{showActionsheet}}" actions="{{groups}}" cancel-text="返回">
 </mp-actionSheet>
 <view class="mask" hidden="{{showCanvasMask}}">
 	<view class="canvasContainer">

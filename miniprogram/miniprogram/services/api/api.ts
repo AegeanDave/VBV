@@ -1,6 +1,6 @@
 import request from './request'
-import { getProductList, getMyStore } from './product'
-import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse } from './user'
+import { getProductList, getMyStore,getProduct } from './product'
+import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer,removeConnection } from './user'
 import { Address, Product, SaleOrder } from "../../models/index"
 
 const updateUserInfo = (userInfo: {}) => request.postRequest("users/updateUserInfo", userInfo)
@@ -17,9 +17,6 @@ const updateSale = (product: Product) => request.postRequest("products/updateSal
 const unreleaseProduct = (product: Product) => request.postRequest("products/unreleaseProduct", { product: product })
 const getOrdersFromFather = (openID: string) => request.postRequest("orders/myOrderFromFather", { openID: openID })
 const getProductsFromFather = (openID: string) => request.postRequest("products/productsFromDealer", { openID: openID })
-const getOrdersFromChild = (openID: string) => request.postRequest("orders/myOrderFromChild", { openID: openID })
-const getMyPublishedProductsForChild = (openID: string) => request.postRequest("products/myPublishedProductsForChild", { openID: openID })
-const unlockRelation = (aliasID: string) => request.deleteRequest("users/removeConnection", { id: aliasID })
 const markPaid = (orders: SaleOrder[]) => request.postRequest("orders/markPaid", { orders: orders })
 const updatePriceForChild = (price: number, openIdChild: string, inStoreProductId: string) => request.postRequest("products/updatePriceForChild", { price: price, openIdChild: openIdChild, inStoreProductId: inStoreProductId })
 const getAllSaleOrders = () => request.getRequest("orders/allSaleOrders")
@@ -36,6 +33,7 @@ const getProductInfoBySerialID = (serialID: number) => request.getRequest("produ
 
 export {
   getAuth,
+  getProduct,
   updateUserInfo,
   getProductList,
   getFatherAndChildNumber,
@@ -57,9 +55,8 @@ export {
   unreleaseProduct,
   getOrdersFromFather,
   getProductsFromFather,
-  getOrdersFromChild,
-  getMyPublishedProductsForChild,
-  unlockRelation,
+  getCustomer,
+  removeConnection,
   markPaid,
   updatePriceForChild,
   getAllSaleOrders,

@@ -52,16 +52,15 @@ Page({
     }
   },
   toDealer: function (e: any) {
-    const dealer = e.currentTarget.dataset.dealer
-    app.globalData.queryParameter.push(dealer)
+    const aliasId = e.currentTarget.dataset.alias.openIdchild
     if (this.data.groupName === group.dealer) {
       wx.navigateTo({
-        url: './dealer/dealer'
+        url: `./dealer/dealer?id=${aliasId}`
       })
     }
     else {
       wx.navigateTo({
-        url: './customer/customer'
+        url: `./customer/customer?id=${aliasId}`
       })
     }
   },

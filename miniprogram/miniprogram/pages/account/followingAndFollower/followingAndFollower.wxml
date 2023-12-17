@@ -16,8 +16,8 @@
     <switch checked="{{lookingUnpaid}}" bindchange="bindFilter"></switch>
   </view>
   <view class="dealerList">
-    <block wx:for="{{!lookingUnpaid?groupList:filterGroup}}" wx:key="id" wx:for-item="alias">
-      <view class="dealerCard list" bindtap="toDealer" data-dealer="{{alias}}">
+    <block wx:for="{{groupList}}" wx:key="id" wx:for-item="alias">
+      <view class="dealerCard list" bindtap="toDealer" data-alias="{{alias}}">
         <block wx:if="{{alias.dealer.username}}">
           <view class="imgBox">
             <image class="avatar" src="{{alias.dealer.avatarUrl}}"></image>
