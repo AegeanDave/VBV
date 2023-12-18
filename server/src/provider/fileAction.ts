@@ -7,7 +7,7 @@ import multerS3 from 'multer-s3'
 export const upload = multer({
 	storage: multerS3({
 		s3: s3 as any,
-		bucket: process.env.BUCKET_NAME,
+		bucket: process.env.BUCKET_NAME!,
 		acl: 'public-read',
 		metadata: (req, file, callback) => {
 			callback(undefined, { fieldName: file.fieldname })

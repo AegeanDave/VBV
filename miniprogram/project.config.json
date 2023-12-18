@@ -25,7 +25,9 @@
     },
     "condition": false,
     "skylineRenderEnable": false,
-    "ignoreUploadUnusedFiles": true
+    "ignoreUploadUnusedFiles": true,
+    "uglifyFileName": true,
+    "compileWorklet": false
   },
   "condition": {},
   "srcMiniprogramRoot": "miniprogram/",

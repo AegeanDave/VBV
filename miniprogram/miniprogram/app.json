@@ -3,7 +3,7 @@
     "pages/index/index",
     "pages/account/account",
     "pages/shoppingCart/shoppingCart",
-    "pages/account/aliasCode/aliasCode",
+    "pages/account/invitation/invitation",
     "pages/account/inputCode/inputCode",
     "pages/account/followingAndFollower/followingAndFollower",
     "pages/account/followingAndFollower/customer/customer",
@@ -12,8 +12,8 @@
     "pages/checkOut/contactToPay/contactToPay",
     "pages/checkOut/address/address",
     "pages/checkOut/newAddress/newAddress",
-    "pages/account/store/store",
-    "pages/account/orders/orders",
+    "pages/store/store",
+    "pages/soldOrders/soldOrders",
     "pages/account/orderHistory/orderHistory",
     "pages/account/warehouse/warehouse",
     "pages/account/warehouse/mailer/mailer",
@@ -24,7 +24,8 @@
     "pages/account/orderHistory/orderDetail/orderDetail",
     "pages/account/warehouse/setting/setting",
     "pages/index/productQRcode/productQRcode",
-    "pages/account/followingAndFollower/dealer/dealer"
+    "pages/account/followingAndFollower/dealer/dealer",
+    "pages/register/register"
   ],
   "tabBar": {
     "color": "#CDE1E0",
@@ -32,20 +33,20 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath": "pages/image/home.png",
-        "selectedIconPath": "pages/image/home_select.png",
+        "iconPath": "image/home.png",
+        "selectedIconPath": "image/home_select.png",
         "text": "主页"
       },
       {
         "pagePath": "pages/shoppingCart/shoppingCart",
-        "iconPath": "pages/image/cart.png",
-        "selectedIconPath": "pages/image/cart_select.png",
+        "iconPath": "image/cart.png",
+        "selectedIconPath": "image/cart_select.png",
         "text": "购物车"
       },
       {
         "pagePath": "pages/account/account",
-        "iconPath": "pages/image/account.png",
-        "selectedIconPath": "pages/image/account_select.png",
+        "iconPath": "image/account.png",
+        "selectedIconPath": "image/account_select.png",
         "text": "我的账户"
       }
     ]

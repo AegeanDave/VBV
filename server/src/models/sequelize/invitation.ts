@@ -8,7 +8,8 @@ const Invitation = db.define('invitations', {
 	},
 	code: {
 		type: DataTypes.STRING,
-		allowNull: false
+		allowNull: false,
+		unique: true
 	},
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive')

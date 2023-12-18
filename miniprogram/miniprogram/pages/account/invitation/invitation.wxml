@@ -1,0 +1,42 @@
+<view class="mainBox">
+  <view class="introduction">
+    <text>发送邀请码给您的微信好友，好友即可加入微帮微并关注购买您上架的商品，新用户享五个免费邀请码。邀请码原价9.9/个</text>
+  </view>
+  <view class="codeBox avaliable">
+    <text class="subtitle">我的邀请码（{{activeCodes.length}}）</text>
+    <scroll-view wx:if="{{activeCodes.length!==0}}" scroll-y="true" class="scroll-code">
+      <view class="codeList">
+        <block wx:for="{{activeCodes}}" wx:key="id" wx:for-item="code">
+          <view class="code">
+            <text>{{code.code}}</text>
+            <button class="dotBox" data-code="{{code.code}}" bindtap="open">
+              <view></view>
+              <view></view>
+              <view></view>
+            </button>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+    <view wx:else class="codeList empty">
+      <text>您暂无可用邀请码</text>
+    </view>
+  </view>
+  <!-- <view class="codeBox used">
+    <text class="subtitle">已用邀请码（{{InactiveCodes.length}}）</text>
+    <scroll-view scroll-y="true" class="scrollUsed">
+      <view class="codeList" wx:if="{{InactiveCodes.length!==0}}">
+        <block wx:for="{{InactiveCodes}}" wx:key="id" wx:for-item="code">
+          <view class="code">
+            <text>{{code}}</text>
+          </view>
+        </block>
+      </view>
+    </scroll-view>
+  </view> -->
+</view>
+<view class="btnArea">
+  <button class='buyNew confirm' bindtap="buyNew">购买新的邀请码</button>
+</view>
+<mp-actionSheet bindactiontap="onTrigger" show="{{showActionsheet}}" actions="{{actionGroups}}">
+</mp-actionSheet>

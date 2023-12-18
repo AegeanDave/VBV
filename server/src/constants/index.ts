@@ -19,9 +19,9 @@ export const AddressStatus = {
 	ENABLED: 'Enabled'
 }
 
-export const AliasStatus = {
-	DISABLED: 'Disabled',
-	ENABLED: 'Enabled'
+export const DBStatus = {
+	INACTIVE: 'Inactive',
+	ACTIVE: 'Active'
 }
 export const OrderStatus = {
 	UNPAID: 'Unpaid',
@@ -90,13 +90,6 @@ export const countryCodes: any = {
 export const addressField = {
 	NORMALFORM: 0,
 	QUICKFORM: 1
-}
-export const s3Config = {
-	credentials: {
-		accessKeyId: process.env.AWS_ID,
-		secretAccessKey: process.env.AWS_SECRET
-	},
-	region: process.env.AWS_REGION
 }
 
 export type S3Data = {

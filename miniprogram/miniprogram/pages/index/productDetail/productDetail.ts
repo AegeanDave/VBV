@@ -1,6 +1,6 @@
 import { Product, IAppOption } from "../../../models/index"
 import { Status, Mode } from "../../../constant/index"
-import { updateSale, updatePriceForChild } from "../../../api/api"
+import { updateSale, updatePriceForChild, getProduct } from "../../../services/api/api"
 
 const app = getApp<IAppOption>()
 
@@ -16,24 +16,15 @@ Page({
     cartBadgeValue: 0,
     disbledSale: false,
   },
-  onLoad(options) {
-    const product: Product = app.globalData.queryParameter.pop()
-    this.setData({
-      mode: options.mode,
-    })
-    if (options.mode === Mode.NORMAL) {
-      if (wx.getStorageSync('cart') && wx.getStorageSync('cart').length > 0) {
-        this.setData({
-          cartBadgeValue: wx.getStorageSync('cart').length
-        })
-      }
-    }
+  async onLoad(options) {
+    const product = await getProduct(options.id)
     wx.setNavigationBarTitle({
-      title: product.productName
+      title: product.name
     })
     this.setData({
       product: product,
-      slider: product.images
+      slider: product.images,
+      mode: options.mode
     })
   },
   bindtoCart() {

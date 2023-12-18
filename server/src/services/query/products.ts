@@ -1,4 +1,4 @@
-import { SaleStatus, ProductStatus, AliasStatus } from '../../constants'
+import { SaleStatus, ProductStatus } from '../../constants'
 export default {
 	getProductList: `
         SELECT "products"."productId", "products"."coverImageURL", "productName", "productDescription", "idCardRequired", "freeShipping", productImages."images", ROW_TO_JSON("DealerSale") AS "dealerSale", ROW_TO_JSON("MySale") AS "mySale"
@@ -9,7 +9,7 @@ export default {
         	LEFT JOIN "price"
         		ON "inStoreProduct"."inStoreProductId" = "price"."inStoreProductId" AND "price"."openIdChild" = $1
         	, "users", "alias"
-        	WHERE "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = '${AliasStatus.ENABLED}'
+        	WHERE "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = ''
         ) "DealerSale" ON TRUE
         LEFT JOIN LATERAL (
         	SELECT "inStoreProduct"."openId", "avatar", "name", "inStoreProduct"."inStoreProductId", "inStoreProduct"."defaultPrice" AS "price", "inStoreProduct"."status"
@@ -39,7 +39,7 @@ export default {
         	LEFT JOIN "price"
         		ON "inStoreProduct"."inStoreProductId" = "price"."inStoreProductId" AND "price"."openIdChild" = $2
         	, "users", "alias"
-        	WHERE "inStoreProduct"."openId" = $1 AND "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $2 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = '${AliasStatus.ENABLED}'
+        	WHERE "inStoreProduct"."openId" = $1 AND "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $2 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = ''
         ) "DealerSale" ON TRUE
         LEFT JOIN LATERAL (
         	SELECT ARRAY_AGG(
@@ -60,7 +60,7 @@ export default {
         	LEFT JOIN "price"
         		ON "inStoreProduct"."inStoreProductId" = "price"."inStoreProductId" AND "price"."openIdChild" = $1
         	, "users", "alias"
-        	WHERE "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = '${AliasStatus.ENABLED}'
+        	WHERE "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = ''
         ) "DealerSale" ON TRUE
         LEFT JOIN LATERAL (
         	SELECT "inStoreProduct"."openId", "avatar", "name", "inStoreProduct"."inStoreProductId", "inStoreProduct"."defaultPrice" AS "price", "inStoreProduct"."status"
@@ -87,7 +87,7 @@ export default {
         	LEFT JOIN "price"
         		ON "inStoreProduct"."inStoreProductId" = "price"."inStoreProductId" AND "price"."openIdChild" = $1
         	, "users", "alias"
-        	WHERE "inStoreProduct"."openId" = $2 AND "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = '${AliasStatus.ENABLED}'
+        	WHERE "inStoreProduct"."openId" = $2 AND "inStoreProduct"."openId" = "alias"."openId" AND "alias"."openId" = "users"."openId" AND "alias"."openIdChild" = $1 AND "products"."productId" = "inStoreProduct"."productId" AND "inStoreProduct"."status" = '${SaleStatus.PUBLISHED}' AND "alias".status = ''
         ) "DealerSale" ON TRUE
         LEFT JOIN LATERAL (
         	SELECT "inStoreProduct"."openId", "avatar", "name", "inStoreProduct"."inStoreProductId", "inStoreProduct"."defaultPrice" AS "price", "inStoreProduct"."status"
@@ -183,7 +183,7 @@ export default {
         LEFT JOIN LATERAL (
         	SELECT "inStoreProduct"."openIdFather" AS "openId", "avatar", "name", "inStoreProduct".inStoreProductId, "inStoreProduct"."status"
         	FROM "inStoreProduct", "users", "alias"
-        	WHERE "inStoreProduct"."openIdFather" = "users"."openId" AND "inStoreProduct"."openIdFather" = "alias"."openIdChild" AND "alias"."openIdChild" = $1 AND "inStoreProduct"."openIdFather" = "DealerSale"."openId" AND "products"."productId" = "inStoreProduct"."productId" AND "alias".status = '${AliasStatus.ENABLED}'
+        	WHERE "inStoreProduct"."openIdFather" = "users"."openId" AND "inStoreProduct"."openIdFather" = "alias"."openIdChild" AND "alias"."openIdChild" = $1 AND "inStoreProduct"."openIdFather" = "DealerSale"."openId" AND "products"."productId" = "inStoreProduct"."productId" AND "alias".status = ''
         ) "MySale" ON TRUE
         LEFT JOIN LATERAL (
         	SELECT ARRAY_AGG(

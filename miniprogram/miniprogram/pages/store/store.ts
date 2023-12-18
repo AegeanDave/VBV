@@ -1,7 +1,7 @@
-import { getPublishedProducts, unreleaseProduct } from "../../../api/api"
-import { Product, IAppOption } from "../../../models/index"
-import { Status, Mode } from "../../../constant/index"
-import { generateQRcode } from '../../../services/QRcode'
+import { getMyStore, unreleaseProduct } from "../../services/api/api"
+import { Product, IAppOption } from "../../models/index"
+import { Status, Mode } from "../../constant/index"
+import { generateQRcode } from '../../services/QRcode'
 
 const app = getApp<IAppOption>()
 
@@ -10,7 +10,7 @@ Page({
     myProductList: undefined,
     showCanvasMask: true,
     allFathersProducts: undefined,
-    currentProduct: {} as Product,
+    selectedProduct: {} as Product,
     showActionsheet: false,
     groups: [
       { text: '生成朋友圈分享图', value: 1 },
@@ -41,14 +41,13 @@ Page({
     posterHeight: 0,
   },
   onShow: async function () {
-    const result: any = await getPublishedProducts()
+    const { myProducts, availableProducts }: any = await getMyStore()
     this.setData({
-      myProductList: result.myInStoreProducts,
-      allFathersProducts: result.outStoreProducts
+      myProductList: myProducts,
+      allFathersProducts: availableProducts
     })
   },
   bindUpdatePrice: function () {
-    app.globalData.queryParameter.push(this.data.currentProduct)
     wx.navigateTo({
       url: '../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
     })
@@ -60,14 +59,13 @@ Page({
     })
   },
   bindPreview: function () {
-    app.globalData.queryParameter.push(this.data.currentProduct)
     wx.navigateTo({
-      url: '../../index/productDetail/productDetail?mode=' + Mode.PREVIEW,
+      url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct.id}`,
     })
   },
-  bindTakeOff: async function () {
-    const product = this.data.currentProduct
-    const result: any = await unreleaseProduct(product)
+  bindUnpublish: async function () {
+    const product = this.data.selectedProduct
+    const result: any = await unpublishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
         title: '已下架',
@@ -89,7 +87,7 @@ Page({
     const product = e.currentTarget.dataset.product
     this.setData({
       showActionsheet: true,
-      currentProduct: product,
+      selectedProduct: product,
     })
   },
   close: function () {
@@ -98,10 +96,7 @@ Page({
     })
   },
 
-  tapDialogButton(e: any) {
-    this.setData({
-      dialogShow: false,
-    })
+  onDialogClick(e: any) {
     switch (e.detail.index) {
       case 0:
         break;
@@ -109,9 +104,11 @@ Page({
         this.bindTakeOff()
         break;
     }
+    this.setData({
+      dialogShow: false,
+    })
   },
-
-  btnClick(e: any) {
+  onActionClick(e: any) {
     const optionIndex = e.detail.index
     switch (optionIndex) {
       case 0:

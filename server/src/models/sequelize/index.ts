@@ -13,6 +13,9 @@ import Price from './price'
 User.hasOne(Warehouse, { foreignKey: 'openId' })
 Warehouse.belongsTo(User, { foreignKey: 'openId' })
 
+Warehouse.hasMany(Product, { foreignKey: 'warehouseId' })
+Product.belongsTo(Warehouse, { foreignKey: 'warehouseId' })
+
 Product.hasMany(Image, {
 	foreignKey: 'productId'
 })
@@ -32,11 +35,39 @@ Order.belongsTo(Address)
 User.hasMany(Invitation, { foreignKey: 'openId' })
 Invitation.belongsTo(User, { foreignKey: 'openId' })
 
-StoreProduct.hasMany(Price, {
-	foreignKey: 'storeProductId',
-	as: 'specialPrice'
+Invitation.hasOne(Connection, { foreignKey: 'invitationId' })
+Connection.belongsTo(Invitation, { foreignKey: 'invitationId' })
+
+User.hasMany(Order, { foreignKey: 'userId' })
+Order.belongsTo(User, { foreignKey: 'userId' })
+
+User.belongsToMany(User, {
+	through: Connection,
+	foreignKey: 'openId',
+	as: 'customer'
 })
-Price.belongsTo(StoreProduct, { foreignKey: 'storeProductId' })
+User.belongsToMany(User, {
+	through: Connection,
+	foreignKey: 'openIdChild',
+	as: 'dealer'
+})
+
+User.hasMany(Connection, { foreignKey: 'openId' })
+Connection.belongsTo(User, { foreignKey: 'openId', as: 'dealer' })
+
+User.hasMany(Connection, { foreignKey: 'openIdChild' })
+Connection.belongsTo(User, { foreignKey: 'openIdChild', as: 'customer' })
+
+StoreProduct.belongsToMany(User, {
+	through: Price,
+	as: 'specialPrice',
+	foreignKey: 'storeProductId'
+})
+User.belongsToMany(StoreProduct, {
+	through: Price,
+	as: 'specialPrice',
+	foreignKey: 'openIdChild'
+})
 
 export {
 	Product,

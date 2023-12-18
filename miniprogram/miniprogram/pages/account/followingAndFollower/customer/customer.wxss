@@ -1,7 +1,7 @@
 .header {
   display: flex;
   background-color: #e4f5f4;
-  padding: 25px 20px 15px 15px;
+  padding: 18px;
 }
 
 .leftBox {
@@ -31,7 +31,7 @@
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  margin-left: 10px;
+  padding-left: 10px;
 }
 
 .nameBox .name {
@@ -52,6 +52,7 @@
 
 .amount.unpaid {
   color: #D03434;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -67,12 +68,11 @@
 }
 
 button {
-  font-size: 12px;
+  font-size: 14px;
   color: #fff;
   background-color: #02a69f;
-  padding: 3px 0;
-  border-radius: 8px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.05)
+  padding: 4px 2px;
+  border-radius: 6px;
 }
 
 .rightBox button {
@@ -84,26 +84,10 @@ button {
   flex-direction: column;
 }
 
-.tabBar {
-  display: flex;
-  background-color: #98dbd8;
-}
 
-.tabBar text {
+.tabbar view {
+  font-size: 16px;
   color: #6d7278;
-}
-
-.tabBar .selected {
-  background-color: #fff;
-}
-
-.tabBarLeft,
-.tabBarRight {
-  flex: 1;
-  padding: 20px 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .orderBox {

@@ -216,59 +216,19 @@ export default (app: Router) => {
 		adminAuthenticated,
 		async (req: Request, res: Response) => {
 			const { authorization } = req.headers
-			const result = myCache.del(authorization)
-			if (result === 1) {
+			try {
+				authorization && myCache.del(authorization)
 				res.status(200).send({
 					status: Status.SUCCESS,
 					message: 'logout success'
 				})
 				Logger.info('logout success')
-			} else {
-				res.status(403).send({
+			} catch (err) {
+				res.status(500).send({
 					status: Status.FAIL,
 					message: 'Authorization fail!'
 				})
 				Logger.info('logout fail')
-			}
-		}
-	)
-
-	route.post(
-		'/phoneVerification',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { verificationCode } = req.body
-			if (myCache.has(myWarehouseId)) {
-				const cacheValue: {
-					verificationCode: string
-					tel: string
-					countryCode: string
-				} = myCache.get(myWarehouseId)
-				if (cacheValue.verificationCode === verificationCode) {
-					res.send({
-						status: Status.SUCCESS
-					})
-					query(queryName.updatePhone, [
-						cacheValue.tel,
-						cacheValue.countryCode,
-						myOpenId,
-						myWarehouseId
-					])
-					myCache.del(myWarehouseId)
-
-					Logger.info('verify success')
-				} else {
-					res.send({
-						status: Status.FAIL,
-						message: 'verificationCode Wrong'
-					})
-					Logger.info('verification code wrong')
-				}
-			} else {
-				res.send({
-					status: Status.FAIL
-				})
-				Logger.info('verify fail')
 			}
 		}
 	)

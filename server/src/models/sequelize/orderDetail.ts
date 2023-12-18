@@ -10,12 +10,13 @@ const OrderDetail = db.define('orderDetails', {
 	orderId: {
 		type: DataTypes.UUID
 	},
+	productId: { type: DataTypes.UUID, allowNull: false },
 	productInfo: {
 		type: DataTypes.JSONB,
 		allowNull: false
 	},
 	quantity: { type: DataTypes.INTEGER, allowNull: false },
-	subtotal: { type: DataTypes.INTEGER },
+	subtotal: { type: DataTypes.DECIMAL },
 	comment: {
 		type: DataTypes.STRING
 	},

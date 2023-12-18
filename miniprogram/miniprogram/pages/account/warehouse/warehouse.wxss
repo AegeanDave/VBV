@@ -26,15 +26,15 @@
 }
 
 .card.register {
-  padding: 20px;
+  padding: 16px;
 }
 
 .register .title {
-  padding: 9px 4px;
+  padding: 9px 10px;
 }
 
 .phoneInputGroup {
-  margin: 16px 24px 2px 30px;
+  margin: 16px 10px;
   display: flex;
 }
 

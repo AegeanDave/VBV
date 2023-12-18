@@ -1,72 +1,115 @@
-import { getUserInfo } from '../../api/api'
+import { getAccount } from '../../services/api/api'
 import { group, Status } from "../../constant/index"
+import { IAppOption } from "../../models/index"
+
+const app = getApp<IAppOption>()
 
 Page({
   data: {
     needToPay: false,
     waitForPayment: false,
-    fatherNumber: 0,
-    childNumber: 0,
-    hasWarehouse: null
+    customerNum: 0,
+    dealerNum: 0,
+    hasWarehouse: null,
+    username: app.globalData.user?.username,
+    avatarUrl: app.globalData.user?.avatarUrl
+  },
+  async onLoad() {
+    const todoAccount: any = await getAccount()
+    this.setData({
+      account: todoAccount,
+      customerNum: todoAccount.customer.length,
+      dealerNum: todoAccount.dealer.length,
+      username: todoAccount.username,
+      avatarUrl: todoAccount.avatarUrl
+    })
   },
   onShow: async function () {
-    const userInfoResult: any = await getUserInfo()
-    if (userInfoResult.status === Status.SUCCESS) {
-      const userInfo = userInfoResult.data
+    if (app.globalData.reload) {
+      const todoAccount: any = await getAccount()
       this.setData({
-        fatherNumber: userInfo.fatherNumber,
-        childNumber: userInfo.childNumber
-      })
-      const fatherUnpaid = userInfo.fathersList.find((father: any) => father.ifUnpaid)
-      const childrenUnpaid = userInfo.childrenList.find((child: any) => child.ifUnpaid)
-      this.setData({
-        needToPay: fatherUnpaid ? true : false,
-        waitForPayment: childrenUnpaid ? true : false,
-        hasWarehouse: (userInfo.warehouse.length > 0 ? true : false) as any 
+        account: todoAccount,
+        username: app.globalData.user?.username,
+        avatarUrl: app.globalData.user?.avatarUrl
       })
     }
   },
-  toFollower: function () {
+  toCustomer: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
     wx.navigateTo({
-      url: './followingAndFollower/followingAndFollower?group=' + group.customer
+      url: `./followingAndFollower/followingAndFollower?group=${group.customer}`
     })
   },
-  toFollowing: function () {
+  toDealer: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
     wx.navigateTo({
-      url: './followingAndFollower/followingAndFollower?group=' + group.dealer
+      url: `./followingAndFollower/followingAndFollower?group=${group.dealer}`
     })
   },
-  toAliasCode: function () {
-    wx.requestSubscribeMessage({
-      tmplIds: ['GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE', 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc'],
-      complete(){
-        wx.navigateTo({
-          url: './aliasCode/aliasCode'
-        })
-      }
+  toInvitation: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
+    wx.navigateTo({
+      url: './invitation/invitation'
     })
   },
   toOrder: function () {
-    wx.navigateTo({
-      url: './orders/orders'
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
+    return wx.navigateTo({
+      url: './soldOrders/soldOrders'
     })
   },
   toHistory: function () {
-    wx.navigateTo({
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
+    return wx.navigateTo({
       url: './orderHistory/orderHistory'
     })
   },
   toStore: function () {
-    wx.navigateTo({
-      url: './store/store'
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
+    return wx.navigateTo({
+      url: '../store/store'
     })
   },
   toWarehouse: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
     wx.navigateTo({
       url: './warehouse/warehouse'
     })
   },
-  toInputCode: function () {
+  toConnection: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
     wx.navigateTo({
       url: './inputCode/inputCode'
     })

@@ -1,4 +1,4 @@
-import { getFathers, getChildren } from '../../../api/api'
+import { getAlias } from '../../../services/api/api'
 import { IAppOption } from "../../../models/index"
 import { group } from "../../../constant/index"
 
@@ -6,7 +6,7 @@ const app = getApp<IAppOption>()
 
 Page({
   data: {
-    groupName: '' as string,
+    groupName: null,
     groupList: [],
     filterGroup: [],
     lookingUnpaid: false
@@ -14,29 +14,27 @@ Page({
   onLoad: async function (options: any) {
     if (options.group === group.customer) {
       wx.setNavigationBarTitle({
-        title: '我的客户端'
+        title: '我的客户'
       })
     }
     else if (options.group === group.dealer) {
       wx.setNavigationBarTitle({
-        title: '我的供应端'
+        title: '我的供应'
       })
     }
+    const todoAlias = await getAlias(options.group)
     this.setData({
+      groupList: todoAlias,
       groupName: options.group,
     })
   },
   onShow: async function () {
-    let groupList: any
-    if (this.data.groupName === group.customer) {
-      groupList = await getChildren()
+    if (app.globalData.reload) {
+      const todoAlias = await getAlias(this.data.groupName)
+      this.setData({
+        groupList: todoAlias
+      })
     }
-    else if (this.data.groupName === group.dealer) {
-      groupList = await getFathers()
-    }
-    this.setData({
-      groupList: groupList.data
-    })
   },
   bindFilter: function () {
     if (!this.data.lookingUnpaid) {
@@ -54,20 +52,19 @@ Page({
     }
   },
   toDealer: function (e: any) {
-    const dealer = e.currentTarget.dataset.dealer
-    app.globalData.queryParameter.push(dealer)
-    if(this.data.groupName===group.dealer){
+    const aliasId = e.currentTarget.dataset.alias.openIdchild
+    if (this.data.groupName === group.dealer) {
       wx.navigateTo({
-        url: './dealer/dealer'
+        url: `./dealer/dealer?id=${aliasId}`
       })
     }
-    else{
+    else {
       wx.navigateTo({
-        url: './customer/customer'
+        url: `./customer/customer?id=${aliasId}`
       })
     }
   },
-  toAlias(){
+  toAlias() {
     wx.navigateTo({
       url: '../aliasCode/aliasCode'
     })

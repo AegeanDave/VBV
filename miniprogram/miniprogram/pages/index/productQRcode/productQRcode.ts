@@ -1,5 +1,5 @@
 import { Product, IAppOption } from "../../../models/index"
-import { getProductInfoBySerialID, updateUserInfo, makeConnectionWithoutCode, updateSale } from '../../../api/api'
+import { getProductInfoBySerialID, updateUserInfo, makeConnectionWithoutCode, updateSale } from '../../../services/api/api'
 import { Status } from "../../../constant/index"
 
 const app = getApp<IAppOption>()

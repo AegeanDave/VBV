@@ -1,19 +1,15 @@
 {
 	"compilerOptions": {
+		"target": "es5",
 		"module": "commonjs",
-		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"allowSyntheticDefaultImports": true,
-		"target": "es6",
-		"noImplicitAny": true,
-		"moduleResolution": "node",
-		"sourceMap": true,
+		"lib": ["es6"],
+		"allowJs": true,
 		"outDir": "dist",
-		"baseUrl": ".",
-		"paths": {
-			"*": ["node_modules/*", "src/types/*", "src/models/*"],
-			"models": ["src/models"]
-		}
+		"rootDir": "src",
+		"strict": true,
+		"noImplicitAny": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true
 	},
 	"include": ["src/**/*"]
 }

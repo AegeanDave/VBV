@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize'
 
-export default new Sequelize(process.env.DATABASE_URL, {
+export default new Sequelize(process.env.DATABASE_URL!, {
 	host: process.env.DB_HOST,
 	dialect: 'postgres',
 	pool: {

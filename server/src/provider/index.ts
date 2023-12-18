@@ -134,17 +134,13 @@ const makeVerificationCode = () => {
 	return result
 }
 const makeOrderNumber = () => {
-	let result = ''
-	const charaterInit: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	const charaterInit = '0123456789'
+	let orderNumber = ''
 	for (let i = 0; i < 13; i++) {
-		if (i === 0) {
-			result += charaterInit.charAt(
-				Math.floor(Math.random() * charaterInit.length)
-			)
-		}
-		result += Math.floor(Math.random() * 10)
+		const randomIndex = Math.floor(Math.random() * charaterInit.length)
+		orderNumber += charaterInit.charAt(randomIndex)
 	}
-	return result
+	return orderNumber
 }
 export {
 	login,

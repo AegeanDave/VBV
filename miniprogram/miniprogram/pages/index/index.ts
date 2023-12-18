@@ -1,40 +1,33 @@
 import { Product, IAppOption } from "../../models/index"
-import { Status, Mode, Tabs } from "../../constant/index"
-import { getProductList, getFathers } from '../../api/api'
+import { Mode, Tabs } from "../../constant/index"
+import { getProductList } from '../../services/api/api'
 
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    productList: undefined,
-    searchList: [] as Product[],
-    inputSearch: '',
-    selectedDealer: '',
-    dealers: undefined,
+    productList: [],
+    dealers: [],
+    searching: false,
+    selectedDealer: ''
   },
   onLoad() {
     app.userInfoReadyCallback = async () => {
-      const getProductsResult: any = await getProductList()
-      const dealers: any = await getFathers()
-      if (getProductsResult.status !== Status.FAIL || dealers.status !== Status.FAIL) {
-        this.setData({
-          productList: getProductsResult.data,
-          searchList: getProductsResult.data,
-          dealers: dealers.data,
-        })
-      }
-      app.globalData.products = getProductsResult.data
+      const { products, alias }: any = await getProductList()
+      this.setData({
+        productList: products,
+        searchList: products,
+        dealers: alias,
+      })
     }
   },
   onPullDownRefresh: async function () {
     wx.showNavigationBarLoading()
-    const getProductsResult: any = await getProductList()
-    const dealers: any = await getFathers()
+    const { products, alias }: any = await getProductList()
     this.setData({
-      productList: getProductsResult.data,
-      dealers: dealers.data
+      productList: products,
+      dealers: alias
     })
-    app.globalData.products = getProductsResult.data
     setTimeout(() => {
       wx.stopPullDownRefresh()
       wx.hideNavigationBarLoading()
@@ -52,89 +45,45 @@ Page({
         index: Tabs.CART
       })
     }
-    if (app.globalData.reload) {
-      const getProductsResult: any = await getProductList()
-      const dealers: any = await getFathers()
-      this.setData({
-        productList: getProductsResult.data,
-        dealers: dealers.data
-      })
-      app.globalData.products = getProductsResult.data
-      app.globalData.reload = false
-    }
   },
-  handleProductsSearching: function (e: any) {
-    const value: string = e.detail.value
-    const searchRange: Product[] = this.data.productList
-    let searchResult
-    if (value) {
-      if (this.data.selectedDealer) {
-        searchResult = searchRange.filter((product: Product) => {
-          return product.productName.includes(value) && product.dealerSale.name === this.data.selectedDealer
-        })
-      }
-      else {
-        searchResult = searchRange.filter((product: Product) => {
-          return product.productName.includes(value)
-        })
-      }
+  onSearch(e) {
+    if (e.detail.value) {
+      const newDealerList = this.data.dealers.map((dealer: any) => ({
+        ...dealer, picking: dealer.dealer.username.include(e.detail.value)
+      }))
+      this.setData({
+        dealers: newDealerList,
+        searching: true
+      })
     }
     else {
-      if (this.data.selectedDealer) {
-        searchResult = searchRange.filter((product: Product) => {
-          return product.dealerSale.name === this.data.selectedDealer
-        })
-      }
-      else {
-        searchResult = this.data.productList
-      }
+      this.setData({
+        searching: false
+      })
     }
+  },
+  onPickDealer: function (e: any) {
+    const { dealer } = e.currentTarget.dataset
     this.setData({
-      inputSearch: value,
-      searchList: searchResult
+      selectedDealer: dealer
     })
   },
-  chooseDealer: function (e: any) {
-    const dealer = e.currentTarget.dataset.dealer
-    const searchRange: Product[] = this.data.productList
-    let searchResult
-    if (dealer) {
-      if (this.data.inputSearch) {
-        searchResult =
-          searchRange.filter((product: Product) =>
-            product.dealerSale.name === dealer && product.productName.includes(this.data.inputSearch)
-          )
-      }
-      else {
-        searchResult =
-          searchRange.filter((product: Product) =>
-            product.dealerSale.name === dealer
-          )
-      }
-    }
-    else {
-      if (this.data.inputSearch) {
-        searchResult =
-          searchRange.filter((product: Product) => {
-            return product.productName.includes(this.data.inputSearch)
-          })
-      }
-      else {
-        searchResult = this.data.productList
-      }
-    }
+  onClear() {
     this.setData({
-      searchList: searchResult,
-      selectedDealer: dealer,
+      searching: false,
     })
   },
   viewDetail: function (e: any) {
-    app.globalData.queryParameter.push(e.currentTarget.dataset.product)
     wx.navigateTo({
-      url: './productDetail/productDetail?mode=' + Mode.NORMAL,
+      url: './productDetail/productDetail?id=' + Mode.NORMAL,
     })
   },
-  toAddCode: function () {
+  onToConnection: function () {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '/pages/register/register',
+      })
+    }
     wx.navigateTo({
       url: '/pages/account/inputCode/inputCode',
     })

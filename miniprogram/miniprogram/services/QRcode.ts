@@ -1,4 +1,4 @@
-import { getQRcode } from '../api/api'
+import { getQRcode } from './api/api'
 
 export const generateQRcode = (serialID: number) => {
   return new Promise((resolve, reject) => {

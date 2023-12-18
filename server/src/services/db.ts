@@ -1,27 +1,11 @@
 import { Pool } from 'pg'
-import {
-	userQuery,
-	productQuery,
-	orderQuery,
-	warehouseQuery
-} from './query/index'
+import { productQuery, orderQuery, warehouseQuery } from './query/index'
 
 const procedures: { [key: string]: string } = {
-	login: userQuery.createNewUserWithoutInfo,
-	updateUserInfo: userQuery.updateUserInfo,
 	productList: productQuery.getProductList,
-	fatherNumber: userQuery.getFatherNumber,
-	childrenNumber: userQuery.getChildrenNumber,
-	removeConnection: userQuery.updateAliasStatusToDisabled,
+
 	updatePriceForChild: productQuery.updatePriceForChild,
-	getAllAddress: userQuery.allAddress,
-	addAddressWithoutFile: userQuery.newAddressWithoutFile,
-	addAddressWithFile: userQuery.newAddressWithFile,
-	deleteAddress: userQuery.deleteAddress,
-	updateAddressWithImageOne: userQuery.updateAddressWithImageOne,
-	updateAddressWithImageTwo: userQuery.updateAddressWithImageTwo,
-	allChildren: userQuery.getAllChildren,
-	allFathers: userQuery.getAllFathers,
+
 	ordersFromFather: orderQuery.getOrdersFromFather,
 	ordersFromChild: orderQuery.getOrdersFromChild,
 	newOrderDetail: orderQuery.createNewOrderDetail,
@@ -31,23 +15,15 @@ const procedures: { [key: string]: string } = {
 	discontinueMySaleProduct: productQuery.updateMyProductToIdLEBySaleId,
 	disableAllChildrenInStoreProducts:
 		productQuery.disableAllChildrenInStoreProducts,
-	myCodes: userQuery.myCodes,
-	allCodes: userQuery.allCodes,
-	newCode: userQuery.newCode,
-	usedCode: userQuery.usedCode,
-	checkAddressImage: userQuery.selectAddressImages,
+
 	myPublishedProducts: productQuery.getMySaleProductListByPublish,
 	updateDefaultPrice: productQuery.updateDefaultPrice,
-	createOrUpdateAlias: userQuery.createOrUpdateAlias,
 	mySaleProductListFromFather: productQuery.getMySaleProductListFromFather,
 	mySaleProductListWithSepcificPrice:
 		productQuery.getMySaleProductListWithSepcificPrice,
 	markPaid: orderQuery.updateOrderStatusToPaid,
 	markPaidWithComment: orderQuery.updateOrderStatusToPaidWithComment,
-	findOpenIdByCode: userQuery.findOpenIdByCode,
-	findAliasByOpenId: userQuery.findAliasByOpenId,
 	createOrUpdatePrice: productQuery.createOrUpdatePrice,
-	checkAliasExist: userQuery.findAliasByOpenId,
 	getMyWarehouseProducts: warehouseQuery.getWarehouseProducts,
 	getAllSaleOrders: orderQuery.getAllSaleOrdersUpdated,
 	cancelOrder: orderQuery.updateOrderStatusToCanceled,
@@ -55,7 +31,6 @@ const procedures: { [key: string]: string } = {
 	cancelOrderDetailByWarehouse:
 		orderQuery.updateOrderDetailStatusToCanceledByWarehouse,
 	hideOrder: orderQuery.updateOrderToHidden,
-	getAddressById: userQuery.getAddressById,
 	getWarehouseProductsById: warehouseQuery.getWarehouseProductsByWarehouseId,
 	adminLogin: warehouseQuery.adminLogin,
 	getWarehouseOrders: orderQuery.getWarehouseOrders,
@@ -76,17 +51,13 @@ const procedures: { [key: string]: string } = {
 	updateSMSAndEmailService: warehouseQuery.updateSMSAndEmailService,
 	getMailerUserInfo: warehouseQuery.getMailerUserInfo,
 	getWarehouseId: warehouseQuery.getWarehouseId,
-	newAddressWithComment: userQuery.newAddressWithComment,
 	myOrdersHistory: orderQuery.getAllPurchasedOrdersByFirstOrder,
 	getProductBySerialId: productQuery.getProductBySerialId,
-	findEnableAliasByOpenId: userQuery.findEnableAliasByOpenId,
 	getSaleIdByOpenId: productQuery.getSaleIdByOpenId,
 	getPrice: productQuery.getPrice,
 	getPriceByFatherAndProduct: productQuery.getPriceByFatherAndProduct,
 	checkInStoreProduct: productQuery.checkInStoreProduct,
-	updateTrackingToShipping: orderQuery.updateTrackingToShipping,
-	findOpenIdAndCode: userQuery.findOpenIdAndCode,
-	getUserName: userQuery.getUserName
+	updateTrackingToShipping: orderQuery.updateTrackingToShipping
 }
 export default async (key: string, value: (string | number | boolean)[]) => {
 	const pool = new Pool({

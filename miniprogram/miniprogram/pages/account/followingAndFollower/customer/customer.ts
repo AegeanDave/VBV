@@ -1,4 +1,4 @@
-import { getOrdersFromChild, getMyPublishedProductsForChild, unlockRelation, markPaid } from '../../../../api/api'
+import { getCustomer, removeConnection, markPaid } from '../../../../services/api/api'
 import { Product, IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
@@ -12,34 +12,26 @@ Page({
     products: [] as Product[],
     valueUnpaid: 0 as number
   },
-  onLoad: function () {
+  async onLoad(option) {
+    const { products, orders }: any = await getCustomer(option.id)
     this.setData({
-      customer: app.globalData.queryParameter.pop(),
+      orders: orders,
+      products: products
     })
-    this.computeScrollViewHeight()
   },
   onShow: async function () {
-    const ordersResult: any = await getOrdersFromChild(this.data.customer.openId)
-    const productsResult: any = await getMyPublishedProductsForChild(this.data.customer.openId)
-    let unpaidAmount: number = 0
-    ordersResult.data.forEach((order: SaleOrder) => {
-      order.createdAt = parseTime(new Date(order.createdAt))
-      if (order.subOrders) {
-        order.totalPrice = Number(order.subOrders.reduce((sum: number, subOrder: any) => sum + subOrder.orderProducts ? subOrder.orderProducts.reduce((subSum: number, product: OrderProduct) => subSum + (product.price as number) * product.quantity, 0) : 0, 0).toFixed(2))
-        if (order.status === Status.UNPAID) {
-          unpaidAmount += order.totalPrice
-        }
-      }
-    })
-    this.setData({
-      orders: ordersResult.data,
-      products: productsResult.data,
-      valueUnpaid: unpaidAmount.toFixed(2)
-    })
+    // const todoCustomer: any = await getCustomer(this.data.customer.openId)
+    // let unpaidAmount: number = 0
+
+    // this.setData({
+    //   orders: ordersResult.data,
+    //   products: productsResult.data,
+    // })
   },
-  toChangeTab: function (e: any) {
+  onTabChange: function (e: any) {
+    console.log(e.detail)
     this.setData({
-      tab: parseInt(e.currentTarget.dataset.tab),
+      tab: e.detail.index,
     })
   },
   bindToDetail(e: any) {
@@ -47,18 +39,6 @@ Page({
     app.globalData.queryParameter.push(order)
     wx.navigateTo({
       url: '../../orders/orderDetail/orderDetail',
-    })
-  },
-  computeScrollViewHeight() {
-    let query = wx.createSelectorQuery().in(this)
-    query.select('.header').boundingClientRect()
-    query.select('.tabBar').boundingClientRect()
-    query.exec(res => {
-      let headerHeight = res[0].height
-      let tabHeight = res[1].height
-      let windowHeight = wx.getSystemInfoSync().windowHeight
-      let scrollHeight = windowHeight - headerHeight - tabHeight
-      this.setData({ scrollHeight: scrollHeight })
     })
   },
   toProductDetail: function (e: any) {
@@ -85,7 +65,7 @@ Page({
       success: async function (sm) {
         if (sm.confirm) {
           const aliasId = that.data.customer.aliasId
-          const result = await unlockRelation(aliasId)
+          const result = await removeConnection(aliasId)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
               title: '已解除关系',

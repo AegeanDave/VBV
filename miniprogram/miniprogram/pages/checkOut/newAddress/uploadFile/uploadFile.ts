@@ -1,6 +1,6 @@
 import { IAppOption } from "../../../../models/index"
 import { Image, Status } from "../../../../constant/index"
-import { uploadImage } from '../../../../api/api'
+import { uploadImage } from '../../../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({

@@ -1,15 +1,11 @@
-import { createWarehouse, getWarehouse } from '../../../api/api'
-import { WarehouseOrder } from '../../../models/index'
+import { createWarehouse, getWarehouse } from '../../../services/api/api'
 import { Status } from "../../../constant/index"
 
 Page({
   data: {
-    mode: undefined,
     showActionsheet: false,
-    warehouse: undefined,
-    phone: undefined,
-    pendingCount: 0,
-    shippingCount: 0,
+    warehouse: {},
+    phone: '',
     disabled: true,
     tab: '0',
     countryCodes: [{
@@ -35,31 +31,20 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onShow: async function () {
-    const warehouse: any = await getWarehouse()
+  async onLoad() {
+    const { warehouse, order }: any = await getWarehouse()
     wx.setNavigationBarTitle({
-      title: warehouse.status === Status.REGISTERED ? '仓库管理' : '仓库申请'
+      title: warehouse?.status === 'Active' ? '仓库管理' : '仓库申请'
     })
     this.setData({
-      mode: warehouse.status
+      warehouse: warehouse,
+      order: order,
+      processingOrderNum: order?.length || 0
     })
-    if (warehouse.data) {
-      let shippingCount = 0
-      let pendingCount = 0
-      warehouse.data.order.forEach((order: WarehouseOrder) => {
-        if (order.trackingStatus === Status.PENDING) {
-          pendingCount++
-        }
-        else if (order.trackingStatus === Status.SHIPPING) {
-          shippingCount++
-        }
-      });
-      this.setData({
-        warehouse: warehouse.data.warehouse,
-        shippingCount: shippingCount,
-        pendingCount: pendingCount
-      })
-    }
+  },
+  onShow: function () {
+
+
   },
   handleValidation: function (e: any) {
     if (e.detail.value && e.detail.value.length >= 10) {
@@ -82,25 +67,24 @@ Page({
       tab: index
     })
   },
-  submitRegistration: async function (e: any) {
-    const value = e.detail.value
-    this.setData({
-      showPopup: false
-    })
-    wx.showLoading({
-      title: '正在提交',
-    })
-    const result = await createWarehouse(value.phone, this.data.countryCodes[value.countryIndex].id)
-    wx.hideLoading()
-    if (result.status === Status.SUCCESS) {
-      wx.redirectTo({
-        url: './mailer/mailer?phone=' + e.detail.value.phone
+  async onDialogTap(e) {
+    const { detail: { index } } = e
+    if (index === 1) {
+      const result = await createWarehouse(this.data.phone, this.data.countryCodes[this.data.currentCode].value)
+      this.setData({
+        showPopup: false
       })
-    } else {
-      wx.showToast({
-        title: '手机号有误',
-        duration: 2000,
-        icon: 'none',
+      if (result?.status === 'FAIL') {
+        wx.showToast({
+          title: '创建失败',
+          icon: 'error',
+          duration: 2000
+        })
+      }
+    }
+    else {
+      this.setData({
+        showPopup: false
       })
     }
   },
@@ -115,9 +99,8 @@ Page({
     })
   },
   toSetting() {
-    const countryCodeValue = this.data.warehouse.loginPhoneNumberCountryCode
     wx.navigateTo({
-      url: './setting/setting?phone=' + countryCodeValue + ' ' + this.data.warehouse.loginPhoneNumber
+      url: './setting/setting?phone=' + this.data.warehouse.loginPhoneNumber
     })
   },
   openSheet() {

@@ -1,31 +1,35 @@
 // app.ts
 import { IAppOption } from './models/index'
-import { getSession } from "./api/api"
+import { getAuth } from "./services/api/api"
 
 App<IAppOption>({
-  globalData: { sessionKey: "", reload: false, queryParameter: [], products: [] },
+  globalData: { reload: false, queryParameter: [] },
   onLaunch() {
     // 登录
     wx.login({
-      success: async (res) => {
-        wx.showLoading({
-          title: '加载中'
-        })
-        if (res.code) {
-          const result: any = await getSession(res.code)
-          wx.setStorageSync('sessionKey', result.session_key)
-          this.globalData.sessionKey = result.session_key
-          if (this.userInfoReadyCallback) {
-            this.userInfoReadyCallback(result)
+      success: async ({ code }) => {
+        if (!code) return
+        try {
+          const user: any = await getAuth(code)
+          if (user.status === 'Not_Verified') {
+            wx.navigateTo({ url: '/pages/register/register' })
           }
-        } else {
-          wx.hideLoading()
+          wx.setStorageSync('sessionKey', user.session_key)
+          this.globalData.user = user
+          if (this.userInfoReadyCallback) {
+            this.userInfoReadyCallback(user)
+          }
+        } catch (err) {
           wx.showToast({
-            title: '登录失败', icon: 'none'
+            title: '连接服务器失败', icon: 'none', duration: 3000
           })
         }
-        wx.hideLoading()
       },
+      fail() {
+        wx.showToast({
+          title: '登录失败', icon: 'none'
+        })
+      }
     })
   },
 })

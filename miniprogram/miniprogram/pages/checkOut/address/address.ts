@@ -1,5 +1,5 @@
 import { Address, IAppOption } from "../../../models/index"
-import { deleteAddress } from '../../../api/api'
+import { deleteAddress } from '../../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({
