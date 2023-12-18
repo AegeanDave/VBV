@@ -71,6 +71,6 @@
 		</button>
 	</view>
 </view>
-<mp-dialog title='确认下架"{{currentProduct.productName}}"' show="{{dialogShow}}" bindbuttontap="tapDialogButton"
+<mp-dialog title='确认下架"{{selectedProduct.name}}"' show="{{dialogShow}}" bindbuttontap="onDialogClick"
 	buttons="{{buttons}}">
 </mp-dialog>

@@ -222,7 +222,6 @@ export default (app: Router) => {
 				const todoImage = await Image.findAll({
 					where: { productId: todoProduct?.dataValues.productId }
 				})
-				console.log(todoImage.map(image => ({ ...image.dataValues })))
 				res.send({
 					...todoProduct?.dataValues,
 					images: todoImage.map(image => ({ ...image.dataValues }))
@@ -305,21 +304,24 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
-		'/unreleaseProduct',
+		'/unpublish',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { product } = req.body
-			const queryResult = await query(queryName.discontinueMySaleProduct, [
-				product.mySale.inStoreProductId
-			])
-			if (queryResult.count === 1) {
-				disableWholeProductLine(myOpenId, product.productId)
+			const { myOpenId } = req.params
+			try {
+				const todoStore = await StoreProduct.update(
+					{
+						status: DBStatus.INACTIVE
+					},
+					{ where: { id: product.id, openId: myOpenId } }
+				)
 				res.send({
 					status: 'SUCCESS'
 				})
 				Logger.info('unrelease success')
-			} else {
-				res.send({
+			} catch (err) {
+				res.status(500).send({
 					status: 'FAIL'
 				})
 				Logger.info('unrelease fail')

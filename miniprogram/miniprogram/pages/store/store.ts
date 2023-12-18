@@ -63,9 +63,9 @@ Page({
       url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct.id}`,
     })
   },
-  bindTakeOff: async function () {
+  bindUnpublish: async function () {
     const product = this.data.selectedProduct
-    const result: any = await unreleaseProduct(product)
+    const result: any = await unpublishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
         title: '已下架',
@@ -96,10 +96,7 @@ Page({
     })
   },
 
-  tapDialogButton(e: any) {
-    this.setData({
-      dialogShow: false,
-    })
+  onDialogClick(e: any) {
     switch (e.detail.index) {
       case 0:
         break;
@@ -107,6 +104,9 @@ Page({
         this.bindTakeOff()
         break;
     }
+    this.setData({
+      dialogShow: false,
+    })
   },
   onActionClick(e: any) {
     const optionIndex = e.detail.index
