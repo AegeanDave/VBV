@@ -240,29 +240,40 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
-		'/updatePriceForChild',
+		'/special-price',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { openIdChild, price, inStoreProductId, priceId } = req.body
-			let queryResult
-			if (priceId) {
-				queryResult = await query(queryName.updatePriceForChild, [
-					price,
-					priceId
-				])
-			} else {
-				queryResult = await query(queryName.createOrUpdatePrice, [
-					openIdChild,
-					inStoreProductId,
-					price
-				])
-			}
-			if (queryResult.count !== 0) {
+			const { openIdChild, price, product } = req.body
+			try {
+				const [_price, created] = await Price.findOrCreate({
+					where: {
+						openIdChild,
+						storeProductId: product.id
+					},
+					defaults: {
+						price: price,
+						productId: product.productId
+					}
+				})
+				if (!created) {
+					await Price.update(
+						{
+							price: price
+						},
+						{
+							where: {
+								openIdChild,
+								storeProductId: product.id
+							}
+						}
+					)
+				}
 				res.send({
 					status: Status.SUCCESS
 				})
 				Logger.info('updatePrice success for child')
-			} else {
+			} catch (err) {
+				console.log(err)
 				res.send({
 					status: Status.FAIL
 				})

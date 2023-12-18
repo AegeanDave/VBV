@@ -1,5 +1,5 @@
 import request from './request'
-import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct ,publishToStore} from './product'
+import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct ,publishToStore,updatePriceForChild} from './product'
 import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection } from './user'
 import { Address, Product, SaleOrder } from "../../models/index"
 
@@ -16,7 +16,6 @@ const updatePhone = (phone: string, countryCode: string) => request.postRequest(
 const getOrdersFromFather = (openID: string) => request.postRequest("orders/myOrderFromFather", { openID: openID })
 const getProductsFromFather = (openID: string) => request.postRequest("products/productsFromDealer", { openID: openID })
 const markPaid = (orders: SaleOrder[]) => request.postRequest("orders/markPaid", { orders: orders })
-const updatePriceForChild = (price: number, openIdChild: string, inStoreProductId: string) => request.postRequest("products/updatePriceForChild", { price: price, openIdChild: openIdChild, inStoreProductId: inStoreProductId })
 const getAllSaleOrders = () => request.getRequest("orders/allSaleOrders")
 const getAllPurchaseOrders = () => request.getRequest("orders/myPurchase")
 const cancelOrder = (order: SaleOrder) => request.postRequest("orders/cancelOrder", { order: order })

@@ -494,14 +494,19 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { id, myOpenId } = req.params
 			try {
+				const todoUser = await User.findByPk(id, {
+					attributes: ['openId', 'username', 'avatarUrl']
+				})
 				const todoChildProducts = await StoreProduct.findAll({
 					include: {
 						model: User,
 						as: 'specialPrice',
+						attributes: ['username'],
 						through: {
 							where: {
 								openIdChild: id
-							}
+							},
+							attributes: ['price']
 						}
 					},
 					where: {
@@ -515,6 +520,7 @@ export default (app: Router) => {
 					}
 				})
 				res.send({
+					user: todoUser,
 					products: todoChildProducts,
 					orders: todoChildOrders
 				})

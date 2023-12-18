@@ -6,7 +6,7 @@
   <block wx:elif="{{groupName==='CUSTOMER'}}">
     <image src='../../image/group.png' mode="aspectFit"></image>
     <text>暂无关注您的客户</text>
-    <text bindtap="toAlias" class="link">去邀请</text>
+    <text bindtap="toInvitation" class="link">去邀请</text>
   </block>
 </view>
 <block wx:else>
@@ -17,14 +17,14 @@
   </view>
   <view class="dealerList">
     <block wx:for="{{groupList}}" wx:key="id" wx:for-item="alias">
-      <view class="dealerCard list" bindtap="toDealer" data-alias="{{alias}}">
+      <view class="dealerCard list" bindtap="toAlias" data-alias="{{alias}}">
         <block wx:if="{{alias.dealer.username}}">
           <view class="imgBox">
             <image class="avatar" src="{{alias.dealer.avatarUrl}}"></image>
             <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
           </view>
           <text class="name">{{alias.dealer.username}}</text>
-          <image class="arrow" src="../../../image/arrow.png" bindtap="toDealer" data-dealer="{{alias}}"></image>
+          <image class="arrow" src="../../../image/arrow.png" bindtap="toAlias" data-alias="{{alias}}"></image>
         </block>
         <block wx:if="{{alias.customer.username}}">
           <view class="imgBox">
@@ -32,7 +32,7 @@
             <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
           </view>
           <text class="name">{{alias.customer.username}}</text>
-          <image class="arrow" src="../../../image/arrow.png" bindtap="toDealer" data-dealer="{{alias}}"></image>
+          <image class="arrow" src="../../../image/arrow.png" bindtap="toAlias" data-alias="{{alias}}"></image>
         </block>
       </view>
     </block>

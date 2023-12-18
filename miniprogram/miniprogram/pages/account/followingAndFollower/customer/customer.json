@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "mp-tabbar": "weui-miniprogram/tabbar/tabbar"
+    "mp-tabbar": "weui-miniprogram/tabbar/tabbar",
+    "mp-half-screen-dialog": "weui-miniprogram/half-screen-dialog/half-screen-dialog"
   },
   "navigationBarTitleText": "用户详情"
 }

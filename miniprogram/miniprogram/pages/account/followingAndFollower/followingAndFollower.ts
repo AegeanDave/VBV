@@ -51,20 +51,20 @@ Page({
       })
     }
   },
-  toDealer: function (e: any) {
-    const aliasId = e.currentTarget.dataset.alias.openIdchild
+  toAlias: function (e: any) {
+    const alias = e.currentTarget.dataset.alias
     if (this.data.groupName === group.dealer) {
       wx.navigateTo({
-        url: `./dealer/dealer?id=${aliasId}`
+        url: `./dealer/dealer?id=${alias.openId}`
       })
     }
     else {
       wx.navigateTo({
-        url: `./customer/customer?id=${aliasId}`
+        url: `./customer/customer?id=${alias.openIdChild}`
       })
     }
   },
-  toAlias() {
+  toInvitation() {
     wx.navigateTo({
       url: '../aliasCode/aliasCode'
     })

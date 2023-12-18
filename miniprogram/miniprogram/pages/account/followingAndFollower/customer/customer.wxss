@@ -29,8 +29,7 @@
 .nameBox {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-between;
   padding-left: 10px;
 }
 
@@ -52,14 +51,14 @@
 
 .amount.unpaid {
   color: #D03434;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .rightBox {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .rightBox text {
