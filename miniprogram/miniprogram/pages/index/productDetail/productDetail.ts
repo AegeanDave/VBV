@@ -1,6 +1,6 @@
 import { Product, IAppOption } from "../../../models/index"
 import { Status, Mode } from "../../../constant/index"
-import { updateSale, updatePriceForChild, getProduct } from "../../../services/api/api"
+import { publishToStore, updatePriceForChild, getProduct } from "../../../services/api/api"
 
 const app = getApp<IAppOption>()
 
@@ -11,8 +11,8 @@ Page({
     quantity: 1 as number,
     newPrice: 0,
     mode: Mode.NORMAL,
-    showPopup: false as boolean,
-    showToast: false as boolean,
+    showPopup: false,
+    showToast: false,
     cartBadgeValue: 0,
     disbledSale: false,
   },
@@ -24,7 +24,8 @@ Page({
     this.setData({
       product: product,
       slider: product.images,
-      mode: options.mode
+      mode: options.mode,
+      newPrice: product?.defaultPrice || 0
     })
   },
   bindtoCart() {
@@ -90,7 +91,7 @@ Page({
   submitToPurchase: function () {
     let that = this
     wx.requestSubscribeMessage({
-      tmplIds: ['GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE', 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc'], 
+      tmplIds: ['GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE', 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc'],
       complete() {
         const product = that.data.product
         product.quantity = that.data.quantity
@@ -106,67 +107,61 @@ Page({
       newPrice: e.detail.value
     })
   },
-  bindtoSale() {
+  onDialogOpen() {
     this.setData({
       showPopup: true
     })
   },
-  updatePriceForChild: async function () {
-    const price = this.data.newPrice
-    if (!isNaN(price)) {
-      const result: any = await updatePriceForChild(price, this.data.product.saleChild, this.data.product.dealerSale.inStoreProductId)
+  // updatePriceForChild: async function () {
+  //   const price = this.data.newPrice
+  //   if (!isNaN(price)) {
+  //     const result: any = await updatePriceForChild(price, this.data.product.saleChild, this.data.product.dealerSale.inStoreProductId)
+  //     if (result.status === Status.SUCCESS) {
+  //       wx.showToast({
+  //         title: '更新成功',
+  //         icon: 'success',
+  //         duration: 2000
+  //       })
+  //       setTimeout(function () {
+  //         wx.navigateBack({
+  //           delta: 1
+  //         })
+  //       }, 1000)
+  //     }
+  //     else {
+  //       wx.showToast({
+  //         title: '更新失败',
+  //         icon: 'none',
+  //         duration: 2000
+  //       })
+  //     }
+  //   }
+  //   else {
+  //     wx.showToast({
+  //       title: '输入有误',
+  //       icon: 'none',
+  //       duration: 2000
+  //     })
+  //   }
+  // },
+  onDialogAction(e) {
+    if (e.detail.index === 1) {
+      this.onAddToStore()
+    }
+    this.setData({
+      showPopup: false
+    })
+  },
+  onAddToStore: async function () {
+    if (!isNaN(this.data.newPrice) && this.data.newPrice) {
+      let product = this.data.product
+      const result: any = await publishToStore(product, this.data.newPrice)
       if (result.status === Status.SUCCESS) {
         wx.showToast({
-          title: '更新成功',
+          title: '成功上架',
           icon: 'success',
           duration: 2000
         })
-        setTimeout(function () {
-          wx.navigateBack({
-            delta: 1
-          })
-        }, 1000)
-      }
-      else {
-        wx.showToast({
-          title: '更新失败',
-          icon: 'none',
-          duration: 2000
-        })
-      }
-    }
-    else {
-      wx.showToast({
-        title: '输入有误',
-        icon: 'none',
-        duration: 2000
-      })
-    }
-  },
-  updatePrice: async function () {
-    if (!isNaN(this.data.newPrice) && this.data.newPrice) {
-      let newProduct = this.data.product
-      if (newProduct.mySale) {
-        newProduct.mySale.newPrice = this.data.newPrice
-      } else {
-        newProduct.mySale = { newPrice: this.data.newPrice }
-      }
-      const result: any = await updateSale(newProduct)
-      if (result.status === Status.SUCCESS) {
-        if (this.data.product.status === Status.IDLE) {
-          wx.showToast({
-            title: '成功上架',
-            icon: 'success',
-            duration: 2000
-          })
-        }
-        else {
-          wx.showToast({
-            title: '修改成功',
-            icon: 'success',
-            duration: 2000
-          })
-        }
         setTimeout(function () {
           app.globalData.reload = true
           wx.navigateBack({
@@ -176,7 +171,7 @@ Page({
       }
       else {
         wx.showToast({
-          title: '修改失败',
+          title: result.message,
           icon: 'none',
           duration: 2000
         })

@@ -13,6 +13,9 @@ import Price from './price'
 User.hasOne(Warehouse, { foreignKey: 'openId' })
 Warehouse.belongsTo(User, { foreignKey: 'openId' })
 
+User.hasMany(StoreProduct, { foreignKey: 'openId' })
+StoreProduct.belongsTo(User, { foreignKey: 'openId' })
+
 Warehouse.hasMany(Product, { foreignKey: 'warehouseId' })
 Product.belongsTo(Warehouse, { foreignKey: 'warehouseId' })
 

@@ -16,8 +16,7 @@ export const Status = {
 }
 export const Mode = {
   NORMAL: 'NORMAL',
-  UPDATE_PRICE_DEFAULT: 'UPDATE_PRICE_DEFAULT',
-  UPDATE_PRICE_CHILD: 'UPDATE_PRICE_CHILD',
+  PUBLISHING: 'PUBLISHING',
   PREVIEW: 'PREVIEW'
 }
 export const Tabs = {

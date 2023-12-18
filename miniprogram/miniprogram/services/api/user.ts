@@ -18,4 +18,4 @@ const createWarehouse = (phone: string, countryCode: string) => request.postRequ
 const getCustomer = (openId: string) => request.getRequest(`users/customer/${openId}`)
 const removeConnection = (aliasId: string) => request.deleteRequest("users/connection", { id: aliasId })
 
-export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse,getCustomer,removeConnection }
+export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection }

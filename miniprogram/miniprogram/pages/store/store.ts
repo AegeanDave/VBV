@@ -1,4 +1,4 @@
-import { getMyStore, unreleaseProduct } from "../../services/api/api"
+import { getMyStore, publishProduct, unpublishProduct } from "../../services/api/api"
 import { Product, IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
 import { generateQRcode } from '../../services/QRcode'
@@ -40,28 +40,50 @@ Page({
     dpr: 1,                       // 设备的像素比
     posterHeight: 0,
   },
-  onShow: async function () {
+  onLoad: async function () {
     const { myProducts, availableProducts }: any = await getMyStore()
     this.setData({
       myProductList: myProducts,
       allFathersProducts: availableProducts
     })
   },
-  bindUpdatePrice: function () {
+  bindAddToStore: function () {
     wx.navigateTo({
-      url: '../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
-    })
-  },
-  bindtoSale: function (e: any) {
-    app.globalData.queryParameter.push(e.currentTarget.dataset.product)
-    wx.navigateTo({
-      url: '../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
+      url: `../../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${this.data.selectedProduct.id}`,
     })
   },
   bindPreview: function () {
     wx.navigateTo({
       url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct.id}`,
     })
+  },
+  bindPublish: async function () {
+    const product = this.data.selectedProduct
+    const result: any = await publishProduct(product)
+    if (result.status === Status.SUCCESS) {
+      wx.showToast({
+        title: '成功上架',
+        icon: 'success',
+        duration: 2000
+      })
+      const newList = this.data.myProductList?.map(item => {
+        if (product.id === item.id) {
+          return { ...product, status: 'Active' }
+        }
+        return product
+      })
+      this.setData({
+        myProductList: newList
+      })
+      app.globalData.reload = true
+    }
+    else {
+      wx.showToast({
+        title: '操作有误',
+        icon: 'none',
+        duration: 2000
+      })
+    }
   },
   bindUnpublish: async function () {
     const product = this.data.selectedProduct
@@ -72,7 +94,15 @@ Page({
         icon: 'success',
         duration: 2000
       })
-      this.onShow()
+      const newList = this.data.myProductList.map(item => {
+        if (product.id === item.id) {
+          return { ...product, status: 'Inactive' }
+        }
+        return product
+      })
+      this.setData({
+        myProductList: newList
+      })
       app.globalData.reload = true
     }
     else {
@@ -84,7 +114,31 @@ Page({
     }
   },
   async showModal(e: any) {
+    if (e.currentTarget.dataset.newproduct) {
+      this.setData({
+        groups: [
+          { text: '我要售卖', value: 6 }
+        ],
+        showActionsheet: true,
+        selectedProduct: e.currentProduct.dataset.newproduct,
+      })
+      return
+    }
     const product = e.currentTarget.dataset.product
+    if (product.status === 'Inactive') {
+      this.setData({
+        groups: [
+          { text: '上架', value: 5 }
+        ]
+      })
+    }
+    if (product.status === 'Not_Available') {
+      wx.showToast({
+        title: '请联系商家',
+        icon: "error"
+      })
+      return
+    }
     this.setData({
       showActionsheet: true,
       selectedProduct: product,
@@ -95,13 +149,12 @@ Page({
       showActionsheet: false
     })
   },
-
   onDialogClick(e: any) {
     switch (e.detail.index) {
       case 0:
         break;
       case 1:
-        this.bindTakeOff()
+        this.bindUnpublish()
         break;
     }
     this.setData({
@@ -109,24 +162,30 @@ Page({
     })
   },
   onActionClick(e: any) {
-    const optionIndex = e.detail.index
+    const optionIndex = e.detail.value
     switch (optionIndex) {
-      case 0:
+      case 1:
         this.setData({
           showCanvasMask: !this.data.showCanvasMask
         })
         this.drawImage()
         break;
-      case 1:
+      case 2:
         this.bindUpdatePrice()
         break;
-      case 2:
+      case 3:
         this.bindPreview()
         break;
-      case 3:
+      case 4:
         this.setData({
           dialogShow: !this.data.dialogShow
         })
+        break;
+      case 5:
+        this.bindPublish()
+        break;
+      case 6:
+        this.bindAddToStore()
         break;
       default:
         break;

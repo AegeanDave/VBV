@@ -1,5 +1,5 @@
 import request from './request'
-import { getProductList, getMyStore, getProduct, unpublishProduct } from './product'
+import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct ,publishToStore} from './product'
 import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection } from './user'
 import { Address, Product, SaleOrder } from "../../models/index"
 
@@ -9,11 +9,10 @@ const getAddress = () => request.getRequest("users/getAddress")
 const addAddress = (address: Address, selectedField: number) => request.postRequest("users/newAddress", { address, selectedField })
 const deleteAddress = (id: string) => request.deleteRequest("users/deleteAddress", { id: id })
 const newCode = () => request.postRequest("users/newCode")
-const uploadImage = (filePath: string, id: string, imageSide: string) => request.uploadImage("users/uploadFile", filePath, id, imageSide)
+const uploadImage = (filePath: string, id: string) => request.uploadImage("users/uploadFile", filePath, id)
 const getCountriesData = () => request.getRequest("users/countries")
 const submitOrder = (order: Product[], addressID: string, comment: string) => request.postRequest("orders/submitOrder", { order, addressID, comment })
 const updatePhone = (phone: string, countryCode: string) => request.postRequest("warehouse/updatePhone", { phone: phone, countryCode: countryCode })
-const updateSale = (product: Product) => request.postRequest("products/updateSale", { product: product })
 const getOrdersFromFather = (openID: string) => request.postRequest("orders/myOrderFromFather", { openID: openID })
 const getProductsFromFather = (openID: string) => request.postRequest("products/productsFromDealer", { openID: openID })
 const markPaid = (orders: SaleOrder[]) => request.postRequest("orders/markPaid", { orders: orders })
@@ -50,7 +49,8 @@ export {
   createWarehouse,
   updatePhone,
   getWarehouse,
-  updateSale,
+  publishToStore,
+  publishProduct,
   unpublishProduct,
   getOrdersFromFather,
   getProductsFromFather,

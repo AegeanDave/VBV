@@ -117,13 +117,16 @@ export default (app: Router) => {
 			try {
 				const todoAlias = await Connection.findAll({
 					where: {
-						openIdChild: myOpenId,
-						status: 'Active'
+						openIdChild: myOpenId
 					}
 				})
 				const todoMyProducts = StoreProduct.findAll({
 					where: {
 						openId: myOpenId
+					},
+					include: {
+						model: User,
+						attributes: ['username', 'avatarUrl']
 					}
 				})
 				const todoAvailableProducts =
@@ -267,39 +270,79 @@ export default (app: Router) => {
 			}
 		}
 	)
-
 	route.post(
-		'/updateSale',
+		'/publish',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
+			const { product } = req.body
+			const { myOpenId } = req.params
 			try {
-				const { product } = req.body
-				const price = parseFloat(product.mySale.newPrice)
-				let queryResult
-				if (product.mySale && product.mySale.inStoreProductId) {
-					queryResult = await query(queryName.releaseProduct, [
-						price,
-						product.mySale.inStoreProductId
-					])
-				} else {
-					queryResult = await query(queryName.releaseNewProduct, [
-						product.productId,
-						myOpenId,
-						product.dealerSale.openId,
-						price
-					])
-				}
+				await StoreProduct.update(
+					{
+						status: DBStatus.ACTIVE
+					},
+					{ where: { id: product.id, openId: myOpenId } }
+				)
 				res.send({
-					status: Status.SUCCESS,
-					data: queryResult.data[0]
+					status: 'SUCCESS'
 				})
-				Logger.info('updatePrice success')
+				Logger.info('release success')
 			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
+				res.status(500).send({
+					status: 'FAIL'
 				})
-				Logger.info('updatePrice fail')
+				Logger.info('release fail')
+			}
+		}
+	)
+	route.post(
+		'/publish/new',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { product, newPrice } = req.body
+			const { myOpenId } = req.params
+			try {
+				const todoProduct = await Product.findOne({
+					where: { id: product.productId, status: DBStatus.ACTIVE },
+					attributes: [
+						'name',
+						'description',
+						'coverImageUrl',
+						'shortDescription'
+					]
+				})
+				if (!todoProduct?.dataValues) {
+					return res.send({
+						status: 'FAIL',
+						message: '此商品不存在'
+					})
+				}
+				const [_storeProduct, created] = await StoreProduct.findOrCreate({
+					where: {
+						openId: myOpenId,
+						productId: product.productId
+					},
+					defaults: {
+						...todoProduct.dataValues,
+						defaultPrice: newPrice,
+						status: DBStatus.ACTIVE
+					}
+				})
+				if (created) {
+					Logger.info('release success')
+					return res.send({
+						status: 'SUCCESS'
+					})
+				}
+				return res.send({
+					status: 'FAIL',
+					message: '此商品已在您的商店中'
+				})
+			} catch (err) {
+				res.status(500).send({
+					status: 'FAIL'
+				})
+				Logger.info('release fail')
 			}
 		}
 	)
@@ -310,7 +353,7 @@ export default (app: Router) => {
 			const { product } = req.body
 			const { myOpenId } = req.params
 			try {
-				const todoStore = await StoreProduct.update(
+				await StoreProduct.update(
 					{
 						status: DBStatus.INACTIVE
 					},
