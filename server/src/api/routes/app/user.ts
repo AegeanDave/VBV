@@ -531,4 +531,48 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.get(
+		'/dealer/:id',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id, myOpenId } = req.params
+			try {
+				const todoUser = await User.findByPk(id, {
+					attributes: ['openId', 'username', 'avatarUrl']
+				})
+				const todoChildProducts = await StoreProduct.findAll({
+					include: {
+						model: User,
+						as: 'specialPrice',
+						attributes: ['username'],
+						through: {
+							where: {
+								openIdChild: myOpenId
+							},
+							attributes: ['price']
+						}
+					},
+					where: {
+						openId: id,
+						status: DBStatus.ACTIVE
+					}
+				})
+				const todoChildOrders = await Order.findAll({
+					where: {
+						userId: myOpenId,
+						dealerId: id
+					}
+				})
+				res.send({
+					user: todoUser,
+					products: todoChildProducts,
+					orders: todoChildOrders
+				})
+				Logger.info(`Father's product and order get`)
+			} catch (err) {
+				res.status(500).send()
+				Logger.info(`Father's product and order fetch failed`)
+			}
+		}
+	)
 }

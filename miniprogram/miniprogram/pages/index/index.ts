@@ -75,7 +75,7 @@ Page({
   },
   viewDetail: function (e: any) {
     wx.navigateTo({
-      url: './productDetail/productDetail?id=' + Mode.NORMAL,
+      url: `./productDetail/productDetail?mode=${Mode.NORMAL}&id=${e.currentTarget.dataset.product.id}`,
     })
   },
   onToConnection: function () {

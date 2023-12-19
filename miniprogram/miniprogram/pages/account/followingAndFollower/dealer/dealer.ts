@@ -1,4 +1,4 @@
-import { getOrdersFromFather, getProductsFromFather, unlockRelation } from '../../../../services/api/api'
+import { getDealer, unlockRelation } from '../../../../services/api/api'
 import { Product, IAppOption, DealerOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
@@ -12,17 +12,17 @@ Page({
     products: [] as Product[],
     valueUnpaid: 0 as number
   },
-  onLoad: function () {
+  onLoad: function (option: any) {
     this.setData({
-      dealer: app.globalData.queryParameter.pop(),
+      dealer: option.id
     })
     this.computeScrollViewHeight()
   },
   onShow: async function () {
-    const ordersResult: any = await getOrdersFromFather(this.data.dealer.openId)
-    const productsResult: any = await getProductsFromFather(this.data.dealer.openId)
+    const { user, products, orders }: any = await getDealer(this.data.dealer)
+
     let unpaidAmount: number = 0
-    ordersResult.data.forEach((order: DealerOrder) => {
+    orders.forEach((order: DealerOrder) => {
       order.createdAt = parseTime(new Date(order.createdAt))
       if (order.orderProducts) {
         order.totalPrice = Number(order.orderProducts.reduce((subSum: number, product: OrderProduct) => subSum + (product.price as number) * product.quantity, 0).toFixed(2))
@@ -32,8 +32,9 @@ Page({
       }
     })
     this.setData({
-      orders: ordersResult.data,
-      products: productsResult.data,
+      orders: orders,
+      products: products,
+      dealer: user,
       valueUnpaid: unpaidAmount.toFixed(2)
     })
   },
@@ -62,18 +63,15 @@ Page({
     })
   },
   toProductDetail: function (e: any) {
-    if (this.data.dealer) {
-      app.globalData.queryParameter.push(e.currentTarget.dataset.product)
-      wx.navigateTo({
-        url: '../../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
-      })
-    }
+    wx.navigateTo({
+      url: `../../../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${e.currentTarget.dataset.product.id}`,
+    })
   },
   disconnect: function () {
     let that = this
     wx.showModal({
       title: '提示',
-      content: '确定与“' + this.data.dealer.name + '”解除关系?',
+      content: '确定与“' + this.data.dealer.username + '”解除关系?',
       success: async function (sm) {
         if (sm.confirm) {
           const aliasID = that.data.dealer.aliasId

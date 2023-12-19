@@ -19,8 +19,8 @@
           <image class='pic store' src='{{product.coverImageUrl}}'>
           </image>
           <view class="dealerBox">
-            <image src="{{product.user.avatarUrl}}"></image>
-            <text>{{product.user.username}}</text>
+            <image src="{{product.dealer.avatarUrl}}"></image>
+            <text>{{product.dealer.username}}</text>
           </view>
           <text class="name">{{product.name}}</text>
           <text class="price">￥{{product.defaultPrice}}</text>
@@ -29,7 +29,7 @@
     </view>
   </view>
   <view wx:elif="{{myProductList.length===0}}" class="cardContent empty">
-    <image src='../../../image/empty_products.png' class="noProducts"></image>
+    <image src='../../image/empty_products.png' class="noProducts"></image>
     <text>
       橱窗暂无产品</text>
   </view>
@@ -80,3 +80,4 @@
 </view>
 <mp-dialog title='确认下架"{{selectedProduct.name}}"' show="{{dialogShow}}" bindbuttontap="onDialogClick" buttons="{{buttons}}">
 </mp-dialog>
+<van-toast id="van-toast" />

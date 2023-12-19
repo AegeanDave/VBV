@@ -2,14 +2,15 @@ import { getMyStore, publishProduct, unpublishProduct } from "../../services/api
 import { Product, IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
 import { generateQRcode } from '../../services/QRcode'
+import Toast from '@vant/weapp/toast/toast';
 
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    myProductList: undefined,
+    myProductList: [],
     showCanvasMask: true,
-    allFathersProducts: undefined,
+    allFathersProducts: [],
     selectedProduct: {} as Product,
     showActionsheet: false,
     groups: [
@@ -48,8 +49,13 @@ Page({
     })
   },
   bindAddToStore: function () {
+    const isDuplicate = this.data.myProductList?.some(item => item.productId === this.data.selectedProduct.productId)
+    if (isDuplicate) {
+      Toast('此商品已在您的商店中');
+      return
+    }
     wx.navigateTo({
-      url: `../../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${this.data.selectedProduct.id}`,
+      url: `../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${this.data.selectedProduct.id}`,
     })
   },
   bindPreview: function () {
@@ -113,14 +119,14 @@ Page({
       })
     }
   },
-  async showModal(e: any) {
+  showModal(e: any) {
     if (e.currentTarget.dataset.newproduct) {
       this.setData({
         groups: [
           { text: '我要售卖', value: 6 }
         ],
         showActionsheet: true,
-        selectedProduct: e.currentProduct.dataset.newproduct,
+        selectedProduct: e.currentTarget.dataset.newproduct,
       })
       return
     }

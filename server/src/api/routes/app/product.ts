@@ -58,7 +58,20 @@ export default (app: Router) => {
 								},
 								status: 'Active'
 							},
-							include: Product
+							include: [
+								{ model: Product, attributes: ['setting'] },
+								{
+									model: User,
+									as: 'specialPrice',
+									through: {
+										where: {
+											openIdChild: myOpenId
+										},
+										attributes: ['price']
+									},
+									attributes: ['username', 'avatarUrl']
+								}
+							]
 					  })
 					: []
 			res.send({ alias: todoAlias, products: todoProducts })
@@ -126,6 +139,7 @@ export default (app: Router) => {
 					},
 					include: {
 						model: User,
+						as: 'dealer',
 						attributes: ['username', 'avatarUrl']
 					}
 				})
@@ -139,10 +153,11 @@ export default (app: Router) => {
 										where: {
 											openIdChild: myOpenId
 										}
-									}
+									},
+									attributes: ['username', 'avatarUrl']
 								},
 								where: {
-									openIdFather: {
+									openId: {
 										[Op.or]: todoAlias.map(
 											connection => connection.dataValues.openId
 										)
@@ -313,13 +328,16 @@ export default (app: Router) => {
 			const { product, newPrice } = req.body
 			const { myOpenId } = req.params
 			try {
-				const todoProduct = await Product.findOne({
-					where: { id: product.productId, status: DBStatus.ACTIVE },
+				const todoProduct = await StoreProduct.findOne({
+					where: { id: product.id, status: DBStatus.ACTIVE },
 					attributes: [
+						'productId',
+						'openIdFather',
 						'name',
 						'description',
 						'coverImageUrl',
-						'shortDescription'
+						'shortDescription',
+						'saleLevel'
 					]
 				})
 				if (!todoProduct?.dataValues) {
@@ -331,10 +349,12 @@ export default (app: Router) => {
 				const [_storeProduct, created] = await StoreProduct.findOrCreate({
 					where: {
 						openId: myOpenId,
-						productId: product.productId
+						openIdFather: todoProduct.dataValues.openIdFather,
+						productId: todoProduct.dataValues.productId
 					},
 					defaults: {
 						...todoProduct.dataValues,
+						saleLevel: todoProduct.dataValues.saleLevel + 1,
 						defaultPrice: newPrice,
 						status: DBStatus.ACTIVE
 					}

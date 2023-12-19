@@ -20,24 +20,17 @@ Page({
         index: Tabs.CART
       })
     }
-    const productInCart = wx.getStorageSync('cart')
-    if (productInCart) {
-      productInCart.forEach((product: Product) => {
-        if (app.globalData.products.find((globalProduct: Product) => globalProduct.productId === product.productId)) {
-          product.disabled = false
-        }
-        else {
-          product.disabled = true
-        }
-      });
-      const totalPrice = productInCart.reduce((sum: number, product: Product) => {
-        if (!product.disabled) {
-          return sum + product.quantity * (product.dealerSale.price as number)
+    const cartItems = wx.getStorageSync('cart')
+    console.log(cartItems)
+    if (cartItems) {
+      const totalPrice = cartItems.reduce((sum: number, product: Product) => {
+        if (!product?.disabled) {
+          return sum + Number(product.quantity * product.item.defaultPrice)
         }
         return sum + 0
       }, 0)
       this.setData({
-        products: productInCart,
+        products: cartItems,
         totalPrice: totalPrice.toFixed(2)
       })
     } else {

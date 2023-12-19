@@ -1,11 +1,4 @@
 <!--index.wxml-->
-<!-- <view class="searchForm" bindsubmit="searchSubmit">
-		<input value="{{search.searchValue}}" placeholder="搜索产品名" class="searchInput" bindinput="handleProductsSearching"
-			name="teamSearchKeyWords" />
-		<view class="searchIcon searchActive">
-			<icon type="search" size="28" color="#888"></icon>
-		</view>
-	</view> -->
 <mp-searchbar placeholder="输入好友微信名搜索产品" bindinput="onSearch" bindclear="onClear"></mp-searchbar>
 <view class="dealerContainer">
   <text class="title">关注商家</text>
@@ -51,7 +44,7 @@
 <view wx:if="{{productList.length>0}}" class="productList">
   <block wx:for="{{productList}}" wx:key="id" wx:for-item="product">
     <block wx:if="{{selectedDealer}}">
-      <view class="productCard home" bindtap="viewDetail" wx:if="{{product.openId===selectedDealers}}">
+      <view class="productCard home" bindtap="viewDetail" wx:if="{{product.openId===selectedDealers}}" data-product="{{product}}">
         <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
         <view class="tagField">
           <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
@@ -69,7 +62,7 @@
       </view>
     </block>
     <block wx:else>
-      <view class="productCard home" bindtap="viewDetail">
+      <view class="productCard home" bindtap="viewDetail" data-product="{{product}}">
         <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
         <view class="tagField">
           <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
@@ -81,8 +74,8 @@
           <text>￥{{product.defaultPrice}}</text>
         </view>
         <view class="dealerBox">
-          <image src="{{product.dealerSale.avatar}}"></image>
-          <text>{{product.dealerSale.name}}</text>
+          <image src="{{product.dealer.avatarUrl}}"></image>
+          <text>{{product.dealer.username}}</text>
         </view>
       </view>
     </block>

@@ -1,6 +1,6 @@
 import request from './request'
-import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct ,publishToStore,updatePriceForChild} from './product'
-import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection } from './user'
+import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild } from './product'
+import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer } from './user'
 import { Address, Product, SaleOrder } from "../../models/index"
 
 const updateUserInfo = (userInfo: {}) => request.postRequest("users/updateUserInfo", userInfo)
@@ -13,8 +13,6 @@ const uploadImage = (filePath: string, id: string) => request.uploadImage("users
 const getCountriesData = () => request.getRequest("users/countries")
 const submitOrder = (order: Product[], addressID: string, comment: string) => request.postRequest("orders/submitOrder", { order, addressID, comment })
 const updatePhone = (phone: string, countryCode: string) => request.postRequest("warehouse/updatePhone", { phone: phone, countryCode: countryCode })
-const getOrdersFromFather = (openID: string) => request.postRequest("orders/myOrderFromFather", { openID: openID })
-const getProductsFromFather = (openID: string) => request.postRequest("products/productsFromDealer", { openID: openID })
 const markPaid = (orders: SaleOrder[]) => request.postRequest("orders/markPaid", { orders: orders })
 const getAllSaleOrders = () => request.getRequest("orders/allSaleOrders")
 const getAllPurchaseOrders = () => request.getRequest("orders/myPurchase")
@@ -51,8 +49,6 @@ export {
   publishToStore,
   publishProduct,
   unpublishProduct,
-  getOrdersFromFather,
-  getProductsFromFather,
   getCustomer,
   removeConnection,
   markPaid,
@@ -65,5 +61,5 @@ export {
   getQRcode,
   getProductInfoBySerialID,
   makeNewConnection,
-  hideOrder, getSignup, getCodes
+  hideOrder, getSignup, getCodes, getDealer
 }

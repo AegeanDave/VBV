@@ -56,34 +56,29 @@ Page({
     })
   },
   submitToCart: function () {
-    const order = this.data.product
-    const quantity = this.data.quantity
-    order.quantity = quantity
-    const localStorage = wx.getStorageSync("cart")
-    let storage
-    if (localStorage) {
-      let sameSaleProduct = false
-      storage = localStorage
-      storage.forEach((product: Product) => {
-        if (product.dealerSale.inStoreProductId === order.dealerSale.inStoreProductId) {
-          product.quantity += order.quantity
-          sameSaleProduct = true
-        }
-      })
-      if (!sameSaleProduct) {
-        storage.push(order)
+    const cartItem = { item: this.data.product, quantity: this.data.quantity }
+    let cartStorage = wx.getStorageSync("cart")
+    let cartLength = 0
+    if (cartStorage && cartStorage.length >= 0) {
+      const index = cartStorage.findIndex(item =>
+        item.item.id === cartItem.item.id
+      )
+      cartLength = cartStorage.length
+      if (index !== -1) {
+        cartStorage[index].quantity += cartItem.quantity
       }
+      else {
+        cartStorage.push(cartItem)
+        cartLength += 1
+      }
+    } else {
+      cartStorage = [cartItem]
+      cartLength = 1
     }
-    else {
-      storage = []
-      storage.push(order)
-    }
-    wx.setStorageSync("cart", storage)
-    if (wx.getStorageSync('cart') && wx.getStorageSync('cart').length > 0) {
-      this.setData({
-        cartBadgeValue: wx.getStorageSync('cart').length
-      })
-    }
+    wx.setStorageSync("cart", cartStorage)
+    this.setData({
+      cartBadgeValue: cartLength
+    })
     wx.showToast({
       title: '添加成功',
     })
