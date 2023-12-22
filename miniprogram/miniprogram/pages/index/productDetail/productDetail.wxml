@@ -1,97 +1,76 @@
 <view wx:if="{{mode==='PREVIEW'}}" class="hint">
-	<text>当前为预览模式</text>
+  <text>当前为预览模式</text>
 </view>
 <view class="page-section page-section-spacing swiper">
-	<swiper indicator-dots="true" indicator-active-color="#02A69F" class="slider">
-		<block wx:for="{{slider}}" wx:key="id">
-			<swiper-item>
-				<image src='{{item.url}}' class='slideImage' mode="aspectFit" />
-			</swiper-item>
-		</block>
-	</swiper>
+  <swiper indicator-dots="true" indicator-active-color="#02A69F" class="slider">
+    <block wx:for="{{slider}}" wx:key="id">
+      <swiper-item>
+        <image src='{{item.url}}' class='slideImage' mode="aspectFit" />
+      </swiper-item>
+    </block>
+  </swiper>
 </view>
 <view class="fab" wx:if="{{mode==='NORMAL'}}" bindtap="bindtoCart">
-	<image src="../../../image/cart_around.png">
-		<view wx:if="{{cartBadgeValue}}" class="badge">{{cartBadgeValue}}</view>
-	</image>
+  <image src="../../../image/cart_around.png">
+    <view wx:if="{{cartBadgeValue}}" class="badge">{{cartBadgeValue}}</view>
+  </image>
 </view>
-<view class="fab quickSale" wx:if="{{mode==='NORMAL'}}" bindtap="bindtoSale">
-	<image src="../../../image/quick_store.png">
-	</image>
+<view class="fab quickSale" wx:if="{{mode==='NORMAL'}}" bindtap="onDialogOpen">
+  <image src="../../../image/quick_store.png">
+  </image>
 </view>
 <view class="productDetailBox">
-	<view class="productInfo">
-		<view class="name">{{product.name}}</view>
-		<view class="price" wx:if="{{product.dealerSale}}">￥{{product.dealerSale.price}}</view>
-		<view class="price" wx:else>￥{{product.defaultPrice}}</view>
-		<view class="tagField">
-			<text class="tag" wx:if="{{product.product.setting.isIdRequired}}">海外直邮</text>
-			<text class="tag" wx:if="{{!product.product.setting.isFreeShipping}}">邮费到付</text>
-			<text class="tag" wx:elif="{{product.product.setting.isFreeShipping}}">包邮</text>
-		</view>
-	</view>
-	<view class="divider"></view>
-	<view class="introduction">
-		<text class="title">简介</text>
-		<text class="detail">{{product.description}}</text>
-	</view>
+  <view class="productInfo">
+    <view class="name">{{product.name}}</view>
+    <view class="price" wx:if="{{product.dealerSale}}">￥{{product.dealerSale.price}}</view>
+    <view class="price" wx:else>￥{{product.defaultPrice}}</view>
+    <view class="tagField">
+      <text class="tag" wx:if="{{product.product.setting.isIdRequired}}">海外直邮</text>
+      <text class="tag" wx:if="{{!product.product.setting.isFreeShipping}}">邮费到付</text>
+      <text class="tag" wx:elif="{{product.product.setting.isFreeShipping}}">包邮</text>
+    </view>
+  </view>
+  <view class="divider"></view>
+  <view class="introduction">
+    <text class="title">简介</text>
+    <text class="detail">{{product.description}}</text>
+  </view>
 </view>
 <block>
-	<view wx:if="{{mode==='PREVIEW'}}" class="submitField previewMode">
-	</view>
-	<view wx:elif="{{mode==='NORMAL'}}" class="submitField normal">
-		<view class="amountChange product">
-			<button bindtap='reduce' disabled='{{quantity==1}}' class="reduce amountComponent">
-				<image src='../../image/minusIcon.png'></image>
-			</button>
-			<input class="input amountComponent" type='number' bindblur="bindKeyblur" maxlength='2'
-				value='{{quantity}}'></input>
-			<button bindtap='plus' class="plus amountComponent" disabled='{{quantity==99}}'>
-				<image src='../../image/plusIcon.png'></image>
-			</button>
-		</view>
-		<view class="btnField">
-			<button class="purchaseBtn" bindtap="submitToPurchase">购买</button>
-			<button class="addCartBtn" bindtap="submitToCart">加入购物车</button>
-		</view>
-	</view>
+  <view wx:if="{{mode==='PREVIEW'}}" class="submitField previewMode">
+  </view>
+  <view wx:if="{{mode==='PUBLISHING'}}" class="submitField">
+    <view class="updatePriceMode">
+      <view class="inputField">
+        <text>¥</text>
+        <input type='number' bindinput="bindUpdateValue" maxlength='7' value='{{newPrice}}'></input>
+      </view>
+      <button bindtap="onDialogOpen" disabled="{{!newPrice}}">加入我的商店</button>
+    </view>
+  </view>
+  <view wx:elif="{{mode==='NORMAL'}}" class="submitField normal">
+    <view class="amountChange product">
+      <button bindtap='reduce' disabled='{{quantity==1}}' class="reduce amountComponent">
+        <image src='../../../image/minusIcon.png'></image>
+      </button>
+      <input class="input amountComponent" type='number' bindblur="bindKeyblur" maxlength='2' value='{{quantity}}'></input>
+      <button bindtap='plus' class="plus amountComponent" disabled='{{quantity==99}}'>
+        <image src='../../../image/plusIcon.png'></image>
+      </button>
+    </view>
+    <view class="btnField">
+      <button class="purchaseBtn" bindtap="submitToPurchase">购买</button>
+      <button class="addCartBtn" bindtap="submitToCart">加入购物车</button>
+    </view>
+  </view>
 </block>
-<pop-up show="{{showToast}}">
-	<view class="modelContent toast">
-		<image src="../../image/store_shadow.png" mode="aspectFit"></image>
-		<text class="text">已成功上架“{{product.productName}}”至在售</text>
-		<text class="link" bindtap="toStore">去查看</text>
-	</view>
-</pop-up>
-<pop-up show="{{showPopup}}">
-	<view class="modelContent onSelling" wx:if="{{product.mySale && product.mySale.status==='Enabled'}}">
-		<image src="../../image/store_front.png" mode="aspectFit"></image>
-		<text class="text">本产品已在“我的在售”内</text>
-		<text class="link" bindtap="toStore">去查看</text>
-	</view>
-	<view class="modelContent" wx:else>
-		<view class="imageBox item">
-			<image src="{{product.coverImageURL}}" mode="heightFix"></image>
-		</view>
-		<view class="modelProductName item">
-			<text>{{product.productName}}</text>
-		</view>
-		<view class="divider"></view>
-		<view class="inputForm">
-			<form bindsubmit="submitToSale">
-				<view class="item">
-					<text class="title">一键转售好友商品</text>
-				</view>
-				<view class="item">
-					<text class="label">好友原价</text>
-					<text class="price origin">￥{{product.dealerSale.price}}</text>
-				</view>
-				<view class="item last">
-					<text class="label">我的售价</text>
-					<input name="newPrice" class="price" type="digit"></input>
-				</view>
-				<button class="btn submit" form-type="submit" disabled="{{disbledSale}}">上架至我的在售</button>
-			</form>
-		</view>
-	</view>
-</pop-up>
+<mp-dialog mask-closable="{{false}}" show="{{showPopup}}" title="一键转售好友商品" bindbuttontap="onDialogAction" buttons="{{[{text:' 取消'},{text:'确认'}]}}">
+    <view class="item">
+      <text class="label">好友原价</text>
+      <text class="price origin">￥{{product.defaultPrice}}</text>
+    </view>
+    <view class="item last">
+      <text class="label">我的售价</text>
+      <text name="newPrice" class="price">¥{{newPrice}}</text>
+    </view>
+</mp-dialog>

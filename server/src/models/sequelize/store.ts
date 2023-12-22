@@ -22,10 +22,12 @@ const StoreProduct = db.define('inStoreProducts', {
 		defaultValue: 0
 	},
 	openId: {
-		type: DataTypes.STRING
+		type: DataTypes.STRING,
+		allowNull: false
 	},
 	openIdFather: {
-		type: DataTypes.STRING
+		type: DataTypes.STRING,
+		allowNull: false
 	},
 	saleLevel: { type: DataTypes.INTEGER, defaultValue: 99 },
 	status: {

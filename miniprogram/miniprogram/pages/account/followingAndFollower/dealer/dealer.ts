@@ -1,4 +1,4 @@
-import { getOrdersFromFather, getProductsFromFather, unlockRelation } from '../../../../services/api/api'
+import { getDealer, unlockRelation } from '../../../../services/api/api'
 import { Product, IAppOption, DealerOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
@@ -7,73 +7,40 @@ const app = getApp<IAppOption>()
 Page({
   data: {
     dealer: undefined,
-    tab: 1 as number,
-    orders: [],
-    products: [] as Product[],
+    active: 0,
+    orders: null,
+    products: null,
     valueUnpaid: 0 as number
   },
-  onLoad: function () {
+  onLoad: async function (option: any) {
+    const { user, products, orders, unpaidAmount }: any = await getDealer(option.id)
     this.setData({
-      dealer: app.globalData.queryParameter.pop(),
-    })
-    this.computeScrollViewHeight()
-  },
-  onShow: async function () {
-    const ordersResult: any = await getOrdersFromFather(this.data.dealer.openId)
-    const productsResult: any = await getProductsFromFather(this.data.dealer.openId)
-    let unpaidAmount: number = 0
-    ordersResult.data.forEach((order: DealerOrder) => {
-      order.createdAt = parseTime(new Date(order.createdAt))
-      if (order.orderProducts) {
-        order.totalPrice = Number(order.orderProducts.reduce((subSum: number, product: OrderProduct) => subSum + (product.price as number) * product.quantity, 0).toFixed(2))
-        if (order.status === Status.UNPAID) {
-          unpaidAmount += order.totalPrice
-        }
+      orders: orders.map(order => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
       }
-    })
-    this.setData({
-      orders: ordersResult.data,
-      products: productsResult.data,
-      valueUnpaid: unpaidAmount.toFixed(2)
-    })
-  },
-  toChangeTab: function (e: any) {
-    this.setData({
-      tab: parseInt(e.currentTarget.dataset.tab),
+      )),
+      products: products,
+      dealer: user,
+      valueUnpaid: unpaidAmount
     })
   },
   bindToDetail(e: any) {
     const order = e.currentTarget.dataset.order
-    app.globalData.queryParameter.push(order)
     wx.navigateTo({
-      url: '../../orders/orderDetail/orderDetail',
-    })
-  },
-  computeScrollViewHeight() {
-    let query = wx.createSelectorQuery().in(this)
-    query.select('.header').boundingClientRect()
-    query.select('.tabBar').boundingClientRect()
-    query.exec(res => {
-      let headerHeight = res[0].height
-      let tabHeight = res[1].height
-      let windowHeight = wx.getSystemInfoSync().windowHeight
-      let scrollHeight = windowHeight - headerHeight - tabHeight
-      this.setData({ scrollHeight: scrollHeight })
+      url: `../../orderHistory/orderDetail/orderDetail?orderNumber=${order.orderNumber}&dealerId=${order.dealerId}`,
     })
   },
   toProductDetail: function (e: any) {
-    if (this.data.dealer) {
-      app.globalData.queryParameter.push(e.currentTarget.dataset.product)
-      wx.navigateTo({
-        url: '../../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
-      })
-    }
+    wx.navigateTo({
+      url: `../../../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${e.currentTarget.dataset.product.id}`,
+    })
   },
   disconnect: function () {
     let that = this
     wx.showModal({
       title: '提示',
-      content: '确定与“' + this.data.dealer.name + '”解除关系?',
+      content: '确定与“' + this.data.dealer.username + '”解除关系?',
       success: async function (sm) {
         if (sm.confirm) {
           const aliasID = that.data.dealer.aliasId
@@ -100,7 +67,7 @@ Page({
   contactToPay: function () {
     let that = this
     wx.setClipboardData({
-      data: that.data.dealer.name,
+      data: that.data.dealer.username,
       success: function (res) {
         wx.showToast({
           title: '已复制卖家微信',

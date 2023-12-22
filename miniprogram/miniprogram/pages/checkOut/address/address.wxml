@@ -1,46 +1,35 @@
-<view class="addressField">
+<!-- <view class="addressField">
   <view class="addressInfoBox">
-    <view class="innerBox" bindtap="toManageAddress">
+    <view class="innerBox">
       <text class="title label">当前地址</text>
       <view class="addressInfo">
         <text wx:if="{{addressList[currentAddress].quickInputAddress}}">{{addressList[currentAddress].quickInputAddress}}</text>
-        <text
-          wx:else>{{addressList[currentAddress].name}}\n{{addressList[currentAddress].country}}\t{{addressList[currentAddress].province}}\n{{addressList[currentAddress].city}}\t{{addressList[currentAddress].street}}\n{{addressList[currentAddress].phone}}</text>
+        <text wx:else>{{addressList[currentAddress].name}}\n{{addressList[currentAddress].country}}\t{{addressList[currentAddress].province}}\n{{addressList[currentAddress].city}}\t{{addressList[currentAddress].street}}\n{{addressList[currentAddress].phone}}</text>
       </view>
     </view>
   </view>
-  <view class="addressInfoBox popBox addNew" bindtap="addNewAddress">
-    <text>+\t添加新地址</text>
-  </view>
-</view>
-<view class="addressList" wx:if="{{addressList.length>1}}">
-  <text class="title">已保存地址
-  </text>
-  <view class="savedAddress" wx:for="{{addressList}}" wx:key="id" wx:for-item="address">
-    <view class="item address" wx:if="{{index!==currentAddress}}">
-      <view class="itemLeft">
-        <text class="comment" wx:if="{{address.quickInputAddress}}">{{address.quickInputAddress}}</text>
-        <block wx:else>
-          <text class="name">{{address.name}}</text>
-          <view class="addressInfo">
-            <view class="regionBox">
-              <text class="province">{{address.province}}</text>
-              <text class="city">{{address.city}}</text>
-            </view>
-            <text class="street">{{address.street}}</text>
-          </view>
-          <text class="phone">{{address.phone}}</text>
-        </block>
-        <block>
-          <text wx:if="{{address.idFrontImage&&address.idBackImage}}">已绑定ID</text>
-          <text wx:else>未绑定ID</text>
-        </block>
-      </view>
-      <view class="itemRight">
-        <text class="useIt" bindtap="useThisAddress" data-address="{{index}}">选择地址</text>
-        <view class="br"></view>
-        <text class="delete" bindtap="deleteAddress" data-address="{{address.id}}">删除</text>
-      </view>
-    </view>
-  </view>
+</view> -->
+<block wx:if="{{addressList&&addressList.length>1}}">
+  <block wx:for="{{addressList}}" wx:key="id" wx:for-item="address">
+    <van-swipe-cell right-width="{{ 65 }}">
+      <block wx:if="{{!address.quickInput}}">
+        <van-cell-group bindtap="onChoose" data-address="{{address}}">
+          <van-cell title="{{address.country}}" label="{{address.state + '\t'+address.city +'\t'+ address.street}}" border="{{ false }}"/>
+          <van-cell value="{{address.recipient}}" label="{{address.phone}}" />
+        </van-cell-group>
+      </block>
+      <block wx:else>
+        <van-cell-group bindtap="onChoose" data-address="{{address}}">
+          <van-cell title="{{address.country}}" value="{{address.recipient}}" label="{{address.quickInput}}" />
+        </van-cell-group>
+      </block>
+      <view slot="right" class="van-swipe-cell__right" bind:tap="onDelete" data-address="{{address}}">删除</view>
+    </van-swipe-cell>
+  </block>
+</block>
+<block wx:else>
+  <van-empty description="暂无收货地址，点击添加" />
+</block>
+<view class="addressInfoBox addNew">
+  <van-button type="primary" bindtap="addNewAddress" class="agreement-btn">添加新地址</van-button>
 </view>

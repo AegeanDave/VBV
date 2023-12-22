@@ -138,7 +138,7 @@ text,
 }
 
 .productCard .productInfo {
-  margin-left: 14px;
+  margin-left: 10px;
   align-items: flex-start;
 }
 
@@ -160,8 +160,7 @@ text,
 }
 
 .shippingBox {
-  margin-top: 10px;
-  padding: 12px;
+  padding: 4px;
 }
 
 .trackingInfo text {

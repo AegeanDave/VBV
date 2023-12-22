@@ -1,11 +1,11 @@
 <view class="header">
   <view class="leftBox">
     <view class="imgBox">
-      <image class="avatar" src="{{customer.avatar}}"></image>
+      <image class="avatar" src="{{customer.avatarUrl}}"></image>
       <view class="redDot" wx:if="{{valueUnpaid!=0}}"></view>
     </view>
     <view class="nameBox">
-      <text class="name">{{customer.name}}</text>
+      <text class="name">{{customer.username}}</text>
       <view class="btnField">
         <button bindtap="disconnect">解除关系
         </button>
@@ -43,10 +43,10 @@
           <block wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="subOrder">
             <block wx:for="{{subOrder.orderProducts}}" wx:key="id" wx:for-item="product">
               <view class="productCard">
-                <image src="{{product.coverImageURL}}"></image>
+                <image src="{{product.coverImageUrl}}"></image>
                 <view class="productInfo">
                   <text class="price">￥{{product.price}}</text>
-                  <text class="name">{{product.productName}}</text>
+                  <text class="name">{{product.name}}</text>
                   <text>数量：{{product.quantity}}</text>
                 </view>
               </view>
@@ -79,17 +79,28 @@
   <scroll-view scroll-y="true" wx:if="{{tab===1}}" style='height: {{scrollHeight + "px"}} ' class="tabTwo">
     <view class="itemContainer saleProduct {{customer?'vertical':'horizontal'}}">
       <block wx:for="{{products}}" wx:key="id" wx:for-item="product">
-        <view class="productCard saleProduct horizontal" bindtap="updateChildPrice" data-product="{{product}}">
+        <view class="productCard saleProduct horizontal" bindtap="onShowDialog" data-product="{{product}}">
           <image src="{{product.coverImageUrl}}"></image>
           <view class="saleProductBox horizontal">
             <view class="productInfo">
-              <text>￥{{product.defaultPrice}}</text>
+              <text>￥{{product.specialPrice[0].price.price||product.defaultPrice}}</text>
               <text class="name">{{product.name}}</text>
             </view>
-            <button bindtap="updateChildPrice" data-product="{{product}}">修改定价</button>
+            <button bindtap="onUpdateChildPrice" data-product="{{product}}">修改定价</button>
           </view>
         </view>
       </block>
     </view>
   </scroll-view>
 </view>
+<mp-half-screen-dialog bindbuttontap="buttontap" show="{{showDialog}}" maskClosable="{{false}}" title="单品改价" buttons="{{dialogButtons}}" bindbuttontap="onDialogButtonTap">
+  <view slot="desc">
+    <view class="weui-cells__title">为您的下线制定专属价格</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <input name='specialPrice' placeholder="CNY99.99" type="digit" bindinput="onSpecialPriceChange" maxlength="10"></input>
+      </view>
+    </view>
+
+  </view>
+</mp-half-screen-dialog>

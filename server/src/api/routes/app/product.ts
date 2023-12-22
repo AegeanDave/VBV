@@ -58,7 +58,20 @@ export default (app: Router) => {
 								},
 								status: 'Active'
 							},
-							include: Product
+							include: [
+								{ model: Product, attributes: ['setting'] },
+								{
+									model: User,
+									as: 'specialPrice',
+									through: {
+										where: {
+											openIdChild: myOpenId
+										},
+										attributes: ['price']
+									},
+									attributes: ['username', 'avatarUrl']
+								}
+							]
 					  })
 					: []
 			res.send({ alias: todoAlias, products: todoProducts })
@@ -117,13 +130,17 @@ export default (app: Router) => {
 			try {
 				const todoAlias = await Connection.findAll({
 					where: {
-						openIdChild: myOpenId,
-						status: 'Active'
+						openIdChild: myOpenId
 					}
 				})
 				const todoMyProducts = StoreProduct.findAll({
 					where: {
 						openId: myOpenId
+					},
+					include: {
+						model: User,
+						as: 'dealer',
+						attributes: ['username', 'avatarUrl']
 					}
 				})
 				const todoAvailableProducts =
@@ -136,10 +153,11 @@ export default (app: Router) => {
 										where: {
 											openIdChild: myOpenId
 										}
-									}
+									},
+									attributes: ['username', 'avatarUrl']
 								},
 								where: {
-									openIdFather: {
+									openId: {
 										[Op.or]: todoAlias.map(
 											connection => connection.dataValues.openId
 										)
@@ -237,29 +255,40 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
-		'/updatePriceForChild',
+		'/special-price',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { openIdChild, price, inStoreProductId, priceId } = req.body
-			let queryResult
-			if (priceId) {
-				queryResult = await query(queryName.updatePriceForChild, [
-					price,
-					priceId
-				])
-			} else {
-				queryResult = await query(queryName.createOrUpdatePrice, [
-					openIdChild,
-					inStoreProductId,
-					price
-				])
-			}
-			if (queryResult.count !== 0) {
+			const { openIdChild, price, product } = req.body
+			try {
+				const [_price, created] = await Price.findOrCreate({
+					where: {
+						openIdChild,
+						storeProductId: product.id
+					},
+					defaults: {
+						price: price,
+						productId: product.productId
+					}
+				})
+				if (!created) {
+					await Price.update(
+						{
+							price: price
+						},
+						{
+							where: {
+								openIdChild,
+								storeProductId: product.id
+							}
+						}
+					)
+				}
 				res.send({
 					status: Status.SUCCESS
 				})
 				Logger.info('updatePrice success for child')
-			} else {
+			} catch (err) {
+				console.log(err)
 				res.send({
 					status: Status.FAIL
 				})
@@ -267,39 +296,84 @@ export default (app: Router) => {
 			}
 		}
 	)
-
 	route.post(
-		'/updateSale',
+		'/publish',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
+			const { product } = req.body
+			const { myOpenId } = req.params
 			try {
-				const { product } = req.body
-				const price = parseFloat(product.mySale.newPrice)
-				let queryResult
-				if (product.mySale && product.mySale.inStoreProductId) {
-					queryResult = await query(queryName.releaseProduct, [
-						price,
-						product.mySale.inStoreProductId
-					])
-				} else {
-					queryResult = await query(queryName.releaseNewProduct, [
-						product.productId,
-						myOpenId,
-						product.dealerSale.openId,
-						price
-					])
-				}
+				await StoreProduct.update(
+					{
+						status: DBStatus.ACTIVE
+					},
+					{ where: { id: product.id, openId: myOpenId } }
+				)
 				res.send({
-					status: Status.SUCCESS,
-					data: queryResult.data[0]
+					status: 'SUCCESS'
 				})
-				Logger.info('updatePrice success')
+				Logger.info('release success')
 			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
+				res.status(500).send({
+					status: 'FAIL'
 				})
-				Logger.info('updatePrice fail')
+				Logger.info('release fail')
+			}
+		}
+	)
+	route.post(
+		'/publish/new',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { product, newPrice } = req.body
+			const { myOpenId } = req.params
+			try {
+				const todoProduct = await StoreProduct.findOne({
+					where: { id: product.id, status: DBStatus.ACTIVE },
+					attributes: [
+						'productId',
+						'openIdFather',
+						'name',
+						'description',
+						'coverImageUrl',
+						'shortDescription',
+						'saleLevel'
+					]
+				})
+				if (!todoProduct?.dataValues) {
+					return res.send({
+						status: 'FAIL',
+						message: '此商品不存在'
+					})
+				}
+				const [_storeProduct, created] = await StoreProduct.findOrCreate({
+					where: {
+						openId: myOpenId,
+						openIdFather: todoProduct.dataValues.openIdFather,
+						productId: todoProduct.dataValues.productId
+					},
+					defaults: {
+						...todoProduct.dataValues,
+						saleLevel: todoProduct.dataValues.saleLevel + 1,
+						defaultPrice: newPrice,
+						status: DBStatus.ACTIVE
+					}
+				})
+				if (created) {
+					Logger.info('release success')
+					return res.send({
+						status: 'SUCCESS'
+					})
+				}
+				return res.send({
+					status: 'FAIL',
+					message: '此商品已在您的商店中'
+				})
+			} catch (err) {
+				res.status(500).send({
+					status: 'FAIL'
+				})
+				Logger.info('release fail')
 			}
 		}
 	)
@@ -310,7 +384,7 @@ export default (app: Router) => {
 			const { product } = req.body
 			const { myOpenId } = req.params
 			try {
-				const todoStore = await StoreProduct.update(
+				await StoreProduct.update(
 					{
 						status: DBStatus.INACTIVE
 					},

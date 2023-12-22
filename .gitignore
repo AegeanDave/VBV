@@ -2,3 +2,6 @@
 *.lock
 *.lock
 admin/yarn.lock
+miniprogram/miniprogram/miniprogram_npm/
+miniprogram/miniprogram/node_modules/
+miniprogram/miniprogram/package-lock.json

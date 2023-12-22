@@ -115,13 +115,13 @@ const request = {
         })
     })
   },
-  uploadImage: function (endPoint: string, filePath: string, data: any) {
+  uploadImage: function (endPoint: string, filePath: string, name: string, data?: any) {
     const sessionKey = wx.getStorageSync('sessionKey');
     return new Promise(function (resolve: any, reject: any) {
       wx.uploadFile({
         url: url + "/" + endPoint,
         filePath: filePath,
-        name: 'avatar',
+        name: name,
         header: {
           'content-type': 'multipart/form-data',
           'Authorization': sessionKey

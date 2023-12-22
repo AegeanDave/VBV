@@ -1,30 +1,14 @@
-import { getAllSaleOrders, hideOrder, markPaid } from '../../services/api/api'
-import { SaleOrder, IAppOption, OrderProduct } from "../../models/index"
+import { getAllSoldOrders, hideOrder, markPaid } from '../../services/api/api'
+import { SaleOrder, IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
-import { parseTime } from "../../utils/util"
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    tabs: [
-      {
-        name: '未收款订单',
-        id: 0 as number,
-        orders: [] as SaleOrder[]
-      },
-      {
-        name: '已收款订单',
-        id: 1 as number,
-        orders: [] as SaleOrder[]
-      },
-      {
-        name: '已完成订单',
-        id: 2 as number,
-        orders: [] as SaleOrder[]
-      }
-    ],
-    currentTab: 0 as number,
-    currentOrder: {} as SaleOrder,
+    activeTab: 0,
+    unpaidOrders: null,
+    paidOrders: null,
+    completeOrders: null,
     isCommentEditing: false,
     showActionsheet: false,
     unPaidGroups: [
@@ -38,48 +22,17 @@ Page({
     ]
   },
   async onLoad() {
-    if (!app.userInfoReadyCallback) {
-      app.userInfoReadyCallback = async () => {
-        const orderResult: any = await getAllSaleOrders()
-        this.initialOrders(orderResult.data)
-      }
-    }
-    else {
-      const orderResult: any = await getAllSaleOrders()
-      this.initialOrders(orderResult.data)
-    }
-  },
-  initialOrders(orders: SaleOrder[]) {
-    const tabs = this.data.tabs
-    orders.forEach((order: SaleOrder) => {
-      order.createdAt = parseTime(new Date(order.createdAt))
-      order.totalPrice = order.subOrders.reduce((sum: number, subOrder: any) => sum + subOrder.orderProducts ? subOrder.orderProducts.reduce((subSum: number, product: OrderProduct) => subSum + (product.price as number) * product.quantity, 0) : 0, 0).toFixed(2)
-      if (order.status === Status.UNPAID) {
-        tabs[0].orders.push(order)
-      } else if (order.status === Status.PAID) {
-        tabs[1].orders.push(order)
-      } else if ((order.status === Status.COMPLETE)) {
-        tabs[2].orders.push(order)
-      }
-    })
+    const { unpaid, paid, complete }: any = await getAllSoldOrders()
     this.setData({
-      tabs: tabs
+      unpaidOrders: unpaid || [],
+      paidOrders: paid || [],
+      completeOrders: complete || []
     })
-  },
-  switchTab(e: any) {
-    this.setData({
-      currentTab: e.detail.current,
-    })
+
   },
   bindToDetail(e: any) {
-    app.globalData.queryParameter.push(e.currentTarget.dataset.order)
     wx.navigateTo({
       url: './orderDetail/orderDetail',
-    })
-  },
-  toChangeTab: function (e: any) {
-    this.setData({
-      currentTab: parseInt(e.currentTarget.dataset.tab),
     })
   },
   handleOnEdit: function (e: any) {
@@ -95,7 +48,6 @@ Page({
       currentOrder: e.currentTarget.dataset.order
     })
   },
-
   closeActionsheet: function () {
     this.setData({
       showActionsheet: false

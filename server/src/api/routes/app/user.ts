@@ -12,7 +12,7 @@ import {
 	Connection,
 	Invitation,
 	StoreProduct,
-	Price,
+	OrderDetail,
 	Order,
 	User
 } from '../../../models/sequelize'
@@ -189,12 +189,21 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
 			try {
-				const todoAddress = await Address.findAll({
+				const todoAddress = Address.findAll({
 					where: {
-						openId: myOpenId
+						openId: myOpenId,
+						status: DBStatus.ACTIVE
 					}
 				})
-				res.send(todoAddress)
+				const todoId = User.findOne({
+					where: {
+						openId: myOpenId,
+						idPhotoFrontUrl: { [Op.is]: null },
+						idPhotoBackUrl: { [Op.is]: null }
+					}
+				})
+				const result = await Promise.all([todoAddress, todoId])
+				res.send({ addresses: result[0], hasId: !result[1]?.dataValues })
 				Logger.info('address loaded ')
 			} catch (err) {
 				res.status(500).send()
@@ -214,40 +223,97 @@ export default (app: Router) => {
 			Logger.info('address loaded success')
 		}
 	)
-	// route.post(
-	// 	'/newAddress',
-	// 	isAuthenticated,
-	// 	async (req: Request, res: Response) => {
-	// 		const { address, selectedField } = req.body
-	// 		try {
-	// 			let queryResult
-	// 			if (selectedField === addressField.NORMALFORM) {
-	// 				queryResult = await query(queryName.addAddressWithoutFile, [
-	// 					myOpenId,
-	// 					address.street,
-	// 					address.city,
-	// 					address.province,
-	// 					'中国',
-	// 					address.name,
-	// 					address.phone
-	// 				])
-	// 			} else if (selectedField === addressField.QUICKFORM) {
-	// 				queryResult = await query(queryName.addAddressWithComment, [
-	// 					myOpenId,
-	// 					address.quickInputAddress
-	// 				])
-	// 			}
-	// 			res.send(queryResult.data)
-	// 			Logger.info('address added')
-	// 		} catch (err) {
-	// 			res.send({
-	// 				status: Status.FAIL,
-	// 				message: err
-	// 			})
-	// 			Logger.info('address add fail')
-	// 		}
-	// 	}
-	// )
+	route.post(
+		'/upload/front',
+		isAuthenticated,
+		upload.single('front'),
+		async (req: Request, res: Response) => {
+			const file = req.file as any
+			const { myOpenId } = req.params
+			try {
+				await User.update(
+					{ idPhotoFrontUrl: file?.location },
+					{ where: { openId: myOpenId } }
+				)
+				res.send({
+					status: 'SUCCESS'
+				})
+				Logger.info('Photo front upload success')
+			} catch (err) {
+				console.log(err)
+				res.send()
+				Logger.info('Photo front upload failed')
+			}
+		}
+	)
+	route.post(
+		'/upload/back',
+		isAuthenticated,
+		upload.single('back'),
+		async (req: Request, res: Response) => {
+			const file = req.file as any
+			const { myOpenId } = req.params
+			try {
+				await User.update(
+					{ idPhotoBackUrl: file?.location },
+					{ where: { openId: myOpenId } }
+				)
+				res.send({
+					status: 'SUCCESS'
+				})
+				Logger.info('Photo back upload success')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send()
+				Logger.info('Photo back upload failed')
+			}
+		}
+	)
+	route.post(
+		'/address/new',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const {
+				address: { street, city, province, name, phone, quickInputAddress },
+				selectedField
+			} = req.body
+			const { myOpenId } = req.params
+			try {
+				let todoAddress
+				if (selectedField === addressField.NORMALFORM) {
+					todoAddress = await Address.create(
+						{
+							street,
+							city,
+							state: province,
+							country: '中国',
+							recipient: name,
+							phone,
+							openId: myOpenId
+						},
+						{ returning: true }
+					)
+				} else if (selectedField === addressField.QUICKFORM) {
+					todoAddress = await Address.create(
+						{
+							openId: myOpenId,
+							country: '中国',
+							quickInput: quickInputAddress
+						},
+						{ returning: true }
+					)
+				}
+				res.send(todoAddress?.dataValues)
+				Logger.info('address added')
+			} catch (err) {
+				res.status(500).send({
+					status: Status.FAIL,
+					message: err
+				})
+				Logger.info('address add fail')
+			}
+		}
+	)
 
 	route.post(
 		'/update-address',
@@ -283,11 +349,16 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { id } = req.body
 			const { myOpenId } = req.params
-			await Address.destroy({
-				where: { id, openId: myOpenId }
-			})
-			res.send()
-			Logger.info('update success')
+			try {
+				await Address.destroy({
+					where: { id, openId: myOpenId }
+				})
+				res.send({ status: Status.SUCCESS })
+				Logger.info('address deleted')
+			} catch (err) {
+				console.log(err)
+				res.send({ status: Status.FAIL })
+			}
 		}
 	)
 	route.get(
@@ -306,6 +377,7 @@ export default (app: Router) => {
 				Logger.info('Codes loaded successfully')
 			} catch (err) {
 				console.log(err)
+				res.send({ status: Status.FAIL })
 				Logger.info('Codes loaded failed')
 			}
 		}
@@ -494,14 +566,19 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { id, myOpenId } = req.params
 			try {
+				const todoUser = await User.findByPk(id, {
+					attributes: ['openId', 'username', 'avatarUrl']
+				})
 				const todoChildProducts = await StoreProduct.findAll({
 					include: {
 						model: User,
 						as: 'specialPrice',
+						attributes: ['username'],
 						through: {
 							where: {
 								openIdChild: id
-							}
+							},
+							attributes: ['price']
 						}
 					},
 					where: {
@@ -515,6 +592,7 @@ export default (app: Router) => {
 					}
 				})
 				res.send({
+					user: todoUser,
 					products: todoChildProducts,
 					orders: todoChildOrders
 				})
@@ -522,6 +600,63 @@ export default (app: Router) => {
 			} catch (err) {
 				res.status(500).send()
 				Logger.info(`Child's product and order fetch failed`)
+			}
+		}
+	)
+	route.get(
+		'/dealer/:id',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id, myOpenId } = req.params
+			try {
+				const todoUser = await User.findByPk(id, {
+					attributes: ['openId', 'username', 'avatarUrl']
+				})
+				const todoChildProducts = await StoreProduct.findAll({
+					include: {
+						model: User,
+						as: 'specialPrice',
+						attributes: ['username'],
+						through: {
+							where: {
+								openIdChild: myOpenId
+							},
+							attributes: ['price']
+						}
+					},
+					where: {
+						openId: id,
+						status: DBStatus.ACTIVE
+					}
+				})
+				const todoChildOrders = await Order.findAll({
+					where: {
+						userId: myOpenId,
+						dealerId: id
+					},
+					include: [
+						{
+							model: OrderDetail,
+							attributes: ['productInfo', 'quantity', 'subtotal']
+						}
+					]
+				})
+				const unpaidAmount = todoChildOrders.reduce((sum, order) => {
+					if (order.dataValues.status === 'Unpaid') {
+						return sum + (order.dataValues.payment?.totalAmount || 0)
+					}
+					return sum + 0
+				}, 0)
+				res.send({
+					user: todoUser,
+					products: todoChildProducts,
+					orders: todoChildOrders,
+					unpaidAmount
+				})
+				Logger.info(`Father's product and order get`)
+			} catch (err) {
+				res.status(500).send()
+				Logger.info(`Father's product and order fetch failed`)
 			}
 		}
 	)

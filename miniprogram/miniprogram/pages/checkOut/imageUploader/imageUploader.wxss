@@ -1,0 +1,60 @@
+/* pages/checkOut/imageUploader/imageUploader.wxss */
+.van-uploader__preview-image {
+  width: 240px !important;
+}
+
+.container.upload-box {
+  padding-top: 100rpx;
+  padding-bottom: 30px;
+}
+
+.upload-field {
+  min-height: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upload-footer {
+  position: fixed;
+  bottom: 0;
+  padding: 30px;
+}
+
+.upload-footer .van-button {
+  padding: 24px 160rpx;
+  font-size: 20px;
+  border-radius: 8px;
+}
+
+.overlay.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.overlay.wrapper .block {
+  width: 76vw;
+  border-radius: 8px;
+  height: 68vh;
+  padding: 24px;
+  background-color: #fff;
+}
+
+.flex-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.text-block text {
+  font-size: 14px;
+  color: darkgray;
+  padding: 20px;
+}
+
+.agreement-btn {
+  padding: 20px;
+}

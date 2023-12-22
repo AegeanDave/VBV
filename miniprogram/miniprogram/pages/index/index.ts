@@ -1,4 +1,4 @@
-import { Product, IAppOption } from "../../models/index"
+import { IAppOption } from "../../models/index"
 import { Mode, Tabs } from "../../constant/index"
 import { getProductList } from '../../services/api/api'
 
@@ -6,7 +6,7 @@ const app = getApp<IAppOption>()
 
 Page({
   data: {
-    productList: [],
+    productList: null,
     dealers: [],
     searching: false,
     selectedDealer: ''
@@ -15,8 +15,7 @@ Page({
     app.userInfoReadyCallback = async () => {
       const { products, alias }: any = await getProductList()
       this.setData({
-        productList: products,
-        searchList: products,
+        productList: products || [],
         dealers: alias,
       })
     }
@@ -75,7 +74,7 @@ Page({
   },
   viewDetail: function (e: any) {
     wx.navigateTo({
-      url: './productDetail/productDetail?id=' + Mode.NORMAL,
+      url: `./productDetail/productDetail?mode=${Mode.NORMAL}&id=${e.currentTarget.dataset.product.id}`,
     })
   },
   onToConnection: function () {

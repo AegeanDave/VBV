@@ -107,10 +107,11 @@
   width: 100vw;
   position: fixed;
   bottom: 0;
+  left: 0;
   right: 0;
   display: flex;
   background-color: #fff;
-  padding-bottom: 10px;
+  padding-bottom: 24px;
 }
 
 .submitField.normal {
@@ -208,6 +209,8 @@
 }
 
 .updatePriceMode {
+  display: flex;
+  width: 100%;
   background-color: #f1f1f1;
   align-items: center;
 }
@@ -217,27 +220,26 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 23px;
+  padding: 0 32px;
 }
 
 .updatePriceMode .inputField text {
   color: #333;
-  font-size: 16px;
+  font-size: 20px;
+  padding: 8px;
 }
 
 .updatePriceMode .inputField input {
-  max-width: 37.6vw;
-  padding: 7px 0;
+  padding: 10px 0;
   background-color: #fff;
   text-align: center;
 }
 
 .updatePriceMode button {
-  width: 28.2vw;
   display: flex;
   justify-content: center;
   background-color: #02a69f;
-  padding: 19px 0;
+  padding: 18px 24px;
   color: #fff;
 }
 
@@ -274,39 +276,21 @@
   text-align: center;
 }
 
-.inputForm {
-  margin: 21px;
-  display: flex;
-  flex-direction: column;
-}
 
-.inputForm .item {
-  align-self: center;
-  margin-bottom: 14px;
-}
-
-.inputForm .title {
+.title {
   color: #02A69F;
   font-size: 16px;
   font-weight: 600;
 }
 
-.inputForm .item {
-  display: flex;
-  align-items: center;
-}
 
 .inputForm .item .label {
   color: #6D7278;
   font-size: 14px;
 }
 
-.inputForm .item input {
-  width: 160rpx;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
 
-.inputForm .item .price {
+.item .price {
   color: #6D7278;
   width: 160rpx;
   font-size: 14px;
@@ -320,20 +304,6 @@
 
 .inputForm .item.last {
   margin-bottom: 32px;
-}
-
-.inputForm .submit {
-  padding: 9px;
-  font-size: 16px;
-  border-radius: 6px;
-  margin: 12px;
-  color: #fff;
-  box-shadow: 2px 2px 10px 0 rgba(0, 114, 109, 0.3);
-  background-color: #02A69F;
-}
-
-.inputForm .submit:active {
-  box-shadow: none;
 }
 
 .onSelling,
@@ -385,10 +355,6 @@
 @media (min-height: 720px) {
   .fab {
     bottom: 70px;
-  }
-
-  .submitField {
-    padding-bottom: 22px;
   }
 
   .submitField.previewMode {

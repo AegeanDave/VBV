@@ -1,22 +1,35 @@
-import { getCustomer, removeConnection, markPaid } from '../../../../services/api/api'
+import { getCustomer, removeConnection, markPaid, updatePriceForChild } from '../../../../services/api/api'
 import { Product, IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
-import { Status, Mode } from "../../../../constant/index"
+import { Status } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
 const app = getApp<IAppOption>()
 
 Page({
   data: {
     customer: undefined,
-    tab: 1 as number,
+    tab: 0 as number,
     orders: [],
     products: [] as Product[],
-    valueUnpaid: 0 as number
+    valueUnpaid: 0 as number,
+    showDialog: false,
+    specialPrice: 0,
+    selectedProduct: {},
+    dialogButtons: [{
+      type: 'default',
+      text: '取消',
+      value: 0
+    }, {
+      type: 'primary',
+      text: '确定',
+      value: 1
+    }]
   },
   async onLoad(option) {
-    const { products, orders }: any = await getCustomer(option.id)
+    const { user, products, orders }: any = await getCustomer(option.id)
     this.setData({
+      customer: user,
       orders: orders,
-      products: products
+      products: products,
     })
   },
   onShow: async function () {
@@ -29,7 +42,6 @@ Page({
     // })
   },
   onTabChange: function (e: any) {
-    console.log(e.detail)
     this.setData({
       tab: e.detail.index,
     })
@@ -41,30 +53,20 @@ Page({
       url: '../../orders/orderDetail/orderDetail',
     })
   },
-  toProductDetail: function (e: any) {
-    if (this.data.dealer) {
-      app.globalData.queryParameter.push(e.currentTarget.dataset.product)
-      wx.navigateTo({
-        url: '../../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_DEFAULT,
-      })
-    }
-  },
-  updateChildPrice: function (e: any) {
-    let product = e.currentTarget.dataset.product
-    product.saleChild = this.data.customer.openId
-    app.globalData.queryParameter.push(product)
-    wx.navigateTo({
-      url: '../../../index/productDetail/productDetail?mode=' + Mode.UPDATE_PRICE_CHILD,
+  onShowDialog: function (e: any) {
+    this.setData({
+      selectedProduct: e.currentTarget.dataset.product,
+      showDialog: true,
     })
   },
   disconnect: function () {
     let that = this
     wx.showModal({
       title: '提示',
-      content: '确定与“' + this.data.customer.name + '”解除关系?',
+      content: '确定与“' + this.data.customer.username + '”解除关系?',
       success: async function (sm) {
         if (sm.confirm) {
-          const aliasId = that.data.customer.aliasId
+          const aliasId = that.data.customer.openId
           const result = await removeConnection(aliasId)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
@@ -141,6 +143,27 @@ Page({
           })
         }
       }
+    })
+  },
+  onSpecialPriceChange(e) {
+    this.setData({
+      specialPrice: e.detail.value
+    })
+  }, async onDialogButtonTap(e) {
+    if (e.detail.index === 1) {
+      if (isNaN(this.data.specialPrice)) {
+        wx.showToast({
+          title: '输入有误',
+          icon: 'error'
+        })
+        return
+      }
+      else {
+        const todoPrice = await updatePriceForChild(this.data.specialPrice, this.data.customer.openId, this.data.selectedProduct)
+      }
+    }
+    this.setData({
+      showDialog: false
     })
   }
 })
