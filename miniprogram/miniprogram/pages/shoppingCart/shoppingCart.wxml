@@ -1,5 +1,5 @@
 <view wx:if="{{products.length===0}}" class="cart empty">
-  <image src="../image/empty_cart.png" class="noProducts"></image>
+  <image src="../../image/empty_cart.png" class="noProducts"></image>
   <text>您的购物车还未添加任何产品</text>
 </view>
 <view wx:else class="cart nonempty">
@@ -25,7 +25,7 @@
         </view>
       </view>
       <view wx:if="{{product.setting.isIdRequired}}" class="credential">
-        <image src="../image/info.png"></image>
+        <image src="../../image/info.png"></image>
         <text>该商品属于跨境邮寄商品，海关需要您的证件信息</text>
       </view>
     </view>

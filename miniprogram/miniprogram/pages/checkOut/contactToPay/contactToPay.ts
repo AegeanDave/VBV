@@ -1,38 +1,30 @@
 // pages/checkOut/contactToPay/contactToPay.js
-import { IAppOption, Product } from "../../../models/index"
-const app = getApp<IAppOption>()
+import { getOrderResult } from '../../../services/api/api'
 
 Page({
   /**
    * Page initial data
    */
   data: {
-    dealers: null
+    dealers: []
   },
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
-    const dealerByOrder = app.globalData.queryParameter.pop()
-    const allFathers: any = []
-    dealerByOrder.forEach((orderProduct: Product) => {
-      if (!allFathers.find((father: any) => father.openIDSource === orderProduct.dealerSale.openId)) {
-        allFathers.push({ openIDSource: orderProduct.dealerSale.openId, name: orderProduct.dealerSale.name, avatar: orderProduct.dealerSale.avatar, payment: 0 })
-      }
-    })
-    allFathers.forEach((father: any) => {
-      dealerByOrder.forEach((orderProduct: Product) => {
-        if (orderProduct.dealerSale.openId === father.openIDSource) {
-          father.payment += orderProduct.quantity * (orderProduct.dealerSale.price as number)
-        }
-      })
-      father.payment.toFixed(2)
-    })
+  async onLoad(option) {
+    const todoDealers = await getOrderResult(option.orderNumber)
     this.setData({
-      dealers: allFathers
+      dealers: todoDealers.dealers
     })
   },
-  toContact(e: any) {
+  onReady() {
+    wx.showToast({
+      title: '下单成功',
+      icon: 'success',
+      duration: 2000
+    })
+  },
+  onCopy(e: any) {
     wx.setClipboardData({
       data: e.currentTarget.dataset.dealer,
       success: function (res) {

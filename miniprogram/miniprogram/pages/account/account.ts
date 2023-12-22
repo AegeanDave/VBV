@@ -71,7 +71,7 @@ Page({
       })
     }
     return wx.navigateTo({
-      url: './soldOrders/soldOrders'
+      url: '../soldOrders/soldOrders'
     })
   },
   toHistory: function () {

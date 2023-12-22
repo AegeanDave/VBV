@@ -9,11 +9,12 @@ const Address = db.define('addresses', {
 	},
 	openId: { type: DataTypes.STRING, allowNull: false },
 	street: { type: DataTypes.STRING },
-	city: { type: DataTypes.STRING, allowNull: false },
-	state: { type: DataTypes.STRING, allowNull: false },
+	city: { type: DataTypes.STRING },
+	state: { type: DataTypes.STRING },
 	country: { type: DataTypes.STRING, allowNull: false },
-	recipient: { type: DataTypes.STRING, allowNull: false },
-	phone: { type: DataTypes.STRING, allowNull: false },
+	recipient: { type: DataTypes.STRING },
+	phone: { type: DataTypes.STRING },
+	postcode: { type: DataTypes.STRING },
 	idPhotoFrontUrl: {
 		type: DataTypes.TEXT
 	},
@@ -24,7 +25,8 @@ const Address = db.define('addresses', {
 		type: DataTypes.STRING
 	},
 	status: {
-		type: DataTypes.ENUM('Active', 'Inactive', 'Default')
+		type: DataTypes.ENUM('Active', 'Inactive', 'Default'),
+		defaultValue: 'Active'
 	},
 	createdAt: {
 		type: DataTypes.DATE,

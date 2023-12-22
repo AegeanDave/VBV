@@ -88,11 +88,9 @@ Page({
     wx.requestSubscribeMessage({
       tmplIds: ['GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE', 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc'],
       complete() {
-        const product = that.data.product
-        product.quantity = that.data.quantity
-        app.globalData.queryParameter.push([product])
+        wx.setStorageSync('quickBuy', [{ item: that.data.product, quantity: that.data.quantity }])
         wx.navigateTo({
-          url: '../../checkOut/checkOut'
+          url: `../../checkOut/checkOut?mode=QuickBuy`
         })
       }
     })
@@ -107,38 +105,7 @@ Page({
       showPopup: true
     })
   },
-  // updatePriceForChild: async function () {
-  //   const price = this.data.newPrice
-  //   if (!isNaN(price)) {
-  //     const result: any = await updatePriceForChild(price, this.data.product.saleChild, this.data.product.dealerSale.inStoreProductId)
-  //     if (result.status === Status.SUCCESS) {
-  //       wx.showToast({
-  //         title: '更新成功',
-  //         icon: 'success',
-  //         duration: 2000
-  //       })
-  //       setTimeout(function () {
-  //         wx.navigateBack({
-  //           delta: 1
-  //         })
-  //       }, 1000)
-  //     }
-  //     else {
-  //       wx.showToast({
-  //         title: '更新失败',
-  //         icon: 'none',
-  //         duration: 2000
-  //       })
-  //     }
-  //   }
-  //   else {
-  //     wx.showToast({
-  //       title: '输入有误',
-  //       icon: 'none',
-  //       duration: 2000
-  //     })
-  //   }
-  // },
+
   onDialogAction(e) {
     if (e.detail.index === 1) {
       this.onAddToStore()
@@ -152,17 +119,15 @@ Page({
       let product = this.data.product
       const result: any = await publishToStore(product, this.data.newPrice)
       if (result.status === Status.SUCCESS) {
-        wx.showToast({
+        await wx.showToast({
           title: '成功上架',
           icon: 'success',
           duration: 2000
         })
-        setTimeout(function () {
-          app.globalData.reload = true
-          wx.navigateBack({
-            delta: 1
-          })
-        }, 1000)
+        app.globalData.reload = true
+        wx.navigateBack({
+          delta: 1
+        })
       }
       else {
         wx.showToast({
@@ -180,54 +145,46 @@ Page({
       })
     }
   },
-  toStore() {
-    wx.redirectTo({
-      url: '../../account/store/store'
-    })
-    this.setData({
-      showPopup: false
-    })
-  },
-  async submitToSale(e: any) {
-    this.setData({
-      disbledSale: true
-    })
-    if (!isNaN(e.detail.value.newPrice) && e.detail.value.newPrice) {
-      let newProduct = this.data.product
-      if (newProduct.mySale) {
-        newProduct.mySale.newPrice = e.detail.value.newPrice
-      } else {
-        newProduct.mySale = { newPrice: e.detail.value.newPrice }
-      }
-      const result: any = await updateSale(newProduct)
-      this.setData({
-        showPopup: false
-      })
-      if (result.status === Status.SUCCESS) {
-        this.setData({
-          showToast: true,
-          ['product.mySale.inStoreProductId']: result.data.inStoreProductId,
-          ['product.mySale.status']: Status.ENABLED
-        })
-        app.globalData.reload = true
-      }
-      else {
-        wx.showToast({
-          title: '修改失败',
-          icon: 'none',
-          duration: 2000
-        })
-      }
-    }
-    else {
-      wx.showToast({
-        title: '输入有误',
-        icon: 'none',
-        duration: 2000
-      })
-    }
-    this.setData({
-      disbledSale: false
-    })
-  },
+  // async submitToSale(e: any) {
+  //   this.setData({
+  //     disbledSale: true
+  //   })
+  //   if (!isNaN(e.detail.value.newPrice) && e.detail.value.newPrice) {
+  //     let newProduct = this.data.product
+  //     if (newProduct.mySale) {
+  //       newProduct.mySale.newPrice = e.detail.value.newPrice
+  //     } else {
+  //       newProduct.mySale = { newPrice: e.detail.value.newPrice }
+  //     }
+  //     const result: any = await updateSale(newProduct)
+  //     this.setData({
+  //       showPopup: false
+  //     })
+  //     if (result.status === Status.SUCCESS) {
+  //       this.setData({
+  //         showToast: true,
+  //         ['product.mySale.inStoreProductId']: result.data.inStoreProductId,
+  //         ['product.mySale.status']: Status.ENABLED
+  //       })
+  //       app.globalData.reload = true
+  //     }
+  //     else {
+  //       wx.showToast({
+  //         title: '修改失败',
+  //         icon: 'none',
+  //         duration: 2000
+  //       })
+  //     }
+  //   }
+  //   else {
+  //     wx.showToast({
+  //       title: '输入有误',
+  //       icon: 'none',
+  //       duration: 2000
+  //     })
+  //   }
+  //   this.setData({
+  //     disbledSale: false
+  //   })
+  // },
 })

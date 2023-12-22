@@ -63,7 +63,8 @@ button {
 
 .orderBox {
   background-color: #fff;
-  margin: 12px;
+  margin: 10px;
+  padding: 10px;
   border-radius: 10px;
 }
 
@@ -73,7 +74,7 @@ button {
 }
 
 .boxHeader {
-  padding: 8px 16px;
+  padding: 6px 10px;
   justify-content: space-between;
   align-items: center;
 }
@@ -161,14 +162,14 @@ button {
 }
 
 .boxFooter {
-  padding: 6px 28px;
-  flex-direction: column;
+  padding: 4px 16px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.footerInner {
+.sub-order-footer {
   display: flex;
-  margin-bottom: 10px;
-  margin-top: 4px;
+  padding: 8px 16px;
   justify-content: space-between;
 }
 
@@ -179,7 +180,7 @@ button {
 
 .item button {
   font-size: 12px;
-  padding: 3px 30px;
+  padding: 8px 30px;
   border-radius: 12px;
   background-color: #E6F6F6;
   box-shadow: 0 2px 4px 0 rgba(202, 218, 218, 0.59);

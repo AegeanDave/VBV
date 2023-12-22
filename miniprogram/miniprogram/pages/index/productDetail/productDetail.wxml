@@ -15,7 +15,7 @@
     <view wx:if="{{cartBadgeValue}}" class="badge">{{cartBadgeValue}}</view>
   </image>
 </view>
-<view class="fab quickSale" wx:if="{{mode==='NORMAL'}}" bindtap="bindtoSale">
+<view class="fab quickSale" wx:if="{{mode==='NORMAL'}}" bindtap="onDialogOpen">
   <image src="../../../image/quick_store.png">
   </image>
 </view>
@@ -51,11 +51,11 @@
   <view wx:elif="{{mode==='NORMAL'}}" class="submitField normal">
     <view class="amountChange product">
       <button bindtap='reduce' disabled='{{quantity==1}}' class="reduce amountComponent">
-        <image src='../../image/minusIcon.png'></image>
+        <image src='../../../image/minusIcon.png'></image>
       </button>
       <input class="input amountComponent" type='number' bindblur="bindKeyblur" maxlength='2' value='{{quantity}}'></input>
       <button bindtap='plus' class="plus amountComponent" disabled='{{quantity==99}}'>
-        <image src='../../image/plusIcon.png'></image>
+        <image src='../../../image/plusIcon.png'></image>
       </button>
     </view>
     <view class="btnField">
@@ -64,13 +64,6 @@
     </view>
   </view>
 </block>
-<pop-up show="{{showToast}}">
-  <view class="modelContent toast">
-    <image src="../../image/store_shadow.png" mode="aspectFit"></image>
-    <text class="text">已成功上架“{{product.productName}}”至在售</text>
-    <text class="link" bindtap="toStore">去查看</text>
-  </view>
-</pop-up>
 <mp-dialog mask-closable="{{false}}" show="{{showPopup}}" title="一键转售好友商品" bindbuttontap="onDialogAction" buttons="{{[{text:' 取消'},{text:'确认'}]}}">
     <view class="item">
       <text class="label">好友原价</text>

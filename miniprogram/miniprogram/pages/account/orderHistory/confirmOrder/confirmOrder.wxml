@@ -2,21 +2,21 @@
   <text>请通过微信联系以下供货商并完成订单付款</text>
 </view>
   <view class="dealerList">
-    <block wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="subOrder">
+    <block wx:for="{{dealers}}" wx:key="id" wx:for-item="dealer">
       <view class="dealerCard list">
         <view class="imgBox">
-          <image class="avatar" src="{{subOrder.dealer.avatar}}"></image>
+          <image class="avatar" src="{{dealer.avatarUrl}}"></image>
         </view>
         <view class="dealerInfo">
-          <text>{{subOrder.dealerName}}</text>
-          <text>应付：{{subOrder.sum}}</text>
+          <text>{{dealer.username}}</text>
+          <text>应付：¥{{dealer.payment.payment.totalAmount||0}}</text>
         </view>
-        <view wx:if="{{subOrder.status==='Unpaid'}}" bindtap="toContact" data-dealer="{{subOrder.dealer.name}}" class="copyBtn">
-          <image class="copy" src="../../../image/copy.png"></image>
+        <view wx:if="{{dealer.payment.status==='Unpaid'}}" bindtap="toContact" data-dealer="{{dealer.username}}" class="copyBtn">
+          <image class="copy" src="../../../../image/copy.png"></image>
           <text>复制</text>
         </view>
         <view wx:else class="copyBtn">
-          <image class="correct" src="../../../image/correct_grey.svg"></image>
+          <image class="correct" src="../../../../image/correct_grey.svg"></image>
           <text>付款已确认</text>
         </view>
       </view>

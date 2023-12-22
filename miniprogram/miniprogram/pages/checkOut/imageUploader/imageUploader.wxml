@@ -1,0 +1,30 @@
+<!--pages/checkOut/imageUploader/imageUploader.wxml-->
+<view class="container upload-box">
+  <view class="upload-field">
+    <van-uploader file-list="{{ imageFront }}" bind:after-read="afterRead" image-fit="widthFix" accept="image" max-count="1" max-size="{{3*1024*1024}}" preview-size="200" bind:delete="onFrontDelete">
+      <van-button icon="photo" type="primary">请上传您的身份证正面</van-button>
+    </van-uploader>
+  </view>
+  <block wx:if="{{imageFront.length>0}}">
+    <view class="upload-field">
+      <van-uploader file-list="{{ imageBack }}" image-fit="widthFix" bind:after-read="afterReadBack" accept="image" max-count="1" max-size="{{3*1024*1024}}" bind:delete="onBackDelete">
+        <van-button icon="photo" type="primary">请上传您的身份证背面</van-button>
+      </van-uploader>
+    </view>
+  </block>
+  <view class="upload-footer">
+    <van-button type="primary" disabled="{{imageFront.length===0||imageBack.length===0}}" bindtap="onShowOverlay">确认上传</van-button>
+  </view>
+</view>
+<van-overlay show="{{ showOverlay }}" bind:click="onClickHide">
+  <view class="overlay wrapper">
+    <scroll-view class="block" catch:tap="noop" scroll-y>
+      <view class="flex-block">
+        <view class="text-block">
+          <text>{{agreement}}</text>
+        </view>
+        <van-button type="primary" bindtap="onUpload" class="agreement-btn">我已同意并上传</van-button>
+      </view>
+    </scroll-view>
+  </view>
+</van-overlay>

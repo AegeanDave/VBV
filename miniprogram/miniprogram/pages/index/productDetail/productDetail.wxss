@@ -107,10 +107,11 @@
   width: 100vw;
   position: fixed;
   bottom: 0;
+  left: 0;
   right: 0;
   display: flex;
   background-color: #fff;
-  padding-bottom: 10px;
+  padding-bottom: 24px;
 }
 
 .submitField.normal {
@@ -354,10 +355,6 @@
 @media (min-height: 720px) {
   .fab {
     bottom: 70px;
-  }
-
-  .submitField {
-    padding-bottom: 22px;
   }
 
   .submitField.previewMode {

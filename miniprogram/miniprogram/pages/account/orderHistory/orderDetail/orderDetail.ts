@@ -1,5 +1,5 @@
-import { SaleOrder, PurchasedOrder, DealerOrder, Product, IAppOption } from "../../../../models/index"
-
+import { getPurchasedOrder, getPurchasedOrderWithDealer } from '../../../../services/api/api'
+import { IAppOption } from "../../../../models/index"
 const app = getApp<IAppOption>()
 
 Page({
@@ -9,17 +9,25 @@ Page({
    */
   data: {
     order: {},
+    activeNames: ['0'],
     percent: 0 as number
   },
 
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: async function () {
-    const order: SaleOrder | PurchasedOrder | DealerOrder = app.globalData.queryParameter.pop()
-    this.setData({
-      order: order,
-    })
+  onLoad: async function (option) {
+    if (option.dealerId) {
+      const todoOrder = await getPurchasedOrderWithDealer(option.orderNumber, option.dealerId)
+      this.setData({
+        order: [todoOrder],
+      })
+    } else {
+      const todoOrder = await getPurchasedOrder(option.orderNumber)
+      this.setData({
+        order: todoOrder,
+      })
+    }
   },
   bindCopy(e: any) {
     wx.setClipboardData({
@@ -34,10 +42,9 @@ Page({
       }
     })
   },
-  showDetail(e: any) {
-    const updateArrayLabel = `order.subOrders[${e.currentTarget.dataset.firstindex}].orderProducts[${e.currentTarget.dataset.secondindex}].showDetail`
+  onAccordionChange(e: any) {
     this.setData({
-      [updateArrayLabel]: e.currentTarget.dataset.showdetail
-    })
+      activeNames: e.detail,
+    });
   }
 })

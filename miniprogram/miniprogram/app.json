@@ -14,18 +14,18 @@
     "pages/checkOut/newAddress/newAddress",
     "pages/store/store",
     "pages/soldOrders/soldOrders",
+    "pages/soldOrders/shareOrder/shareOrder",
+    "pages/soldOrders/orderDetail/orderDetail",
     "pages/account/orderHistory/orderHistory",
     "pages/account/warehouse/warehouse",
     "pages/account/warehouse/mailer/mailer",
-    "pages/account/orders/shareOrder/shareOrder",
-    "pages/account/orders/orderDetail/orderDetail",
-    "pages/checkOut/newAddress/uploadFile/uploadFile",
     "pages/account/orderHistory/confirmOrder/confirmOrder",
     "pages/account/orderHistory/orderDetail/orderDetail",
     "pages/account/warehouse/setting/setting",
     "pages/index/productQRcode/productQRcode",
     "pages/account/followingAndFollower/dealer/dealer",
-    "pages/register/register"
+    "pages/register/register",
+    "pages/checkOut/imageUploader/imageUploader"
   ],
   "tabBar": {
     "color": "#CDE1E0",

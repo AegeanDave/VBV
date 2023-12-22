@@ -1,6 +1,11 @@
 {
   "usingComponents": {
-    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet"
+    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-empty": "@vant/weapp/empty/index",
+    "van-loading": "@vant/weapp/loading/index",
+    "van-tag": "@vant/weapp/tag/index"
   },
   "navigationBarTitleText": "采购记录"
 }

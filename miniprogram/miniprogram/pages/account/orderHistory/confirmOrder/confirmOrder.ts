@@ -1,6 +1,5 @@
 // pages/checkOut/contactToPay/contactToPay.js
-import { IAppOption, OrderProduct } from "../../../../models/index"
-const app = getApp<IAppOption>()
+import {getOrderResult} from '../../../../services/api/api'
 
 Page({
   /**
@@ -12,13 +11,10 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
-    const orderByDealer = app.globalData.queryParameter.pop()
-    orderByDealer.subOrders.forEach((subOrder: any) => {
-      subOrder.sum = subOrder.orderProducts.reduce((subSum: number, b: OrderProduct) => subSum + (b.price as number) * b.quantity, 0).toFixed(2)
-    })
+  async onLoad (option) {
+    const todoDealers = await getOrderResult(option.orderNumber)
     this.setData({
-      order: orderByDealer
+      dealers: todoDealers.dealers
     })
   },
   toContact(e: any) {

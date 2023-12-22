@@ -6,14 +6,14 @@
     <block wx:for="{{dealers}}" wx:key="id" wx:for-item="dealer">
       <view class="dealerCard list">
         <view class="imgBox">
-          <image class="avatar" src="{{dealer.avatar}}"></image>
+          <image class="avatar" src="{{dealer.avatarUrl}}"></image>
         </view>
         <view class="dealerInfo">
-          <text>{{dealer.name}}</text>
-          <text>应付：{{dealer.payment}}</text>
+          <text>{{dealer.username}}</text>
+          <text>应付：¥{{dealer.payment.payment.totalAmount}}</text>
         </view>
-        <view bindtap="toContact" data-dealer="{{dealer.name}}" class="copyBtn">
-          <image class="copy" src="../../image/copy.png"></image>
+        <view bindtap="onCopy" data-dealer="{{dealer.username}}" class="copyBtn">
+          <image class="copy" src="../../../image/copy.png"></image>
           <text>复制</text>
         </view>
       </view>

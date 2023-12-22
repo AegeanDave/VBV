@@ -1,6 +1,5 @@
-import { Address, IAppOption } from "../../../models/index"
+import { Address } from "../../../models/index"
 import { Status, AddressField } from "../../../constant/index"
-const app = getApp<IAppOption>()
 import { addAddress } from '../../../services/api/api'
 
 Page({
@@ -51,19 +50,19 @@ Page({
         duration: 2000
       })
     } else {
-      address.addressId = result[0].addressId
-      app.globalData.currentAddress = 0
-      app.globalData.addressList && app.globalData.addressList.unshift(address)
-      wx.showToast({
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
+      prevPage.setData({
+        addressList: [...prevPage.data.addressList, result]
+      })
+      await wx.showToast({
         title: '添加成功',
         icon: 'success',
         duration: 2000
       })
-    }
-    setTimeout(function () {
       wx.navigateBack({
         delta: 1
       })
-    }, 500)
+    }
   },
 })

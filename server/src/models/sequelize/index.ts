@@ -47,6 +47,9 @@ Connection.belongsTo(Invitation, { foreignKey: 'invitationId' })
 User.hasMany(Order, { foreignKey: 'userId' })
 Order.belongsTo(User, { foreignKey: 'userId' })
 
+User.hasMany(Order, { foreignKey: 'dealerId' })
+Order.belongsTo(User, { foreignKey: 'dealerId', as: 'dealer' })
+
 User.belongsToMany(User, {
 	through: Connection,
 	foreignKey: 'openId',

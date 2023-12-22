@@ -33,7 +33,7 @@ const Order = db.define('orders', {
 			'Completed',
 			'Shipped'
 		),
-		defaultValue: 'Onhold'
+		defaultValue: 'Unpaid'
 	},
 	shipment: { type: DataTypes.JSON },
 	createdAt: {

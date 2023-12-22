@@ -1,6 +1,8 @@
 {
   "usingComponents": {
-    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet"
+    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tabs": "@vant/weapp/tabs/index"
   },
   "navigationBarTitleText": "销售记录"
 }

@@ -14,7 +14,8 @@ export const upload = multer({
 		},
 		key: (req, file, callback) => {
 			callback(undefined, Date.now().toString())
-		}
+		},
+		serverSideEncryption: 'AES256'
 	}),
 	limits: {
 		fileSize: 1024 * 1024 * 3

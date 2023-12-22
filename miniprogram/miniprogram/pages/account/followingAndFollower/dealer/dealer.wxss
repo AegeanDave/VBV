@@ -29,14 +29,15 @@
 .nameBox {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  margin-left: 10px;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2px;
+  margin-left: 16px;
 }
 
 .nameBox .name {
   color: #333;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .nameBox .btnField {
@@ -46,7 +47,7 @@
 
 .nameBox .btnField button {
   background-color: #98DBD8;
-  padding: 3px 7px;
+  padding: 4px 8px;
   margin-right: 8px;
 }
 
@@ -70,8 +71,8 @@ button {
   font-size: 12px;
   color: #fff;
   background-color: #02a69f;
-  padding: 3px 0;
-  border-radius: 8px;
+  padding: 4px 1px;
+  border-radius: 4px;
   box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.05)
 }
 

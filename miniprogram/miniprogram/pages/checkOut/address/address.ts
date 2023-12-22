@@ -1,5 +1,5 @@
 import { Address, IAppOption } from "../../../models/index"
-import { deleteAddress } from '../../../services/api/api'
+import { deleteAddress, getAddresses } from '../../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({
@@ -7,33 +7,35 @@ Page({
     currentAddress: 0 as number,
     addressList: [] as Address[],
   },
-  onShow() {
+  async onLoad() {
+    const { addresses }: any = await getAddresses()
     this.setData({
-      currentAddress: app.globalData.currentAddress,
-      addressList: app.globalData.addressList
+      addressList: addresses
     })
+
   },
   addNewAddress: function () {
     wx.navigateTo({
       url: '../newAddress/newAddress'
     })
   },
-  useThisAddress: function (e) {
-    app.globalData.currentAddress = e.currentTarget.dataset.address
-    this.setData({
-      currentAddress: app.globalData.currentAddress,
+  onChoose: function (e) {
+    const address = e.currentTarget.dataset.address
+    const pages = getCurrentPages()
+    const prevPage = pages[pages.length - 2]
+    prevPage.setData({
+      selectedAddress: address
+    })
+    wx.navigateBack({
+      delta: 1
     })
   },
-  deleteAddress: async function (e: any) {
-    const result = await deleteAddress(e.currentTarget.dataset.address)
-    if (result.count === 1) {
-      const newList = app.globalData.addressList.filter(function (value, index, arr) {
-        return value.id !== e.currentTarget.dataset.address
-      })
-      app.globalData.addressList = newList
+  onDelete: async function (e: any) {
+    const id = e.currentTarget.dataset.address.id
+    const result = await deleteAddress(id)
+    if (result.status === 'SUCCESS') {
       this.setData({
-        addressList: newList,
-        currentAddress: app.globalData.currentAddress,
+        addressList: this.data.addressList.filter(address => address.id !== id),
       })
       wx.showToast({
         title: '删除成功',
