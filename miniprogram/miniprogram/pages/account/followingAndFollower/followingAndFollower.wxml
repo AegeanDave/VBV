@@ -1,10 +1,10 @@
 <view wx:if="{{groupList.length===0}}" class="empty groupBox">
   <block wx:if="{{groupName==='DEALER'}}">
-    <image src='../../image/group.png' mode="aspectFit"></image>
+    <image src='/image/group.png' mode="aspectFit"></image>
     <text>暂无已关注</text>
   </block>
   <block wx:elif="{{groupName==='CUSTOMER'}}">
-    <image src='../../image/group.png' mode="aspectFit"></image>
+    <image src='/image/group.png' mode="aspectFit"></image>
     <text>暂无关注您的客户</text>
     <text bindtap="toInvitation" class="link">去邀请</text>
   </block>

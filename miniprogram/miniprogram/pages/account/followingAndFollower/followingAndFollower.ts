@@ -66,7 +66,7 @@ Page({
   },
   toInvitation() {
     wx.navigateTo({
-      url: '../aliasCode/aliasCode'
+      url: '../invitation/invitation'
     })
   }
 })
