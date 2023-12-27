@@ -10,7 +10,7 @@ Page({
   },
   onLoad() {
     const cartItems = wx.getStorageSync('cart')
-    const totalPrice = cartItems?.reduce((sum: number, product: Product) => {
+    const totalPrice = (cartItems||[]).reduce((sum: number, product: Product) => {
       if (!product?.disabled) {
         return sum + Number(product.quantity * product.item.defaultPrice)
       }

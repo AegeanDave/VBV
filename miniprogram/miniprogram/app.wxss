@@ -169,11 +169,6 @@ button[disabled] {
   background-color: #adadad !important;
 }
 
-.productCard {
-  display: flex;
-  padding: 19px;
-}
-
 .list {
   border-bottom: 1px solid #e5e5e5;
 }

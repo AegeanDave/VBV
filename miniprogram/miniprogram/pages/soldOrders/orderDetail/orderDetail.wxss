@@ -19,10 +19,6 @@ text,
   padding: 12px 21px;
 }
 
-.card:first-child {
-  margin-top: 16px;
-}
-
 .label {
   width: 24%;
   font-weight: 600;
@@ -104,11 +100,8 @@ text,
 
 .productCard {
   width: 100%;
-  padding: 6px 0;
   display: flex;
   background-color: rgba(244, 244, 244, 0.3);
-  border-radius: 10px;
-  margin-bottom: 10px;
   flex-direction: column;
 }
 
@@ -157,8 +150,7 @@ text,
 }
 
 .shippingBox {
-  margin-top: 10px;
-  padding: 12px;
+  padding: 6px;
 }
 
 .trackingInfo text {

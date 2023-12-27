@@ -1,7 +1,7 @@
 <view class="orderBox card">
   <view class="fieldBox">
     <text class="label">下单用户： </text>
-    <text class="value">{{order.buyer.name}}</text>
+    <text class="value">{{order.customer.username}}</text>
   </view>
   <view class="fieldBox">
     <text class="label">订单编号： </text>
@@ -9,10 +9,8 @@
   </view>
   <view class="addressBox fieldBox">
     <text class="label">收货地址：</text>
-    <text class="addressInfo value"
-      wx:if="{{order.address.quickInputAddress}}">{{order.address.quickInputAddress}}</text>
-    <text class="addressInfo value"
-      wx:else>{{order.address.name}}\t{{order.address.phone}}\n{{order.address.province}}\n{{order.address.city}}\t{{order.address.street}}</text>
+    <text class="addressInfo value" wx:if="{{order.address.quickInput}}">{{order.address.quickInput}}</text>
+    <text class="addressInfo value" wx:else>{{order.address.recipient}}\t{{order.address.phone}}\n{{order.address.state}}\n{{order.address[0].city}}\t{{order.address.street}}</text>
   </view>
   <view class="divider"></view>
   <view class="comment fieldBox">
@@ -21,112 +19,41 @@
   </view>
 </view>
 <view class="card trackingCard">
-  <block wx:if="{{order.subOrders}}" wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="orderDetail"
-    wx:for-index="groupIndex">
-    <view class="group firstNoBorder">
-      <view class="fieldBox" bindtap="bindCopy" data-name="{{orderDetail.dealer.name}}">
-        <view class="fieldCard">
-          <view class="label">供货商:</view>
-          <view class="value">{{orderDetail.dealer.name}}</view>
-          <image src='{{orderDetail.dealer.avatar}}' class="avatar"></image>
-        </view>
-        <view class="copy">
-          <image src='../../../image/copy.png'></image>
-        </view>
-      </view>
-      <view class="productList">
-        <block wx:for="{{orderDetail.orderProducts}}" wx:key="id" wx:for-item="product" wx:for-index="productIndex">
-          <view class="productCard">
-            <view class="mainInfo" bindtap="showDetail" data-firstindex="{{groupIndex}}"
-              data-secondindex="{{productIndex}}" data-showDetail="{{!product.showDetail}}">
-              <image class="productImage" src="{{product.coverImageURL}}"></image>
+    <van-collapse value="{{ activeNames }}" bind:change="onAccordionChange">
+      <block wx:for="{{order.orderDetails}}" wx:key="id" wx:for-item="product" wx:for-index="productIndex">
+        <van-collapse-item name="{{productIndex}}">
+          <view class="productCard" slot="title">
+            <view class="mainInfo">
+              <image class="productImage" src="{{product.productInfo.coverImageUrl}}"></image>
               <view class="productInfo">
-                <text class="price">￥{{product.price}}</text>
-                <text class="value">{{product.productName}}</text>
-                <text class="value">数量： {{product.quantity}}</text>
+                <text class="price">￥{{product.productInfo.price}}</text>
+                <text class="value">{{product.productInfo.name}}</text>
+                <text class="value">数量: {{product.quantity}}</text>
                 <view class="tagField">
                   <text class="value">货物状态：</text>
-                  <view class="tag {{product.status==='Canceled' ? 'canceled' : product.status==='Shipping' ? 'shipping' : 'pending'}}">
-                    <text>{{product.status==='Shipping' ? '已发货' : product.status==='Canceled' ? '被取消' : '未发货'}}</text>
+                  <view class="tag {{product.status==='Canceled'?'canceled':product.status==='Shipping'?'shipping':'pending'}}">
+                    <text>{{product.status==='Shipping' ? '已发货' : product.status==='Canceled'?'被取消' : '未发货'}}</text>
                   </view>
                 </view>
               </view>
-              <view class="imageContainer">
-                <image class="arrow" wx:if="{{!product.showDetail}}" src="../../../image/arrow_down.svg"></image>
-                <image class="arrow" wx:else src="../../../image/arrow_forward.svg"></image>
-              </view>
-            </view>
-            <view class="shippingBox" hidden="{{!product.showDetail}}">
-              <text class="label">快递状态：</text>
-              <view class="trackingInfo">
-                <view wx:if="{{product.status==='Shipping'}}" class="shippingProgress">
-                  <text>快递单号：{{product.trackingNumber}} | {{product.carrier}}</text>
-                  <view class="progressBox">
-                    <progress class="progress" percent="100" color="#A6DDDA" activeColor="#05A69F" active />
-                    <view class="shippingInfo">
-                      <text>已发货</text>
-                    </view>
-                  </view>
-                </view>
-                <text wx:else>暂无信息</text>
-              </view>
             </view>
           </view>
-        </block>
-      </view>
-    </view>
-  </block>
-  <block wx:if="{{order.orderProducts}}" wx:for="{{order.orderProducts}}" wx:key="id" wx:for-item="product"
-    wx:for-index="groupIndex">
-    <view class="group firstNoBorder">
-      <view class="fieldBox" bindtap="bindCopy" data-name="{{order.dealer.name}}">
-        <view class="fieldCard">
-          <view class="label">供货商:</view>
-          <view class="value">{{order.dealer.name}}</view>
-          <image src='{{order.dealer.avatar}}' class="avatar"></image>
-        </view>
-        <view class="copy">
-          <image src='../../../image/copy.png'></image>
-        </view>
-      </view>
-      <view class="productList">
-        <view class="productCard">
-          <view class="mainInfo" bindtap="showDetail" data-firstindex="{{groupIndex}}"
-            data-secondindex="{{productIndex}}" data-showDetail="{{!product.showDetail}}">
-            <image class="productImage" src="{{product.coverImageURL}}"></image>
-            <view class="productInfo">
-              <text class="price">￥{{product.price}}</text>
-              <text class="value">{{product.productName}}</text>
-              <text class="value">数量： {{product.quantity}}</text>
-              <view class="tagField">
-                <text class="value">货物状态：</text>
-                <view class="tag {{product.status === 'Canceled' ? 'canceled' : product.status === 'Shipping' ? 'shipping' : product.status === 'Pending' && 'pending'}}">
-                  <text>{{product.status==='Shipping' ? '已发货' : product.status==='Canceled' ? '被取消' : '未发货'}}</text>
-                </view>
-              </view>
-            </view>
-            <view class="imageContainer">
-              <image class="arrow" wx:if="{{!product.showDetail}}" src="../../../image/arrow_down.svg"></image>
-              <image class="arrow" wx:else src="../../../image/arrow_forward.svg"></image>
-            </view>
-          </view>
-          <view class="shippingBox" hidden="{{!product.showDetail}}">
+          <view class="shippingBox">
             <text class="label">快递状态：</text>
             <view class="trackingInfo">
-              <view wx:if="{{product.status==='Shipping'}}" class="shippingProgress">
-                <text>快递单号：{{product.trackingNumber}} | {{product.carrier}}</text>
+              <view wx:if="{{product.status==='SHIPPING'}}" class="shippingProgress">
+                <text>快递单号：{{product.trackingNumber}} | {{product.company}}</text>
                 <view class="progressBox">
-                  <progress class="progress" percent="100" color="#A6DDDA" activeColor="#05A69F" active />
+                  <progress class="progress" percent="50" color="#A6DDDA" activeColor="#05A69F" active />
                   <view class="shippingInfo">
-                    <text>已发货</text>
+                    <text>运输中</text>
                   </view>
                 </view>
               </view>
               <text wx:else>暂无信息</text>
             </view>
           </view>
-        </view>
-      </view>
-    </view>
-  </block>
+        </van-collapse-item>
+      </block>
+    </van-collapse>
 </view>

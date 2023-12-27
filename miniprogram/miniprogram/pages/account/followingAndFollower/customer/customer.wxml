@@ -23,75 +23,74 @@
     <button wx:if='{{customer}}' bindtap="markPaid" disabled="{{valueUnpaid==0}}">标记付款</button>
   </view>
 </view>
-<mp-tabbar list="{{[{text: '订单记录'},{text:'产品橱窗'}]}}" class="tabbar" bindchange="onTabChange"></mp-tabbar>
 <view class="main">
-  <scroll-view scroll-y="true" wx:if="{{tab===0}}" style='height: {{scrollHeight + "px"}} ' class="tabOne">
-    <view wx:if="{{orders.length===0}}" class="empty">
-      <image src='../../../../image/empty_orders.png' class="noOrders"></image>
-      <text>
-        暂无订单</text>
-    </view>
-    <block wx:for="{{orders}}" wx:key="id" wx:for-item="order" wx:if="{{orders.length>0}}">
-      <view class="orderBox card">
-        <view class="boxHeader">
-          <view>
-            <text class="label">下单时间: </text>
-            <text class="value">{{order.createdAt}}</text>
-          </view>
+  <van-tabs sticky active="{{active}}">
+    <van-tab title="订单记录">
+      <view class="tabOne">
+        <view wx:if="{{orders.length===0}}" class="empty">
+          <image src='/image/empty_orders.png' class="noOrders"></image>
+          <text>
+            暂无订单</text>
         </view>
-        <view class="productList" bindtap="bindToDetail" data-order="{{order}}">
-          <block wx:for="{{order.subOrders}}" wx:key="id" wx:for-item="subOrder">
-            <block wx:for="{{subOrder.orderProducts}}" wx:key="id" wx:for-item="product">
-              <view class="productCard">
-                <image src="{{product.coverImageUrl}}"></image>
-                <view class="productInfo">
-                  <text class="price">￥{{product.price}}</text>
-                  <text class="name">{{product.name}}</text>
-                  <text>数量：{{product.quantity}}</text>
+        <block wx:for="{{orders}}" wx:key="id" wx:for-item="order" wx:if="{{orders.length>0}}">
+          <view class="orderBox card">
+            <view class="boxHeader">
+              <view>
+                <text class="label">下单时间: </text>
+                <text class="value">{{order.createdAt}}</text>
+              </view>
+              <image wx:if="{{customer}}" src="/image/share.png" class="share" bindtap="toOrderShare" data-order="{{order}}"></image>
+            </view>
+            <view class="productList" bindtap="bindToDetail" data-order="{{order}}">
+              <block wx:for="{{order.orderDetails}}" wx:key="id" wx:for-item="product">
+                <view class="productCard">
+                  <image src="{{product.productInfo.coverImageUrl}}"></image>
+                  <view class="productInfo">
+                    <text class="price">￥{{product.productInfo.price}}</text>
+                    <text class="name">{{product.productInfo.name}}</text>
+                    <text>数量：{{product.quantity}}</text>
+                  </view>
+                </view>
+              </block>
+            </view>
+            <view class="boxFooter">
+              <view class="footerInner">
+                <view>
+                  <text class="label">订单号:</text>
+                  <text class="value">{{order.orderNumber}}</text>
+                </view>
+                <view class="item">
+                  <text class="totalPrice label">总价: </text>
+                  <text class="totalPrice amount">￥{{order.payment.totalAmount}}</text>
                 </view>
               </view>
-            </block>
+              <view class="divLine"></view>
+              <view class="footerInner alignRight">
+                <view class="item">
+                  <text>订单状态: </text>
+                  <text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
+                  <text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </van-tab>
+    <van-tab title="产品橱窗">
+      <view class="tabTwo">
+        <view class="itemContainer saleProduct horizontal">
+          <block wx:for="{{products}}" wx:key="id" wx:for-item="product">
+            <view class="productCard saleProduct horizontal" bindtap="onShowDialog" data-product="{{product}}">
+              <image src="{{product.coverImageUrl}}"></image>
+              <text class="name store">{{product.name}}</text>
+              <text class="price">¥{{product.specialPrice[0].price.price||product.defaultPrice}}</text>
+            </view>
           </block>
         </view>
-        <view class="boxFooter">
-          <view class="footerInner">
-            <view>
-              <text class="label">订单号:</text>
-              <text class="value">{{order.orderNumber}}</text>
-            </view>
-            <view class="item">
-              <text class="totalPrice label">总价: </text>
-              <text class="totalPrice amount">￥{{order.totalPrice}}</text>
-            </view>
-          </view>
-          <view class="divLine"></view>
-          <view class="footerInner alignRight">
-            <view class="item">
-              <text>订单状态: </text>
-              <text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
-              <text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
-            </view>
-          </view>
-        </view>
       </view>
-    </block>
-  </scroll-view>
-  <scroll-view scroll-y="true" wx:if="{{tab===1}}" style='height: {{scrollHeight + "px"}} ' class="tabTwo">
-    <view class="itemContainer saleProduct {{customer?'vertical':'horizontal'}}">
-      <block wx:for="{{products}}" wx:key="id" wx:for-item="product">
-        <view class="productCard saleProduct horizontal" bindtap="onShowDialog" data-product="{{product}}">
-          <image src="{{product.coverImageUrl}}"></image>
-          <view class="saleProductBox horizontal">
-            <view class="productInfo">
-              <text>￥{{product.specialPrice[0].price.price||product.defaultPrice}}</text>
-              <text class="name">{{product.name}}</text>
-            </view>
-            <button bindtap="onUpdateChildPrice" data-product="{{product}}">修改定价</button>
-          </view>
-        </view>
-      </block>
-    </view>
-  </scroll-view>
+    </van-tab>
+  </van-tabs>
 </view>
 <mp-half-screen-dialog bindbuttontap="buttontap" show="{{showDialog}}" maskClosable="{{false}}" title="单品改价" buttons="{{dialogButtons}}" bindbuttontap="onDialogButtonTap">
   <view slot="desc">

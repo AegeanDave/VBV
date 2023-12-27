@@ -582,19 +582,33 @@ export default (app: Router) => {
 						}
 					},
 					where: {
-						openId: myOpenId
+						openId: myOpenId,
+						status: DBStatus.ACTIVE
 					}
 				})
 				const todoChildOrders = await Order.findAll({
 					where: {
 						userId: id,
 						dealerId: myOpenId
-					}
+					},
+					include: [
+						{
+							model: OrderDetail,
+							attributes: ['productInfo', 'quantity', 'subtotal']
+						}
+					]
 				})
+				const unpaidAmount = todoChildOrders.reduce((sum, order) => {
+					if (order.dataValues.status === 'Unpaid') {
+						return sum + (order.dataValues.payment?.totalAmount || 0)
+					}
+					return sum + 0
+				}, 0)
 				res.send({
 					user: todoUser,
 					products: todoChildProducts,
-					orders: todoChildOrders
+					orders: todoChildOrders,
+					unpaidAmount
 				})
 				Logger.info(`Child's product and order get`)
 			} catch (err) {
