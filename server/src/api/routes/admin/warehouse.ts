@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { Warehouse } from '../../../models/sequelize'
+import { User, Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { query, Logger } from '../../../services'
 import { disableWholeProductLine } from '../app/product'
@@ -19,7 +19,6 @@ import {
 import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
 import { sentShippingMessage } from '../../../provider'
-import { upload, downloadFile } from '../../../provider/fileAction'
 import { sendRegistrationSMS, handleVerify } from '../../../provider/twilio'
 import bcrypt from 'bcrypt'
 
@@ -293,24 +292,6 @@ export default (app: Router) => {
 	// 	}
 	// )
 
-	route.get(
-		'/download',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { url } = req.query
-			try {
-				const file = await downloadFile(url as string)
-				res.status(200).send(file)
-				Logger.info('file downloaded')
-			} catch (err) {
-				res.status(404).send({
-					status: Status.FAIL,
-					message: err
-				})
-				Logger.info('file download fail')
-			}
-		}
-	)
 	route.post(
 		'/updateSetting',
 		adminAuthenticated,

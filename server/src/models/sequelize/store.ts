@@ -34,6 +34,7 @@ const StoreProduct = db.define('inStoreProducts', {
 		type: DataTypes.ENUM('Active', 'Inactive', 'Not_Available'),
 		defaultValue: 'Active'
 	},
+	setting: { type: DataTypes.JSONB },
 	warehouseId: { type: DataTypes.UUID },
 	createdAt: {
 		type: DataTypes.DATE,

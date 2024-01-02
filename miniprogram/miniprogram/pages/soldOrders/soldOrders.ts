@@ -108,15 +108,12 @@ Page({
   handleChangeComment(e: any) {
     const input = e.detail.value
     const currentOrder = e.currentTarget.dataset.order
-    const updateOrders = this.data.unpaidOrders
-    updateOrders.forEach((updateOrder: SaleOrder) => {
-      if (updateOrder.orderId === currentOrder.orderId) {
-        updateOrder.comment = input
-        updateOrder.newComment = input
-      }
-    })
     this.setData({
-      'tabs[0].orders': updateOrders,
+      unpaidOrders: this.data.unpaidOrders.map(order => {
+        if (order.id === currentOrder.id) {
+          order.newComment = input
+        }
+      }),
       isCommentEditing: false
     })
   },

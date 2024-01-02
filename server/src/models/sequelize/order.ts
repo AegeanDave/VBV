@@ -11,9 +11,8 @@ const Order = db.define('orders', {
 	orderNumber: {
 		type: DataTypes.STRING
 	},
-	addressId: {
-		type: DataTypes.UUID,
-		allowNull: false
+	address: {
+		type: DataTypes.JSONB
 	},
 	comment: {
 		type: DataTypes.TEXT
@@ -35,7 +34,6 @@ const Order = db.define('orders', {
 		),
 		defaultValue: 'Unpaid'
 	},
-	shipment: { type: DataTypes.JSON },
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW

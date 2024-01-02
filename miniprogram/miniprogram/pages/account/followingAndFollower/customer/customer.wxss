@@ -292,6 +292,7 @@ text.paid {
 }
 
 .productCard.saleProduct.horizontal {
+  display: flex;
   width: 28vw;
   flex-direction: column;
   margin-bottom: 10px;

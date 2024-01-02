@@ -21,7 +21,7 @@
 
 .productCard {
   position: relative;
-  padding-left: 15px;
+  padding: 16rpx;
 }
 
 .productCard.disabled {

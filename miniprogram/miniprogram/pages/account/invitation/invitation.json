@@ -1,6 +1,6 @@
 {
   "usingComponents": {
-    "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet"
+    "van-share-sheet": "@vant/weapp/share-sheet/index"
   },
   "navigationBarTitleText": "邀请码"
 }

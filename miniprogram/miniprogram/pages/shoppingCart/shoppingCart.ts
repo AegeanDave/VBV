@@ -9,8 +9,10 @@ Page({
     totalPrice: 0
   },
   onLoad() {
+  },
+  onShow() {
     const cartItems = wx.getStorageSync('cart')
-    const totalPrice = (cartItems||[]).reduce((sum: number, product: Product) => {
+    const totalPrice = (cartItems || []).reduce((sum: number, product: Product) => {
       if (!product?.disabled) {
         return sum + Number(product.quantity * product.item.defaultPrice)
       }
@@ -20,12 +22,10 @@ Page({
       products: cartItems || [],
       totalPrice: totalPrice?.toFixed(2) || 0
     })
-  },
-  onShow() {
-    if (wx.getStorageSync('cart') && wx.getStorageSync('cart').length > 0) {
+    if (cartItems?.length > 0) {
       wx.setTabBarBadge({
         index: Tabs.CART,
-        text: wx.getStorageSync('cart').length.toString()
+        text: wx.getStorageSync('cart').length
       })
     }
     else {
@@ -34,7 +34,7 @@ Page({
       })
     }
   },
-  bindDelete: function (e: any) {
+  onDelete: function (e: any) {
     const originOrder = this.data.products
     const newOrder = originOrder.filter((value: any, index: number) => {
       if (index !== e.currentTarget.dataset.index) {

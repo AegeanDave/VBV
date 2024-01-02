@@ -25,7 +25,8 @@ Page({
       product: product,
       slider: product.images,
       mode: options.mode,
-      newPrice: product?.defaultPrice || 0
+      newPrice: product?.defaultPrice || 0,
+      cartBadgeValue: wx.getStorageSync("cart")?.length
     })
   },
   bindtoCart() {

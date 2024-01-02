@@ -70,6 +70,7 @@
                   <text>订单状态: </text>
                   <text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
                   <text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
+                  <text wx:elif="{{order.status==='Shipped'}}" class="paid">已发货</text>
                 </view>
               </view>
             </view>

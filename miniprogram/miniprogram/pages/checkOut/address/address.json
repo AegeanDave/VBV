@@ -4,7 +4,8 @@
     "van-empty": "@vant/weapp/empty/index",
     "van-swipe-cell": "@vant/weapp/swipe-cell/index",
     "van-cell": "@vant/weapp/cell/index",
-    "van-cell-group": "@vant/weapp/cell-group/index"
+    "van-cell-group": "@vant/weapp/cell-group/index",
+    "van-icon": "@vant/weapp/icon/index"
   },
   "navigationBarTitleText": "地址管理"
 }

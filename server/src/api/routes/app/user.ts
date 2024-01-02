@@ -137,6 +137,16 @@ export default (app: Router) => {
 						openId: myOpenId,
 						status: DBStatus.ACTIVE
 					},
+					attributes: {
+						include: [
+							[
+								db.literal(
+									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."userId" = "connections"."openIdChild" AND "orders"."status" = \'Unpaid\') > 0'
+								),
+								'hasUnpaidOrders'
+							]
+						]
+					},
 					include: {
 						model: User,
 						as: 'customer',
@@ -164,6 +174,16 @@ export default (app: Router) => {
 					where: {
 						openIdChild: myOpenId,
 						status: DBStatus.ACTIVE
+					},
+					attributes: {
+						include: [
+							[
+								db.literal(
+									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."dealerId" = "connections"."openId" AND "orders"."status" = \'Unpaid\') > 0'
+								),
+								'hasUnpaidOrders'
+							]
+						]
 					},
 					include: {
 						model: User,

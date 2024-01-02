@@ -20,7 +20,6 @@ Page({
     else {
       todoOrders = await getAllPurchasedOrders()
     }
-    console.log(todoOrders)
     this.setData({
       pendingOrders: todoOrders.unpaidOrders || [],
       processingOrders: todoOrders.processingOrders || [],

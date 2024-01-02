@@ -1,157 +1,186 @@
-import React from "react";
-import { Paper, Grid, Typography, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Paper,
+  Grid,
+  Typography,
+  IconButton,
+  Card,
+  Avatar,
+  Button,
+  Divider,
+  Box,
+  Stack,
+  Chip,
+} from "@mui/material";
 import { Product, Order } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { OrderStatus } from "../../../../constant/index";
-import { FileCopy, GetApp } from "@mui/icons-material";
-import "./style.scss";
+import { ContentCopy, GetApp } from "@mui/icons-material";
 import ActionField from "./ActionField";
-import { download } from "../../../../api/index";
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
 import moment from "moment";
 import { useSnackbar } from "notistack";
+import IdPhoto from "./IdPhotoField";
 
 interface OrderProps {
   order: Order;
+  readOnly?: boolean;
 }
 
-export default function OrderCard({ order }: OrderProps) {
+export default function OrderCard({ order, readOnly }: OrderProps) {
   const { enqueueSnackbar } = useSnackbar();
-
+  const [isShowPhotos, setIsShowPhotos] = useState(false);
   const handleCopy = () => {
     enqueueSnackbar("信息已复制", { variant: "info" });
   };
 
-  const handleDownload = (urls: string[]) => {
-    const zip = new JSZip();
-    Promise.all(urls.map((url) => download(url))).then((values) => {
-      values.forEach((buffer: any, index: number) => {
-        zip.file(`images/${index}.jpg`, buffer.data);
-      });
-      zip.generateAsync({ type: "blob" }).then((blob: any) => {
-        saveAs(blob, "images.zip");
-      });
-    });
+  const handleGetIdPhoto = () => {
+    setIsShowPhotos(true);
   };
-  const ifCredential = order.orderProducts.find(
-    (product) => product.setting.isIdRequired
-  );
+  // const ifCredential = order.orderDetails.find(
+  //   (product: any) => product.setting?.isIdRequired
+  // );
+  const ifCredential = true;
+
   return (
-    <Paper className="cardContainer">
-      <div className="header">
-        <span>来自：{order.buyer.name}</span>
-        <span>
-          下单时间：
-          {moment(order.createdAt).format("MMMM Do YYYY, h:mm a")}
-        </span>
-        <span>订单号：{order.orderNumber}</span>
-      </div>
-      <div className="productList">
-        {order.orderProducts.map((product: Product, index: number) => (
-          <Grid container spacing={2} key={index}>
-            <Grid item>
-              <img
-                className="img"
-                alt={product.name}
-                src={product.coverImageUrl}
-              />
+    <Card>
+      <Grid container p={2}>
+        <Grid item container xs={12}>
+          <Grid item xs container spacing={1} alignItems="center">
+            <Grid item xs={5} textAlign="left">
+              <Typography variant="subtitle2" fontWeight={600}>
+                {order.orderNumber}
+              </Typography>
             </Grid>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid item xs>
-                <Typography variant="body2" gutterBottom>
-                  {product.name}
-                </Typography>
-              </Grid>
-              <Grid item>
-                <Typography variant="body2">单价：{product.price}</Typography>
-                <Typography variant="body2">
-                  数量：{product.quantity}
-                </Typography>
-              </Grid>
+            <Grid item xs={7} textAlign="right">
+              <Typography fontSize={12} variant="subtitle2">
+                {moment(order.createdAt).format("MMMM Do YYYY, h:mm a")}
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <Avatar
+                src={order.user.avatarUrl}
+                alt={order.user.username}
+                sx={{ width: 18, height: 18 }}
+              ></Avatar>
+            </Grid>
+            <Grid item xs textAlign="left">
+              <Typography fontSize={12} variant="caption">
+                {order.user.username}
+              </Typography>
+            </Grid>
+            <Grid item xs textAlign="right">
+              <Chip
+                label={<Typography fontSize={10}>{order.status}</Typography>}
+                size="small"
+              ></Chip>
             </Grid>
           </Grid>
-        ))}
-      </div>
-      <div className="addressBox">
-        <div>
-          <span>收货地址</span>
-          {order.status === OrderStatus.PAID && (
-            <CopyToClipboard
-              text={
-                order.address.quickInput ||
-                order.address.recipient +
-                  " " +
-                  order.address.phone +
-                  " " +
-                  order.address.province +
-                  " " +
-                  order.address.city +
-                  " " +
-                  order.address.street
-              }
-            >
-              <IconButton
-                aria-label="copy"
-                size="small"
-                className="copyIcon"
-                disabled={
-                  !(
-                    order.address.recipient ||
-                    order.address.phone ||
-                    order.address.province ||
-                    order.address.city ||
-                    order.address.quickInput
-                  )
+        </Grid>
+        <Grid item xs={12} pt={1} pb={1}>
+          <Divider variant="fullWidth">
+            <Chip
+              label={<Typography fontSize={10}>订单详情</Typography>}
+              size="small"
+            ></Chip>
+          </Divider>
+        </Grid>
+        <Grid item xs={12} container>
+          {order.orderDetails.map((product: any, index: number) => (
+            <Grid container spacing={1} key={index}>
+              <Grid item xs={4}>
+                <img
+                  style={{ width: 100, height: 100 }}
+                  alt={product.productInfo.name}
+                  src={product.productInfo.coverImageUrl}
+                />
+              </Grid>
+              <Grid item xs container spacing={2} textAlign="right">
+                <Grid item xs={12} textAlign="left">
+                  <Typography variant="body2" gutterBottom>
+                    {product.productInfo.name}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} container justifyContent="space-between">
+                  <Typography variant="body2">
+                    ¥{product.productInfo.price}
+                  </Typography>
+                  <Typography variant="body2">x {product.quantity}</Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          ))}
+        </Grid>
+        <Grid item xs={12}>
+          <Divider variant="fullWidth">
+            <Chip
+              label={<Typography fontSize={10}>收货地址</Typography>}
+              size="small"
+            ></Chip>
+          </Divider>
+        </Grid>
+        <Grid item xs={12} container pt={1}>
+          <Paper elevation={1} sx={{ p: 2, width: "100%" }}>
+            <Stack direction="row" justifyContent="space-between">
+              {order.address.quickInput ? (
+                <Typography variant="caption" fontSize={12}>
+                  {order.address.quickInput}
+                </Typography>
+              ) : (
+                <Box textAlign="left">
+                  <Typography fontSize={14} fontWeight={600}>
+                    {order.address.recipient}
+                  </Typography>
+                  <Typography fontSize={12}>{order.address.phone}</Typography>
+                  <Typography fontSize={14}>
+                    {order.address.province} {order.address.city}{" "}
+                    {order.address.street}
+                  </Typography>
+                </Box>
+              )}
+              <CopyToClipboard
+                text={
+                  order.address.quickInput ||
+                  order.address.recipient +
+                    " " +
+                    order.address.phone +
+                    " " +
+                    order.address.province +
+                    " " +
+                    order.address.city +
+                    " " +
+                    order.address.street
                 }
-                onClick={handleCopy}
+                onCopy={handleCopy}
               >
-                <FileCopy fontSize="inherit" />
-              </IconButton>
-            </CopyToClipboard>
+                <IconButton size="small">
+                  <ContentCopy sx={{ fontSize: 16 }} />
+                </IconButton>
+              </CopyToClipboard>
+            </Stack>
+          </Paper>
+          {ifCredential && !isShowPhotos && (
+            <Grid item xs={12} textAlign="right" p={1}>
+              <Button onClick={handleGetIdPhoto} size="small">
+                获取收件人凭证
+              </Button>
+            </Grid>
           )}
-        </div>
-        {order.address.quickInput ? (
-          <span className="content">{order.address.quickInput}</span>
-        ) : (
+          {isShowPhotos && <IdPhoto id={order.address.openId} />}
+        </Grid>
+        {!readOnly && (
           <>
-            <span className="content">
-              {order.address.recipient} {order.address.phone}
-            </span>
-            <span>
-              {order.address.province} {order.address.city}{" "}
-              {order.address.street}
-            </span>
+            <Grid item xs={12}>
+              <Divider variant="fullWidth">
+                <Chip
+                  label={<Typography fontSize={10}>发货操作</Typography>}
+                  size="small"
+                ></Chip>
+              </Divider>
+            </Grid>
+            <ActionField order={order} />
           </>
         )}
-      </div>
-      {order.address.idPhotoFrontUrl &&
-        order.address.idPhotoBackUrl &&
-        ifCredential && (
-          <div className="IDimagesBox">
-            <div>
-              <span>身份信息</span>
-              <IconButton
-                aria-label="add an alarm"
-                size="small"
-                className="download"
-                onClick={() =>
-                  handleDownload([
-                    order.address.idPhotoFrontUrl as string,
-                    order.address.idPhotoBackUrl as string,
-                  ])
-                }
-              >
-                <GetApp fontSize="inherit" />
-              </IconButton>
-            </div>
-            <div className="imges">
-              <img src={order.address.idPhotoFrontUrl} alt="front"></img>
-              <img src={order.address.idPhotoBackUrl} alt="back"></img>
-            </div>
-          </div>
-        )}
-      {/* <ActionField order={order} /> */}
-    </Paper>
+      </Grid>
+    </Card>
   );
 }

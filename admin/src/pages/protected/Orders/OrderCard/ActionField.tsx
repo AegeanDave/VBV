@@ -1,161 +1,84 @@
 import React from "react";
-import { IconButton, Button, TextField, MenuItem, Menu } from "@mui/material/";
-import { Order } from "../../../../models/index";
+import {
+  IconButton,
+  Button,
+  TextField,
+  MenuItem,
+  Stack,
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material/";
 import { actions, OrderStatus, carriers } from "../../../../constant/index";
 import { Edit, ExpandMore } from "@mui/icons-material";
-import "./style.scss";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { useOrder } from "../../../../contexts/OrderProvider";
 
 interface Props {
-  order: Order;
+  order: any;
 }
-export default function ShippingAction({ order }: Props) {
-  const orderInfo = order;
 
-  // const [trackingNumber, setTrackingNumber] = React.useState(
-  //   !order.trackingNumber || order.trackingNumber === OrderStatus.PENDING
-  //     ? ""
-  //     : order.trackingNumber
-  // );
-  // const [isEditing, setIsEditing] = React.useState(true);
-  // const [company, setCompany] = React.useState(
-  //   !order.company || order.company === OrderStatus.PENDING
-  //     ? { key: "all", label: "快递公司" }
-  //     : carriers[order.company]
-  // );
-  // const handleEdit = () => {
-  //   setIsEditing(false);
-  // };
-  // const handleReject = () => {
-  //   updateOrder(orderInfo, actions.reject.key);
-  // };
-  // const handleShipping = (input: string) => {
-  //   let currentOrderInfo = { ...orderInfo };
-  //   currentOrderInfo.company = company.key;
-  //   currentOrderInfo.trackingNumber = input;
-  //   updateOrder(currentOrderInfo, actions.ship.key);
-  // };
-  // const submitEditedOrder = (input: string) => {
-  //   let currentOrderInfo = { ...orderInfo };
-  //   currentOrderInfo.company = company.key;
-  //   currentOrderInfo.trackingNumber = input;
-  //   updateOrder(currentOrderInfo, actions.edit.key);
-  //   setIsEditing(true);
-  // };
-  const TrackingInfoRender = ({ disabled }: any) => {
-    const [anchorCompany, setAnchorCompany] =
-      React.useState<null | HTMLElement>(null);
-    const handleCompanySelect = (value: any) => {
-      setCompany(value);
-      setAnchorCompany(null);
-    };
-    return (
-      <>
-        <div>
-          <Button
-            aria-controls="company"
-            onClick={(e) => setAnchorCompany(e.currentTarget)}
-            disabled={disabled}
-            aria-haspopup="true"
-            endIcon={<ExpandMore></ExpandMore>}
-          >
-            {company.label}
-          </Button>
-          <Menu
-            id="status"
-            anchorEl={anchorCompany}
-            keepMounted
-            open={Boolean(anchorCompany)}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            onClose={() => setAnchorCompany(null)}
-          >
-            {Object.values(carriers).map((carrier: any) => (
-              <MenuItem
-                key={carrier.key}
-                onClick={(e: React.ChangeEvent<any>) =>
-                  handleCompanySelect(carrier)
-                }
-              >
-                {carrier.label}
-              </MenuItem>
-            ))}
-          </Menu>
-        </div>
-        <TextField
-          disabled={disabled}
-          name="trackingNumber"
-          autoFocus
-          InputProps={{
-            className: "input",
-          }}
-          placeholder="输入快递单号"
-          variant="outlined"
-          size="small"
-          value={trackingNumber}
-          className="trackingNumber"
-          onChange={(e: React.ChangeEvent<any>) =>
-            setTrackingNumber(e.target.value)
-          }
-        />
-      </>
-    );
+export default function ShippingAction({ order }: Props) {
+  const { onShipping, onCancelling } = useOrder();
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      carrier: "",
+      trackingNum: "",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    onShipping(order, data);
   };
-  return order.status === OrderStatus.PAID &&
-    order.trackingStatus === OrderStatus.PENDING ? (
-    <div className="shippingBox current">
-      <div className="vertical">
-        <TrackingInfoRender
-          disable={false}
-          trackingNumber={trackingNumber}
-          company={company}
-        />
-      </div>
-      <div className="actionField">
-        <Button className="reforce" onClick={() => handleReject()}>
-          驳回订单
-        </Button>
-        <Button
-          className="btn submit"
-          disabled={company.key === "all" || !trackingNumber}
-          onClick={() => handleShipping(trackingNumber)}
-        >
-          确认发货
-        </Button>
-      </div>
-    </div>
-  ) : order.trackingStatus === OrderStatus.CANCELLED ? (
-    <div className="shippingBox history">
-      <span className="reject">订单被驳回</span>
-    </div>
-  ) : (
-    <div className="shippingBox history">
-      <div className="edit horizontal">
-        <TrackingInfoRender
-          disabled={isEditing}
-          comany={company}
-          trackingNumber={trackingNumber}
-        />
-        <IconButton aria-label="edit" size="medium" onClick={handleEdit}>
-          <Edit fontSize="inherit" />
-        </IconButton>
-      </div>
-      {!isEditing && (
-        <div className="actionField">
-          <Button
-            className="btn submit"
-            disabled={company.key === "all" || !trackingNumber}
-            onClick={() => submitEditedOrder(trackingNumber)}
-          >
-            确认修改
+
+  return (
+    <Grid item xs={12} pl={2} pr={2} pb={2}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack direction="row" spacing={1}>
+          <Controller
+            name="carrier"
+            control={control}
+            render={({ field }) => (
+              <FormControl sx={{ width: 110 }} size="small">
+                <InputLabel id="demo-simple-select-label">运输公司</InputLabel>
+                <Select
+                  {...field}
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  label="运输公司"
+                  autoWidth
+                >
+                  {Object.values(carriers).map((carrier: any) => (
+                    <MenuItem key={carrier.key} value={carrier.key}>
+                      {carrier.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          />
+          <Controller
+            name="trackingNum"
+            control={control}
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="快递单号"
+                size="small"
+                sx={{ flex: 1 }}
+              />
+            )}
+          />
+        </Stack>
+        <Stack pt={2}>
+          <Button variant="contained" size="large" type="submit">
+            提交发货
           </Button>
-        </div>
-      )}
-    </div>
+          <Button color="error">拒绝</Button>
+        </Stack>
+      </form>
+    </Grid>
   );
 }

@@ -18,8 +18,7 @@ Page({
       orders: orders.map(order => ({
         ...order,
         createdAt: parseTime(new Date(order.createdAt))
-      }
-      )),
+      })),
       products: products,
       dealer: user,
       valueUnpaid: unpaidAmount

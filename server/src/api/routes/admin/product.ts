@@ -105,6 +105,7 @@ export default (app: Router) => {
 					shortDescription,
 					openId: myOpenId,
 					warehouseId: myWarehouseId,
+					setting: { isFreeShipping, isIdRequired },
 					coverImageUrl: coverImage[0].location,
 					openIdFather: myOpenId,
 					saleLevel: 0,
@@ -129,7 +130,6 @@ export default (app: Router) => {
 			{ name: 'images', maxCount: 10 }
 		]),
 		async (req: Request, res: Response) => {
-			console.log(JSON.parse(req.body?.product))
 			const { coverImage, images } = req.files as any
 			const {
 				id,
@@ -183,6 +183,7 @@ export default (app: Router) => {
 						name,
 						description,
 						shortDescription,
+						setting: { isFreeShipping, isIdRequired },
 						defaultPrice: price,
 						status: 'Active'
 					},

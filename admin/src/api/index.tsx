@@ -38,32 +38,6 @@ export const updateProductStatus = async (product: Product, action: string) => {
   return result;
 };
 
-export const updateOrder = async (order: Order, action: string) => {
-  const result = await axios.post("/warehouse/updateOrder", {
-    order: order,
-    action: action,
-  });
-
-  return result;
-};
-
-export const download = (url: string) => {
-  return new Promise((resolve, reject) => {
-    axios("/warehouse/download", {
-      method: "GET",
-      params: {
-        url: url,
-      },
-    })
-      .then((response) => {
-        resolve(response.data.Body);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
-};
-
 export const sendSMSVerifcation = (phone: {
   countryCode: string;
   tel: string;

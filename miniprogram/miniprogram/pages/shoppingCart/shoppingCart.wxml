@@ -12,7 +12,7 @@
           <text class="price inCart">￥{{product.item.defaultPrice}}</text>
           <text wx:if="{{product.disabled}}" class="disabled">失效</text>
         </view>
-        <view class="delete" data-index="{{index}}" bindtap="bindDelete">
+        <view class="delete" data-index="{{index}}" bindtap="onDelete">
           <image src="../../image/delete.png"></image>
         </view>
         <view class="amount">

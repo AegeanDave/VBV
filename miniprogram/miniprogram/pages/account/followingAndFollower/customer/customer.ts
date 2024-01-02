@@ -1,5 +1,5 @@
 import { getCustomer, removeConnection, markPaid, updatePriceForChild } from '../../../../services/api/api'
-import {  IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
+import { IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
 import { Status } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
 const app = getApp<IAppOption>()
@@ -23,11 +23,11 @@ Page({
       value: 1
     }]
   },
-  async onLoad(option) {
+  async onLoad(option: any) {
     const { user, products, orders, unpaidAmount }: any = await getCustomer(option.id)
     this.setData({
       customer: user,
-      orders: orders.map(order => ({
+      orders: orders.map((order: any) => ({
         ...order,
         createdAt: parseTime(new Date(order.createdAt))
       })),
@@ -37,7 +37,7 @@ Page({
   },
 
   onShow: function () {
-    
+
   },
   bindToDetail(e: any) {
     const order = e.currentTarget.dataset.order

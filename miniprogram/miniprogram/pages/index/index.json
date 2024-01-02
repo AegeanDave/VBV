@@ -1,7 +1,8 @@
 {
   "usingComponents": {
     "mp-searchbar": "weui-miniprogram/searchbar/searchbar",
-    "van-loading": "@vant/weapp/loading/index"
+    "van-loading": "@vant/weapp/loading/index",
+    "van-button": "@vant/weapp/button/index"
   },
   "enablePullDownRefresh": true,
   "backgroundTextStyle": "dark"

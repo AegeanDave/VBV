@@ -8,7 +8,7 @@ Page({
   data: {
     groupName: null,
     groupList: [],
-    filterGroup: [],
+    checkedList: [],
     lookingUnpaid: false
   },
   onLoad: async function (options: any) {
@@ -36,20 +36,12 @@ Page({
       })
     }
   },
-  bindFilter: function () {
-    if (!this.data.lookingUnpaid) {
-      const Unpaid = this.data.groupList.filter(item => item.ifUnpaid === true)
-      this.setData({
-        filterGroup: Unpaid,
-        lookingUnpaid: true
-      })
-    }
-    else {
-      this.setData({
-        filterGroup: [],
-        lookingUnpaid: false
-      })
-    }
+  bindCheck: function (e: any) {
+    const UnpaidList = this.data.groupList.filter(item => item.hasUnpaidOrders === true)
+    this.setData({
+      checkedList: UnpaidList,
+      lookingUnpaid: e.detail.value
+    })
   },
   toAlias: function (e: any) {
     const alias = e.currentTarget.dataset.alias

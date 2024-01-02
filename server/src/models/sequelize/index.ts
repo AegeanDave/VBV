@@ -36,8 +36,6 @@ OrderDetail.belongsTo(Order, { foreignKey: 'orderId' })
 User.hasMany(Address, { foreignKey: 'openId' })
 Address.belongsTo(User, { foreignKey: 'openId' })
 
-Order.belongsTo(Address)
-
 User.hasMany(Invitation, { foreignKey: 'openId' })
 Invitation.belongsTo(User, { foreignKey: 'openId' })
 
@@ -79,6 +77,14 @@ User.belongsToMany(StoreProduct, {
 	through: Price,
 	as: 'specialPrice',
 	foreignKey: 'openIdChild'
+})
+
+StoreProduct.hasMany(Price, {
+	foreignKey: 'storeProductId'
+})
+Price.belongsTo(StoreProduct, {
+	as: 'dealerPrice',
+	foreignKey: 'storeProductId'
 })
 
 export {

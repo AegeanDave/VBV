@@ -45,10 +45,10 @@ Page({
       })
     }
   },
-  onSearch(e) {
+  onSearch(e: any) {
     if (e.detail.value) {
       const newDealerList = this.data.dealers.map((dealer: any) => ({
-        ...dealer, picking: dealer.dealer.username.include(e.detail.value)
+        ...dealer, picking: dealer.dealer.username.toLowerCase().includes(e.detail.value)
       }))
       this.setData({
         dealers: newDealerList,
@@ -63,6 +63,12 @@ Page({
   },
   onPickDealer: function (e: any) {
     const { dealer } = e.currentTarget.dataset
+    if (dealer === 'all') {
+      this.setData({
+        selectedDealer: ''
+      })
+      return
+    }
     this.setData({
       selectedDealer: dealer
     })

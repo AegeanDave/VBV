@@ -4,23 +4,24 @@ text {
 }
 
 .dealerContainer {
+  background-color: #F5F0FA ;
   display: flex;
   flex-direction: column;
-  padding-left: 18px;
-  padding-bottom: 16px;
-  margin-top: 14px;
+  padding-top: 8px;
+  padding-left: 16px;
+  padding-bottom: 10px;
+}
+.dealer-list-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 20px;
 }
 
 .dealerContainer .title {
   color: #0aa8a2;
-  font-size: 16px;
-  letter-spacing: 0.24px;
-  line-height: 22px;
-}
-
-.showAll {
-  display: inline;
-  margin-right: 10px;
+  font-size: 14px;
+  letter-spacing: 0.26px;
 }
 
 .scrollH {
@@ -32,9 +33,9 @@ text {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 130rpx;
-  height: 130rpx;
-  border: 4px solid #fff;
+  width: 100rpx;
+  height: 100rpx;
+  border: 4px solid #F5F0FA ;
   border-radius: 50%;
 }
 
@@ -42,9 +43,9 @@ text {
   border-color: #02a69f;
 }
 
-.dealerList {
+.dealer-list {
   display: flex;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .dealer.all {
@@ -64,8 +65,8 @@ text {
 }
 
 .dealer .avatarContainer {
-  width: 120rpx;
-  height: 120rpx;
+  width: 100rpx;
+  height: 100rpx;
   border-radius: 50%;
   background-color: #f3f3f3;
   display: flex;
@@ -74,8 +75,8 @@ text {
 }
 
 .dealer .avatar {
-  width: 60px;
-  height: 60px;
+  width: 94rpx;
+  height: 94rpx;
   border-radius: 50%;
 }
 
@@ -95,8 +96,7 @@ text {
 }
 
 .productList {
-  margin: 0;
-  padding: 0 42rpx;
+  padding: 24rpx;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -126,8 +126,8 @@ text {
 }
 
 .productCardImage {
-  width: 42vw;
-  height: 42vw;
+  max-width: 41vw;
+  height: 41vw;
   border-radius: 6px;
   object-fit: cover;
   align-self: center;
@@ -135,12 +135,13 @@ text {
 
 .productCard.home {
   width: fit-content;
-  padding: 0;
-  margin-top: 10px;
+  padding: 16rpx;
+  border-radius: 8rpx;
   display: flex;
   flex-direction: column;
   border: none;
   padding-bottom: 10px;
+  margin-bottom: 10rpx;
 }
 
 .productCard .name {

@@ -95,7 +95,7 @@
     </block>
     <block wx:else>
       <view class="orderList">
-        <block wx:for="{{unpaidOrders}}" wx:key="id" wx:for-item="order">
+        <block wx:for="{{paidOrders}}" wx:key="id" wx:for-item="order">
           <view class="orderBox card">
             <view class="boxHeader">
               <view class="item">
@@ -116,9 +116,9 @@
                     <text class="price">￥{{product.productInfo.price}}</text>
                     <text>{{product.productInfo.name}}</text>
                     <text>数量：{{product.quantity}}</text>
-                    <view wx:if="{{order.status==='Paid' || order.status==='Complete'}}" class="tagBox">
-                      <view class="tag {{product.status==='Pending'?'pending':product.status==='Shipping'?'shipping': product.status==='Canceled' && 'canceled'}}">
-                        {{product.status==='Pending'?'未发货':product.status==='Shipping'? '已发货' :product.status==='Canceled' && '被取消'}}
+                    <view wx:if="{{order.status==='Paid'}}" class="tagBox">
+                      <view class="tag {{product.status==='Processing'?'pending':product.status==='Shipping'?'shipping': product.status==='Canceled' && 'canceled'}}">
+                        {{product.status==='Processing'?'未发货':product.status==='Shipping'? '已发货' : '被取消'}}
                       </view>
                     </view>
                   </view>
