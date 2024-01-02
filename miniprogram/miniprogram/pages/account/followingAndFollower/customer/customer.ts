@@ -1,5 +1,5 @@
 import { getCustomer, removeConnection, markPaid, updatePriceForChild } from '../../../../services/api/api'
-import { Product, IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
+import { IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
 import { Status } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
 const app = getApp<IAppOption>()
@@ -7,9 +7,8 @@ const app = getApp<IAppOption>()
 Page({
   data: {
     customer: undefined,
-    tab: 0 as number,
-    orders: [],
-    products: [] as Product[],
+    orders: null,
+    products: null,
     valueUnpaid: 0 as number,
     showDialog: false,
     specialPrice: 0,
@@ -24,33 +23,26 @@ Page({
       value: 1
     }]
   },
-  async onLoad(option) {
-    const { user, products, orders }: any = await getCustomer(option.id)
+  async onLoad(option: any) {
+    const { user, products, orders, unpaidAmount }: any = await getCustomer(option.id)
     this.setData({
       customer: user,
-      orders: orders,
+      orders: orders.map((order: any) => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
+      })),
       products: products,
+      valueUnpaid: unpaidAmount
     })
   },
-  onShow: async function () {
-    // const todoCustomer: any = await getCustomer(this.data.customer.openId)
-    // let unpaidAmount: number = 0
 
-    // this.setData({
-    //   orders: ordersResult.data,
-    //   products: productsResult.data,
-    // })
-  },
-  onTabChange: function (e: any) {
-    this.setData({
-      tab: e.detail.index,
-    })
+  onShow: function () {
+
   },
   bindToDetail(e: any) {
     const order = e.currentTarget.dataset.order
-    app.globalData.queryParameter.push(order)
     wx.navigateTo({
-      url: '../../orders/orderDetail/orderDetail',
+      url: `../../../soldOrders/orderDetail/orderDetail?orderNumber=${order.orderNumber}&customerId=${order.userId}`,
     })
   },
   onShowDialog: function (e: any) {
@@ -90,11 +82,11 @@ Page({
   contactToPay: function () {
     let that = this
     wx.setClipboardData({
-      data: that.data.customer.name,
+      data: that.data.customer.username,
       success: function (res) {
         wx.hideToast()
         wx.showToast({
-          title: that.data.dealer ? '已复制卖家微信' : '已复制买家微信',
+          title: '已复制买家微信',
           icon: 'success',
           duration: 2000
         })
@@ -111,14 +103,13 @@ Page({
   },
   markPaid: function () {
     let that = this
-    const unpaidOrder = this.data.orders.filter((item: any) => item.status === Status.UNPAID)
     wx.showModal({
       content: '确认该好友已经结清欠款',
       cancelText: '否',
       confirmText: '是',
       success: async function (res) {
         if (res.confirm) {
-          const result: any = await markPaid(unpaidOrder)
+          const result: any = await markPaid(that.data.customer)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
               title: '已标记付款',

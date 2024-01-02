@@ -1,7 +1,7 @@
 <view wx:if="{{groupList.length===0}}" class="empty groupBox">
   <block wx:if="{{groupName==='DEALER'}}">
     <image src='/image/group.png' mode="aspectFit"></image>
-    <text>暂无已关注</text>
+    <text>暂无已关注的供应商</text>
   </block>
   <block wx:elif="{{groupName==='CUSTOMER'}}">
     <image src='/image/group.png' mode="aspectFit"></image>
@@ -13,15 +13,18 @@
   <view class="filterBtn">
     <text wx:if="{{groupName==='CUSTOMER'}}">仅查看待付款用户</text>
     <text wx:else>仅查看未付款款用户</text>
-    <switch checked="{{lookingUnpaid}}" bindchange="bindFilter"></switch>
+    <switch checked="{{lookingUnpaid}}" bindchange="bindCheck"></switch>
   </view>
   <view class="dealerList">
-    <block wx:for="{{groupList}}" wx:key="id" wx:for-item="alias">
+    <block wx:if="{{lookingUnpaid&&checkedList.length===0}}">
+      <van-empty description="您的客户都已结清款项啦" />
+    </block>
+    <block wx:for="{{lookingUnpaid?checkedList:groupList}}" wx:key="id" wx:for-item="alias">
       <view class="dealerCard list" bindtap="toAlias" data-alias="{{alias}}">
         <block wx:if="{{alias.dealer.username}}">
           <view class="imgBox">
             <image class="avatar" src="{{alias.dealer.avatarUrl}}"></image>
-            <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
+            <view class="redDot" wx:if="{{alias.hasUnpaidOrders}}"></view>
           </view>
           <text class="name">{{alias.dealer.username}}</text>
           <image class="arrow" src="../../../image/arrow.png" bindtap="toAlias" data-alias="{{alias}}"></image>
@@ -29,7 +32,7 @@
         <block wx:if="{{alias.customer.username}}">
           <view class="imgBox">
             <image class="avatar" src="{{alias.customer.avatarUrl}}"></image>
-            <view class="redDot" wx:if="{{alias.ifUnpaid}}"></view>
+            <view class="redDot" wx:if="{{alias.hasUnpaidOrders}}"></view>
           </view>
           <text class="name">{{alias.customer.username}}</text>
           <image class="arrow" src="../../../image/arrow.png" bindtap="toAlias" data-alias="{{alias}}"></image>

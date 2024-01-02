@@ -124,11 +124,8 @@ export interface IAppOption {
       status: 'Active' | 'Inactive' | 'Not_Verified',
       sessionKey: string,
     },
-    addressList?: Address[],
-    currentAddress?: number,
     reload: boolean,
     sentCodes?: string[],
-    queryParameter: any[]
   }
   userInfoReadyCallback?: WechatMiniprogram.GetUserInfoSuccessCallback,
 }

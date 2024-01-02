@@ -8,10 +8,13 @@
 
 .orderList {
   margin-bottom: 89px;
+  padding: 32rpx;
 }
 
 .productCard {
   position: relative;
+  box-shadow: none;
+  padding: 12rpx;
 }
 
 .productCard.order:first-child {

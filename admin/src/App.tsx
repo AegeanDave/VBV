@@ -13,6 +13,8 @@ import Root, {
   PublicLayout,
   ProtectedLayout,
   OrderLayout,
+  Orders,
+  OrderHistory,
 } from "./pages";
 import ProductProvider from "./contexts/ProductProvider";
 import {
@@ -59,8 +61,8 @@ const router = createBrowserRouter(
           errorElement={<ProductErrorBoundary />}
         ></Route>
         <Route path="order" element={<OrderLayout />}>
-          <Route index element={<div>111111</div>}></Route>
-          <Route path="history" element={<>22222</>}></Route>
+          <Route index element={<Orders></Orders>}></Route>
+          <Route path="history" element={<OrderHistory />}></Route>
         </Route>
         <Route path="setting" element={<Account />}></Route>
         <Route path="account" element={<Setting />}></Route>

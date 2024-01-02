@@ -7,12 +7,11 @@ Page({
     currentAddress: 0 as number,
     addressList: [] as Address[],
   },
-  async onLoad() {
+  async onLoad(option: any) {
     const { addresses }: any = await getAddresses()
     this.setData({
-      addressList: addresses
+      addressList: addresses.map(item => ({ ...item, selected: item.id === option.selectedId })),
     })
-
   },
   addNewAddress: function () {
     wx.navigateTo({
@@ -31,17 +30,29 @@ Page({
     })
   },
   onDelete: async function (e: any) {
-    const id = e.currentTarget.dataset.address.id
+    const { id, selected } = e.currentTarget.dataset.address
     const result = await deleteAddress(id)
     if (result.status === 'SUCCESS') {
-      this.setData({
-        addressList: this.data.addressList.filter(address => address.id !== id),
-      })
       wx.showToast({
         title: '删除成功',
         icon: 'success',
         duration: 2000
       })
+      const newAddressList = this.data.addressList.filter(address => address.id !== id)
+      if (selected) {
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        console.log(1111)
+        prevPage.setData({
+          selectedAddress: newAddressList[0] || null
+        })
+      }
+      this.setData({
+        addressList: newAddressList,
+      })
     }
   },
+  onUnload() {
+
+  }
 })

@@ -36,8 +36,6 @@ OrderDetail.belongsTo(Order, { foreignKey: 'orderId' })
 User.hasMany(Address, { foreignKey: 'openId' })
 Address.belongsTo(User, { foreignKey: 'openId' })
 
-Order.belongsTo(Address)
-
 User.hasMany(Invitation, { foreignKey: 'openId' })
 Invitation.belongsTo(User, { foreignKey: 'openId' })
 
@@ -49,6 +47,9 @@ Order.belongsTo(User, { foreignKey: 'userId' })
 
 User.hasMany(Order, { foreignKey: 'dealerId' })
 Order.belongsTo(User, { foreignKey: 'dealerId', as: 'dealer' })
+
+User.hasMany(Order, { foreignKey: 'userId' })
+Order.belongsTo(User, { foreignKey: 'userId', as: 'customer' })
 
 User.belongsToMany(User, {
 	through: Connection,
@@ -76,6 +77,14 @@ User.belongsToMany(StoreProduct, {
 	through: Price,
 	as: 'specialPrice',
 	foreignKey: 'openIdChild'
+})
+
+StoreProduct.hasMany(Price, {
+	foreignKey: 'storeProductId'
+})
+Price.belongsTo(StoreProduct, {
+	as: 'dealerPrice',
+	foreignKey: 'storeProductId'
 })
 
 export {

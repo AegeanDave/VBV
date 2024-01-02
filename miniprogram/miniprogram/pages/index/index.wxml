@@ -1,34 +1,29 @@
 <!--index.wxml-->
 <mp-searchbar placeholder="输入好友微信名搜索产品" bindinput="onSearch" bindclear="onClear"></mp-searchbar>
 <view class="dealerContainer">
-  <text class="title">关注商家</text>
-  <view class="dealerList">
-    <view class="dealer all" bindtap="chooseDealer" data-dealer="">
-      <view class="outerBorder {{!selectedDealer && 'selected'}}">
-        <view class="avatarContainer">
-          <image src="../../image/people.png" class="placeholder"></image>
-        </view>
-      </view>
-      <text class="name">查看全部</text>
-    </view>
+  <view class="dealer-list-head">
+    <text class="title">关注商家</text>
+    <van-button plain type="primary" class="btn" hairline type="info" size="small" bind:click='onPickDealer' data-dealer="all">查看全部</van-button>
+  </view>
+  <view class="dealer-list">
     <scroll-view class="scrollH" scroll-x="true">
       <view class="innerContainer">
         <block wx:if="{{searching===true}}">
           <block wx:for="{{dealers}}" wx:for-item="dealer" wx:key="id">
-            <view class="dealer" wx:if="{{dealer.dealer.picking}}" bindtap="chooseDealer" data-dealer="{{dealer.openId}}">
-              <view class="outerBorder {{selectedDealer===dealer.name && 'selected'}}">
+            <view class="dealer" wx:if="{{dealer.picking}}" bindtap="onPickDealer" data-dealer="{{dealer.openId}}">
+              <view class="outerBorder {{selectedDealer===dealer.openId && 'selected'}}">
                 <view class="avatarContainer">
                   <image src="{{dealer.dealer.avatarUrl||'../image/people.png'}}" class="{{dealer.dealer.avatarUrl?'avatar':'placeholder'}}"></image>
                 </view>
               </view>
-              <text class="name">{{dealer.username}}</text>
+              <text class="name">{{dealer.dealer.username}}</text>
             </view>
           </block>
         </block>
         <block wx:else>
           <block wx:for="{{dealers}}" wx:for-item="dealer" wx:key="id">
-            <view class="dealer" bindtap="chooseDealer" data-dealer="{{dealer.openId}}">
-              <view class="outerBorder {{selectedDealer===dealer.name && 'selected'}}">
+            <view class="dealer" bindtap="onPickDealer" data-dealer="{{dealer.openId}}">
+              <view class="outerBorder {{selectedDealer===dealer.openId && 'selected'}}">
                 <view class="avatarContainer">
                   <image src="{{dealer.dealer.avatarUrl?dealer.dealer.avatarUrl:'../image/people.png'}}" class="{{dealer.dealer.avatarUrl?'avatar':'placeholder'}}"></image>
                 </view>
@@ -50,7 +45,7 @@
   <view wx:if="{{productList.length>0}}" class="productList">
     <block wx:for="{{productList}}" wx:key="id" wx:for-item="product">
       <block wx:if="{{selectedDealer}}">
-        <view class="productCard home" bindtap="viewDetail" wx:if="{{product.openId===selectedDealers}}" data-product="{{product}}">
+        <view class="productCard home" bindtap="viewDetail" wx:if="{{product.openId===selectedDealer}}" data-product="{{product}}">
           <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
           <view class="tagField">
             <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
@@ -59,7 +54,7 @@
           </view>
           <text class='name'>{{product.name}}</text>
           <view class='price'>
-            <text>￥{{product.dealerSale.price}}</text>
+            <text>￥{{product.defaultPrice}}</text>
           </view>
           <view class="dealerBox">
             <image src="{{product.dealerSale.avatar}}"></image>

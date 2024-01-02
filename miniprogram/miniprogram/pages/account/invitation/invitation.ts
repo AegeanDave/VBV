@@ -7,8 +7,8 @@ Page({
   data: {
     showActionsheet: false,
     actionGroups: [
-      { text: '复制', value: 0 },
-      { text: '转发', value: 1 },
+      { name: '微信', icon: 'wechat', openType: 'share' },
+      { name: '复制链接', icon: 'link' },
     ],
     selectedCode: '',
     activeCodes: [],
@@ -28,9 +28,9 @@ Page({
     })
   },
   onTrigger(e) {
-    const { value } = e.detail
+    const { index } = e.detail
     const that = this
-    if (value === 0) {
+    if (index === 1) {
       wx.setClipboardData({
         data: this.data.selectedCode,
         success() {
@@ -49,9 +49,12 @@ Page({
       return {
         title: '快关注我的微帮微吧',
         path: '/pages/account/inputCode/inputCode?code=' + that.data.selectedCode,
-        imageUrl: '../../image/artboard.jpg'
+        imageUrl: '/image/artboard.jpg'
       }
     }
+  },
+  onActionSheetClose() {
+    this.setData({ showShare: false });
   },
   buyNew: async function () {
     wx.showLoading({

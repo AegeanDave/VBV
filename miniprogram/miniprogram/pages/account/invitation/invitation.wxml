@@ -38,5 +38,10 @@
 <view class="btnArea">
   <button class='buyNew confirm' bindtap="buyNew">购买新的邀请码</button>
 </view>
-<mp-actionSheet bindactiontap="onTrigger" show="{{showActionsheet}}" actions="{{actionGroups}}">
-</mp-actionSheet>
+<van-share-sheet
+  show="{{ showActionsheet }}"
+  title="立即分享给好友"
+  options="{{ actionGroups }}"
+  bind:select="onTrigger"
+  bind:close="onActionSheetClose"
+/>

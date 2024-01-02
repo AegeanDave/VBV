@@ -1,6 +1,8 @@
 import { getAllSoldOrders, hideOrder, markPaid } from '../../services/api/api'
 import { SaleOrder, IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
+import { parseTime } from "../../utils/util"
+
 const app = getApp<IAppOption>()
 
 Page({
@@ -24,15 +26,23 @@ Page({
   async onLoad() {
     const { unpaid, paid, complete }: any = await getAllSoldOrders()
     this.setData({
-      unpaidOrders: unpaid || [],
-      paidOrders: paid || [],
-      completeOrders: complete || []
+      unpaidOrders: unpaid.map(order => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
+      })) || [],
+      paidOrders: paid.map(order => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
+      })) || [],
+      completeOrders: complete.map(order => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
+      })) || []
     })
-
   },
   bindToDetail(e: any) {
     wx.navigateTo({
-      url: './orderDetail/orderDetail',
+      url: `./orderDetail/orderDetail?orderNumber=${e.currentTarget.dataset.order.orderNumber}&customerId=${e.currentTarget.dataset.order.userId}`,
     })
   },
   handleOnEdit: function (e: any) {
@@ -74,7 +84,7 @@ Page({
     let that = this
     wx.showModal({
       title: '提示',
-      content: '您确认标记付款？',
+      content: '您确认标记付款并向上级经销商创建订单？',
       async success(res) {
         if (res.confirm) {
           let order = e.currentTarget.dataset.order
@@ -83,13 +93,10 @@ Page({
             wx.showToast({
               title: '标记成功',
             })
-            const updateUnpaidOrders = that.data.tabs[0].orders.filter(currentOrder => currentOrder.orderId !== order.orderId)
-            const updatePaidOrders = that.data.tabs[1].orders
             order.status = Status.PAID
-            updatePaidOrders.unshift(order)
             that.setData({
-              ['tabs[0].orders']: updateUnpaidOrders,
-              ['tabs[1].orders']: updatePaidOrders,
+              unpaidOrders: that.data.unpaidOrders.filter(item => item.id !== order.id),
+              paidOrders: that.data.paidOrders.unshift(order)
             })
           }
         } else if (res.cancel) {
@@ -101,15 +108,12 @@ Page({
   handleChangeComment(e: any) {
     const input = e.detail.value
     const currentOrder = e.currentTarget.dataset.order
-    const updateOrders: SaleOrder[] | undefined = this.data.tabs[0].orders
-    updateOrders.forEach((updateOrder: SaleOrder) => {
-      if (updateOrder.orderId === currentOrder.orderId) {
-        updateOrder.comment = input
-        updateOrder.newComment = input
-      }
-    })
     this.setData({
-      'tabs[0].orders': updateOrders,
+      unpaidOrders: this.data.unpaidOrders.map(order => {
+        if (order.id === currentOrder.id) {
+          order.newComment = input
+        }
+      }),
       isCommentEditing: false
     })
   },

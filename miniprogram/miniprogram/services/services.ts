@@ -1,12 +1,12 @@
-import { updateUserInfo, getSession } from "./api/api";
+import { updateUserInfo, getAuth } from "./api/api";
 import { IAppOption } from "../models/index";
 const app = getApp<IAppOption>()
 
-const reLogin = () =>{
+const reLogin = () =>
   wx.login({
     success: async (res) => {
       if (res.code) {
-        const result: any = await getSession(res.code)
+        const result: any = await getAuth(res.code)
         wx.setStorageSync('sessionKey', result.session_key)
       } else {
         wx.showToast({
@@ -15,7 +15,7 @@ const reLogin = () =>{
       }
     },
   })
-}
+
 
 const handleUpdateUserInfo = (userInfo) => {
   wx.setStorageSync('userInfo', userInfo)

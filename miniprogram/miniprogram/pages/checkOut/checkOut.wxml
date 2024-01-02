@@ -1,6 +1,6 @@
 <view class="addressField">
   <view class="addressInfoBox">
-    <view class="innerBox" bindtap="toManageAddress">
+    <view class="innerBox" bindtap="toManageAddress" data-address="{{selectedAddress}}">
       <text class="title label">收货地址</text>
       <block wx:if="{{selectedAddress}}">
         <view class="addressInfo">
@@ -14,7 +14,7 @@
         </view>
       </block>
     </view>
-    <image class="arrowBtn" src='../../image/arrowRight.svg' bindtap="toManageAddress"></image>
+    <image class="arrowBtn" src='../../image/arrowRight.svg' bindtap="toManageAddress" data-address="{{selectedAddress}}"></image>
   </view>
   <view class="addressInfoBox">
     <text class="title label">备注</text>

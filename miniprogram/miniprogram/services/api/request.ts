@@ -52,10 +52,10 @@ const request = {
         success: function (res) {
           if (res.statusCode === 403) {
             wx.showToast({
-              title: '失败请重试',
+              title: '登录失效',
               icon: 'none'
             })
-            reLogin()
+            wx.reLaunch({url:'index'})
           }
           else {
             var result = res.data;
@@ -81,10 +81,10 @@ const request = {
         success: function (res) {
           if (res.statusCode === 403) {
             wx.showToast({
-              title: '失败请重试',
+              title: '登录失效',
               icon: 'none'
             })
-            reLogin()
+            wx.reLaunch({url:'index'})
           }
           else {
             var result = res.data;

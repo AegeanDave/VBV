@@ -23,7 +23,7 @@ page {
 }
 
 .productsBox {
-  padding: 14px 10rpx;
+  padding: 24rpx;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -32,7 +32,8 @@ page {
 .productCard {
   width: fit-content;
   flex-direction: column;
-  padding: 24rpx 44rpx;
+  padding: 20rpx 28rpx;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .pic.store {

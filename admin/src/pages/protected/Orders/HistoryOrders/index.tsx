@@ -1,20 +1,19 @@
 import React from "react";
-import { Order } from "../../../../models/index";
-import OrderContainer from "../../../../components/CardContainer";
+import { useOrder } from "../../../../contexts/OrderProvider";
+import { Box } from "@mui/material";
+import { Masonry } from "@mui/lab";
+import OrderCard from "../OrderCard";
 
-interface Props {
-  orders: Order[];
-  updateOrder: (order: Order, action: string) => void;
-  handleCopy: () => void;
-}
-const OrdersHistory = ({ orders, updateOrder, handleCopy }: Props) => {
+const OrderHistory = () => {
+  const { historyOrders } = useOrder();
   return (
-    <OrderContainer
-      orderList={orders}
-      searchBar={true}
-      updateOrder={updateOrder}
-      handleCopy={handleCopy}
-    />
+    <Box sx={{ width: 780, minHeight: 400, margin: "0 auto" }} p={2}>
+      <Masonry columns={2} spacing={2}>
+        {historyOrders.map((order: any) => (
+          <OrderCard key={order.id} order={order} readOnly></OrderCard>
+        ))}
+      </Masonry>
+    </Box>
   );
 };
-export default OrdersHistory;
+export default OrderHistory;

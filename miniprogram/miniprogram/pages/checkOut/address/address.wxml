@@ -1,26 +1,23 @@
-<!-- <view class="addressField">
-  <view class="addressInfoBox">
-    <view class="innerBox">
-      <text class="title label">当前地址</text>
-      <view class="addressInfo">
-        <text wx:if="{{addressList[currentAddress].quickInputAddress}}">{{addressList[currentAddress].quickInputAddress}}</text>
-        <text wx:else>{{addressList[currentAddress].name}}\n{{addressList[currentAddress].country}}\t{{addressList[currentAddress].province}}\n{{addressList[currentAddress].city}}\t{{addressList[currentAddress].street}}\n{{addressList[currentAddress].phone}}</text>
-      </view>
-    </view>
-  </view>
-</view> -->
-<block wx:if="{{addressList&&addressList.length>1}}">
+<block wx:if="{{addressList&&addressList.length>0}}">
   <block wx:for="{{addressList}}" wx:key="id" wx:for-item="address">
     <van-swipe-cell right-width="{{ 65 }}">
       <block wx:if="{{!address.quickInput}}">
         <van-cell-group bindtap="onChoose" data-address="{{address}}">
-          <van-cell title="{{address.country}}" label="{{address.state + '\t'+address.city +'\t'+ address.street}}" border="{{ false }}"/>
+          <van-cell title="{{address.country}}" label="{{address.state + '\t'+address.city +'\t'+ address.street}}" border="{{ false }}">
+            <block wx:if="{{address.selected}}">
+              <van-icon slot="right-icon" name="passed" />
+            </block>
+          </van-cell>
           <van-cell value="{{address.recipient}}" label="{{address.phone}}" />
         </van-cell-group>
       </block>
       <block wx:else>
         <van-cell-group bindtap="onChoose" data-address="{{address}}">
-          <van-cell title="{{address.country}}" value="{{address.recipient}}" label="{{address.quickInput}}" />
+          <van-cell title="{{address.country}}" value="{{address.recipient}}" label="{{address.quickInput}}">
+            <block wx:if="{{address.selected}}">
+              <van-icon slot="right-icon" name="passed" />
+            </block>
+          </van-cell>
         </van-cell-group>
       </block>
       <view slot="right" class="van-swipe-cell__right" bind:tap="onDelete" data-address="{{address}}">删除</view>

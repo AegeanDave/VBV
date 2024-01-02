@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import { Product, OrderProduct, SubOrder } from '../../../models/types/index'
+import { OrderProduct, SubOrder } from '../../../models/types/index'
 import { Status, countryCodes, OrderStatus } from '../../../constants'
 import { query, Logger } from '../../../services'
 import { queryName } from '../../../services/queryName'
@@ -14,6 +14,8 @@ import {
 	Address,
 	Order,
 	OrderDetail,
+	Price,
+	Product,
 	StoreProduct,
 	User
 } from '../../../models/sequelize'
@@ -67,7 +69,14 @@ export default (app: Router) => {
 						{ model: User, attributes: ['username', 'avatarUrl'] },
 						{
 							model: OrderDetail,
-							attributes: ['productInfo', 'quantity', 'subtotal']
+							attributes: [
+								'productInfo',
+								'quantity',
+								'subtotal',
+								'comment',
+								'shipment',
+								'status'
+							]
 						}
 					]
 				})
@@ -75,13 +84,20 @@ export default (app: Router) => {
 				const todoPaidOrder = await Order.findAll({
 					where: {
 						dealerId: myOpenId,
-						status: { [Op.or]: ['Paid', 'Processing'] }
+						status: { [Op.or]: ['Paid', 'Processing', 'Shipped'] }
 					},
 					include: [
 						{ model: User, attributes: ['username', 'avatarUrl'] },
 						{
 							model: OrderDetail,
-							attributes: ['productInfo', 'quantity', 'subtotal']
+							attributes: [
+								'productInfo',
+								'quantity',
+								'subtotal',
+								'comment',
+								'shipment',
+								'status'
+							]
 						}
 					]
 				})
@@ -95,10 +111,18 @@ export default (app: Router) => {
 						{ model: User, attributes: ['username', 'avatarUrl'] },
 						{
 							model: OrderDetail,
-							attributes: ['productInfo', 'quantity', 'subtotal']
+							attributes: [
+								'productInfo',
+								'quantity',
+								'subtotal',
+								'shipment',
+								'comment',
+								'status'
+							]
 						}
 					]
 				})
+
 				res.send({
 					unpaid: todoUnpaidOrder,
 					paid: todoPaidOrder,
@@ -113,7 +137,51 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.get(
+		'/sold-customer',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { orderNumber, customerId } = req.query
+			const { myOpenId } = req.params
 
+			try {
+				const todoOrder = await Order.findOne({
+					where: {
+						dealerId: myOpenId,
+						userId: customerId,
+						orderNumber
+					},
+					include: [
+						{
+							model: OrderDetail,
+							attributes: [
+								'productInfo',
+								'quantity',
+								'subtotal',
+								'comment',
+								'status',
+								'shipment'
+							]
+						},
+						{
+							model: User,
+							as: 'customer',
+							attributes: ['username', 'avatarUrl']
+						}
+					]
+				})
+				res.send(todoOrder)
+				Logger.info('sold order get')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send({
+					status: Status.FAIL,
+					message: '获取失败'
+				})
+				Logger.info('sold order fail')
+			}
+		}
+	)
 	route.get(
 		'/purchase/all',
 		isAuthenticated,
@@ -177,12 +245,7 @@ export default (app: Router) => {
 						const createdAt = moment(order.dataValues.creadtedAt).format(
 							'MMMM Do YYYY'
 						)
-						if (
-							order.dataValues.status === 'Paid' ||
-							order.dataValues.status === 'Complete' ||
-							order.dataValues.status === 'Shipped'
-						)
-							grouped[key].push({ ...order.dataValues, createdAt })
+						grouped[key].push({ ...order.dataValues, createdAt })
 
 						return grouped
 					}, {})
@@ -254,7 +317,6 @@ export default (app: Router) => {
 							model: OrderDetail,
 							attributes: ['productInfo', 'quantity', 'subtotal']
 						},
-						Address,
 						{ model: User, as: 'dealer', attributes: ['username', 'avatarUrl'] }
 					]
 				})
@@ -288,7 +350,6 @@ export default (app: Router) => {
 							model: OrderDetail,
 							attributes: ['productInfo', 'quantity', 'subtotal']
 						},
-						Address,
 						{ model: User, as: 'dealer', attributes: ['username', 'avatarUrl'] }
 					]
 				})
@@ -304,6 +365,35 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.get('/sold', isAuthenticated, async (req: Request, res: Response) => {
+		const { orderNumber } = req.query
+		const { myOpenId } = req.params
+
+		try {
+			const todoOrder = await Order.findAll({
+				where: {
+					dealerId: myOpenId,
+					orderNumber
+				},
+				include: [
+					{
+						model: OrderDetail,
+						attributes: ['productInfo', 'quantity', 'subtotal']
+					},
+					{ model: User, as: 'customer', attributes: ['username', 'avatarUrl'] }
+				]
+			})
+			res.send(todoOrder)
+			Logger.info('sold order get')
+		} catch (err) {
+			console.log(err)
+			res.status(500).send({
+				status: Status.FAIL,
+				message: '获取失败'
+			})
+			Logger.info('sold order fail')
+		}
+	})
 	route.post('/new', isAuthenticated, async (req: Request, res: Response) => {
 		const groupId = uuidv4()
 		const { items, addressId, comment } = req.body
@@ -327,6 +417,9 @@ export default (app: Router) => {
 			}
 			const orderNumber = makeOrderNumber()
 			const orderData: any = []
+			const todoAddress = await Address.findByPk(addressId, {
+				attributes: { exclude: ['id', 'status'] }
+			})
 			todoStoreProducts.forEach(({ dataValues }) => {
 				const index = orderData.findIndex(
 					(element: any) => element.dealerId! === dataValues.openId
@@ -338,7 +431,8 @@ export default (app: Router) => {
 					productInfo: {
 						price: dataValues.defaultPrice,
 						coverImageUrl: dataValues.coverImageUrl,
-						name: dataValues.name
+						name: dataValues.name,
+						storeProductId: dataValues.id
 					},
 					productId: dataValues.productId,
 					quantity,
@@ -355,7 +449,7 @@ export default (app: Router) => {
 						},
 						userId: myOpenId,
 						dealerId: dataValues.openId,
-						addressId,
+						address: { ...todoAddress?.dataValues },
 						comment,
 						status: 'Unpaid',
 						orderDetails: [orderDetail]
@@ -424,20 +518,101 @@ export default (app: Router) => {
 		'/mark-paid',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { order } = req.body
+			const { orders } = req.body
+			const { myOpenId } = req.params
 			const t = await db.transaction()
 			try {
-				const todoOrderDetails = await OrderDetail.findAll({
-					where: { orderId: order.id }
-				})
-
-				const todoOrder = await Order.update(
-					{ status: 'paid' },
-					{ where: { id: order.id }, transaction: t }
-				)
-				const orderData = []
-
-				const todoOrders = await Order.create()
+				for (const order of orders) {
+					const todoOrder = await Order.update(
+						{ status: 'Paid' },
+						{ where: { id: order.id }, transaction: t, returning: true }
+					)
+					const todoOrderDetails = await OrderDetail.findAll({
+						where: { orderId: order.id }
+					})
+					//find all products in store
+					const todoStoreProducts = await StoreProduct.findAll({
+						where: {
+							productId: {
+								[Op.or]: todoOrderDetails.map(orderDetail => {
+									return orderDetail.dataValues.productId
+								})
+							},
+							openId: myOpenId
+						}
+					})
+					//find all related products from father
+					const todoDealerProducts = await StoreProduct.findAll({
+						where: {
+							[Op.or]: todoStoreProducts.map(product => ({
+								openId: product.dataValues.openIdFather,
+								productId: product.dataValues.productId
+							}))
+						},
+						include: {
+							model: User,
+							as: 'specialPrice',
+							through: {
+								where: {
+									openIdChild: myOpenId
+								}
+							},
+							attributes: ['username', 'avatarUrl']
+						}
+					})
+					const orderNumber = makeOrderNumber()
+					const orderData: any = []
+					todoDealerProducts.forEach(({ dataValues }) => {
+						const index = orderData.findIndex(
+							(element: any) => element.dealerId! === dataValues.openId
+						)
+						const quantity = (todoOrderDetails as any).find(
+							({ dataValues: orderValue }: any) =>
+								orderValue.productId === dataValues.productId
+						).quantity
+						const actualPrice =
+							dataValues.specialPrice.length > 0
+								? dataValues.specialPrice[0]?.price.price
+								: dataValues.defaultPrice
+						const orderDetail = {
+							productInfo: {
+								price: actualPrice,
+								coverImageUrl: dataValues.coverImageUrl,
+								name: dataValues.name
+							},
+							productId: dataValues.productId,
+							quantity,
+							comment: order.comment,
+							groupId: order.groupId,
+							subtotal: quantity * actualPrice
+						}
+						if (dataValues.openId !== dataValues.openIdFather)
+							if (index === -1) {
+								orderData.push({
+									orderNumber,
+									groupId: order.groupId,
+									payment: {
+										totalAmount: quantity * actualPrice
+									},
+									userId: myOpenId,
+									dealerId: dataValues.openId,
+									address: { ...todoOrder[1][0].dataValues.address },
+									comment: order.comment,
+									status: 'Unpaid',
+									orderDetails: [orderDetail]
+								})
+							} else {
+								orderData[index].payment.totalAmount +=
+									quantity * dataValues.actualPrice
+								orderData[index].orderDetails?.push(orderDetail)
+							}
+					})
+					console.log(orderData)
+					orderData.length > 0 &&
+						(await Order.bulkCreate(orderData, {
+							transaction: t
+						}))
+				}
 
 				await t.commit()
 				res.send({
@@ -446,6 +621,7 @@ export default (app: Router) => {
 				Logger.info('Success sign to paid and transfer to father')
 			} catch (error) {
 				await t.rollback()
+				console.log(error)
 				res.send({
 					status: Status.FAIL,
 					message: error

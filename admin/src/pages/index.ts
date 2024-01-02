@@ -7,6 +7,9 @@ import Root from "./root";
 import PublicLayout from "./public/layout";
 import ProtectedLayout from "./protected/layout";
 import OrderLayout from "./protected/Orders/layout";
+import Orders from "./protected/Orders";
+import OrderHistory from "./protected/Orders/HistoryOrders";
+
 export default Root;
 
 export {
@@ -19,4 +22,6 @@ export {
   PublicLayout,
   ProtectedLayout,
   OrderLayout,
+  Orders,
+  OrderHistory,
 };

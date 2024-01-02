@@ -35,10 +35,9 @@ Page({
         Dialog.confirm({
           title: '身份信息',
           message: '订单含海外直邮，需要授权以获取身份证照片',
+        }).catch(() => {
+          wx.navigateBack()
         })
-          .then(() => {
-
-          })
       } if (!hasId) {
         Dialog.confirm({
           title: '身份信息',
@@ -46,7 +45,9 @@ Page({
         })
           .then(() =>
             wx.navigateTo({ url: './imageUploader/imageUploader' })
-          )
+          ).catch(() => {
+            wx.navigateBack()
+          })
       }
     }
   },
@@ -60,10 +61,16 @@ Page({
       url: './newAddress/uploadFile/uploadFile'
     })
   },
-  toManageAddress: function () {
-    wx.navigateTo({
-      url: './address/address'
-    })
+  toManageAddress: function (e: any) {
+    if (e.currentTarget.dataset.address) {
+      wx.navigateTo({
+        url: `./address/address?selectedId=${e.currentTarget.dataset.address.id}`
+      })
+    } else {
+      wx.navigateTo({
+        url: `./address/address`
+      })
+    }
   },
   toNewAddress: function () {
     wx.navigateTo({
