@@ -3,7 +3,9 @@
 <view class="dealerContainer">
   <view class="dealer-list-head">
     <text class="title">关注商家</text>
-    <van-button plain type="primary" class="btn" hairline type="info" size="small" bind:click='onPickDealer' data-dealer="all">查看全部</van-button>
+    <block wx:if="{{dealer.length>0}}">
+      <van-button plain type="primary" class="btn" hairline type="info" size="small" bind:click='onPickDealer' data-dealer="all">查看全部</van-button>
+    </block>
   </view>
   <view class="dealer-list">
     <scroll-view class="scrollH" scroll-x="true">

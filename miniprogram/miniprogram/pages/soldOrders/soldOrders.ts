@@ -109,7 +109,7 @@ Page({
     const input = e.detail.value
     const currentOrder = e.currentTarget.dataset.order
     this.setData({
-      unpaidOrders: this.data.unpaidOrders.map(order => {
+      unpaidOrders: this.data.unpaidOrders.map((order: any) => {
         if (order.id === currentOrder.id) {
           order.newComment = input
         }

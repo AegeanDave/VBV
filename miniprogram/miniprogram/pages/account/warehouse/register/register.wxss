@@ -1,3 +1,4 @@
+/* pages/account/warehouse/register/register.wxss */
 .instruction {
   margin: 20px 16px;
   padding: 16px;
@@ -118,25 +119,6 @@
   flex-direction: column;
 }
 
-.card {
-  box-shadow: 0 0 5px 2px rgba(139, 139, 139, 0.1);
-  border-radius: 10px;
-  background-color: #ffffff;
-  margin: 8px 16px;
-}
-
-.card.products {
-  flex-grow: 1;
-}
-
-.card text,
-.userInfoNickname {
-  font-size: 14px;
-}
-
-.padding {
-  padding: 0 20px;
-}
 
 .cardHeader {
   padding: 10px 0 8px 0;

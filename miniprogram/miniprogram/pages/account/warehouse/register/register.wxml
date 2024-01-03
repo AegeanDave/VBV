@@ -1,0 +1,31 @@
+<!--pages/account/warehouse/register/register.wxml-->
+<view>
+  <view class="instruction">
+    <image src="/image/warehouse.svg" mode="aspectFit"></image>
+    <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
+  </view>
+  <view class="card register">
+    <form bindsubmit="submitRegistration">
+      <text class="title">请输入您的手机号码</text>
+      <view class="phoneInputGroup">
+        <view class="regionCode">
+          <picker bindchange="bindPickerChange" name="countryIndex" value="{{currentCode}}" range="{{countryCodes}}" range-key="{{'name'}}">
+            <view class="picker">
+              +{{countryCodes[currentCode].value}}
+            </view>
+          </picker>
+        </view>
+        <view class="phone">
+          <input name="phone" bindinput="handleValidation" type='number' maxlength='11'></input>
+        </view>
+      </view>
+      <view class="btnArea">
+        <button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
+      </view>
+      <mp-dialog show="{{showPopup}}" mask-closable="{{false}}" title="确认绑定" buttons="{{[{text: '取消'}, {text: '确认无误'}]}}" bindbuttontap="onDialogTap">
+        <view class="text">确认后{{phone}}将用于仓库管理平台登录
+        </view>
+      </mp-dialog>
+    </form>
+  </view>
+</view>

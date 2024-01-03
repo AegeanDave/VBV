@@ -1,5 +1,5 @@
 import { getAccount } from '../../services/api/api'
-import { group, Status } from "../../constant/index"
+import { group } from "../../constant/index"
 import { IAppOption } from "../../models/index"
 
 const app = getApp<IAppOption>()
@@ -10,7 +10,7 @@ Page({
     waitForPayment: false,
     customerNum: 0,
     dealerNum: 0,
-    hasWarehouse: null,
+    hasWarehouse: false,
     username: app.globalData.user?.username,
     avatarUrl: app.globalData.user?.avatarUrl
   },
@@ -21,7 +21,8 @@ Page({
       customerNum: todoAccount.customer.length,
       dealerNum: todoAccount.dealer.length,
       username: todoAccount.username,
-      avatarUrl: todoAccount.avatarUrl
+      avatarUrl: todoAccount.avatarUrl,
+      hasWarehouse: !!todoAccount.warehouse
     })
   },
   onShow: async function () {
@@ -32,6 +33,7 @@ Page({
         username: app.globalData.user?.username,
         avatarUrl: app.globalData.user?.avatarUrl
       })
+      app.globalData.reload = false
     }
   },
   toCustomer: function () {
@@ -100,8 +102,13 @@ Page({
         url: '../register/register'
       })
     }
+    if (this.data.hasWarehouse && this.data.account.warehouse.status === 'Active') {
+      wx.navigateTo({
+        url: './warehouse/warehouse'
+      })
+    }
     wx.navigateTo({
-      url: './warehouse/warehouse'
+      url: './warehouse/register/register'
     })
   },
   toConnection: function () {

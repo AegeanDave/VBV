@@ -13,7 +13,8 @@ import {
 	StoreProduct,
 	OrderDetail,
 	Order,
-	User
+	User,
+	Warehouse
 } from '../../../models/sequelize'
 import db from '../../../config/database'
 import { Op } from 'sequelize'
@@ -98,7 +99,8 @@ export default (app: Router) => {
 									status: DBStatus.ACTIVE
 								}
 							}
-						}
+						},
+						Warehouse
 					]
 				})
 				res.send(todoUser)

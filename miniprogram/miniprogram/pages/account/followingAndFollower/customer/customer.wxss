@@ -302,11 +302,11 @@ text.paid {
 }
 
 .productCard.saleProduct.horizontal image {
-  height: 32vw;
+  height: 35vw;
 }
 
 .productCard.saleProduct image {
-  width: 32vw;
+  width: 35vw;
   height: 100%;
   object-fit: fill;
 }

@@ -25,7 +25,8 @@
     "pages/index/productQRcode/productQRcode",
     "pages/account/followingAndFollower/dealer/dealer",
     "pages/register/register",
-    "pages/checkOut/imageUploader/imageUploader"
+    "pages/checkOut/imageUploader/imageUploader",
+    "pages/account/warehouse/register/register"
   ],
   "tabBar": {
     "color": "#CDE1E0",
