@@ -7,7 +7,7 @@ const app = getApp<IAppOption>()
 Page({
   data: {
     groupName: null,
-    groupList: [],
+    groupList: null,
     checkedList: [],
     lookingUnpaid: false
   },
@@ -24,7 +24,7 @@ Page({
     }
     const todoAlias = await getAlias(options.group)
     this.setData({
-      groupList: todoAlias,
+      groupList: todoAlias || [],
       groupName: options.group,
     })
   },
@@ -32,8 +32,9 @@ Page({
     if (app.globalData.reload) {
       const todoAlias = await getAlias(this.data.groupName)
       this.setData({
-        groupList: todoAlias
+        groupList: todoAlias || []
       })
+      app.globalData.reload = false
     }
   },
   bindCheck: function (e: any) {

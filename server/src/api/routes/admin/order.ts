@@ -25,7 +25,7 @@ export default (app: Router) => {
 		try {
 			const todoOrders = await Order.findAll({
 				where: { dealerId: myOpenId, status: { [Op.ne]: 'Unpaid' } },
-				include: [{ model: OrderDetail }, Address, User]
+				include: [{ model: OrderDetail }, User]
 			})
 			Logger.info('Orders get')
 			return res.send(todoOrders)

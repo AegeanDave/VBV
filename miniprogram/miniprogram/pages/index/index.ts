@@ -44,6 +44,14 @@ Page({
         index: Tabs.CART
       })
     }
+    if (app.globalData.reload) {
+      const { products, alias }: any = await getProductList()
+      this.setData({
+        productList: products || [],
+        dealers: alias,
+      })
+      app.globalData.reload = false
+    }
   },
   onSearch(e: any) {
     if (e.detail.value) {

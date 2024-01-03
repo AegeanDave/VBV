@@ -96,7 +96,7 @@ Page({
             order.status = Status.PAID
             that.setData({
               unpaidOrders: that.data.unpaidOrders.filter(item => item.id !== order.id),
-              paidOrders: that.data.paidOrders.unshift(order)
+              paidOrders: [...that.data.paidOrders, order]
             })
           }
         } else if (res.cancel) {

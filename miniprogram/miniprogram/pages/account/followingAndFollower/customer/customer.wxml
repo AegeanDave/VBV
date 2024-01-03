@@ -43,7 +43,7 @@
             </view>
             <view class="productList" bindtap="bindToDetail" data-order="{{order}}">
               <block wx:for="{{order.orderDetails}}" wx:key="id" wx:for-item="product">
-                <view class="productCard">
+                <view class="productCard order">
                   <image src="{{product.productInfo.coverImageUrl}}"></image>
                   <view class="productInfo">
                     <text class="price">￥{{product.productInfo.price}}</text>

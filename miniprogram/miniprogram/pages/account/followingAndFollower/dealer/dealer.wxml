@@ -82,7 +82,17 @@
             <view class="productCard saleProduct horizontal" bindtap="toProductDetail" data-product="{{product}}">
               <image src="{{product.coverImageUrl}}"></image>
               <text class="name store">{{product.name}}</text>
-              <text class="price">¥{{product.specialPrice[0].price.price||product.defaultPrice}}</text>
+              <block wx:if="{{product.specialPrice.length>0}}">
+                <view class="price-group">
+                  <text class="price old">¥{{product.defaultPrice}}
+                  </text>
+                  <text class="price new">¥{{product.specialPrice[0].price.price}}
+                  </text>
+                </view>
+              </block>
+              <block wx:else>
+                <text class="price">¥{{product.defaultPrice}}</text>
+              </block>
             </view>
           </block>
         </view>

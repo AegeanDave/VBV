@@ -6,7 +6,7 @@
   <view wx:if="{{myProductList.length>0}}" class="cardContent">
     <view class="productsBox">
       <block wx:for="{{myProductList}}" wx:key="id" wx:for-item="product">
-        <view class="productCard" bindtap="showModal" data-product="{{product}}">
+        <view class="productCard" bindtap="onShowStoreActionSheet" data-product="{{product}}">
           <block wx:if="{{product.status==='Active'}}">
             <text>售卖中</text>
           </block>
@@ -47,15 +47,23 @@
   <view wx:if="{{allFathersProducts.length>0}}" class="cardContent">
     <view class="productsBox">
       <block wx:for="{{allFathersProducts}}" wx:key="id" wx:for-item="product">
-        <view class="productCard" bindtap="showModal" data-newproduct="{{product}}">
+        <view class="productCard" bindtap="onShowDealerActionSheet" data-newproduct="{{product}}">
           <image class='pic store' src='{{product.coverImageUrl}}'>
           </image>
           <view class="dealerBox">
-            <image src="{{product.user.avatar}}"></image>
-            <text>{{product.user.name}}</text>
+            <image src="{{product.user.avatarUrl}}"></image>
+            <text>{{product.user.username}}</text>
           </view>
           <text class="name">{{product.name}}</text>
-          <text class="price">￥{{product.defaultPrice}}</text>
+          <block wx:if="{{product.specialPrice.length>0}}">
+            <view>
+              <text class="price old">￥{{product.defaultPrice}}</text>
+              <text class="price new">￥{{product.specialPrice[0].price.price}}</text>
+            </view>
+          </block>
+          <block wx:else>
+            <text class="price">￥{{product.defaultPrice}}</text>
+          </block>
         </view>
       </block>
     </view>
@@ -66,7 +74,9 @@
       暂无推荐产品</text>
   </view>
 </view>
-<mp-actionSheet bindactiontap="onActionClick" show="{{showActionsheet}}" actions="{{groups}}" cancel-text="返回">
+<mp-actionSheet bindactiontap="onActionClick" show="{{storeActionSheetShow}}" actions="{{storeActions}}" cancel-text="返回">
+</mp-actionSheet>
+<mp-actionSheet bindactiontap="onActionClick" show="{{dealerActionSheetShow}}" actions="{{recommendationActions}}" cancel-text="返回">
 </mp-actionSheet>
 <view class="mask" hidden="{{showCanvasMask}}">
   <view class="canvasContainer">

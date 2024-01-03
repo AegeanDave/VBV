@@ -4,12 +4,12 @@ const client = require('twilio')(accountSid, authToken)
 
 export const handleVerify = (to: string, code: string) =>
 	client.verify.v2
-		.services('VAa0d3a7a76087133668bd18d68c53a33c')
+		.services(process.env.TWILIO_PRODUCT_TOKEN!)
 		.verificationChecks.create({ to: '+' + to, code })
 
 export const sendRegistrationSMS = (to: string) =>
 	client.verify.v2
-		.services('VAa0d3a7a76087133668bd18d68c53a33c')
+		.services(process.env.TWILIO_PRODUCT_TOKEN!)
 		.verifications.create({ to: '+' + to, channel: 'sms' })
 
 export const sendNewOrderSMS = (to: string) =>
