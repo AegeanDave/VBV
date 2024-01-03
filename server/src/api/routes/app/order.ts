@@ -1,9 +1,7 @@
 import { Router, Request, Response } from 'express'
-import { OrderProduct, SubOrder } from '../../../models/types/index'
 import { Status, countryCodes, OrderStatus } from '../../../constants'
-import { query, Logger } from '../../../services'
-import { queryName } from '../../../services/queryName'
-import { isAuthenticated, myOpenId } from '../../middleware/authorization'
+import { Logger } from '../../../services'
+import { isAuthenticated } from '../../middleware/authorization'
 import wechatPay from '../../../provider/weChatPay'
 import { v4 as uuidv4 } from 'uuid'
 import { sendNewOrderSMS } from '../../../provider/twilio'
@@ -26,30 +24,6 @@ const route = Router()
 
 moment.locale('zh-cn')
 moment.tz.setDefault('Asia/Shanghai')
-
-const handleSendNewOrderMessage = async (
-	openId: string,
-	originalOrderId: string
-) => {
-	const getEmailInfo = await query(queryName.getMailerUserInfo, [
-		openId,
-		originalOrderId
-	])
-	if (getEmailInfo.data) {
-		if (getEmailInfo.data[0].emailService) {
-			newOrderMail(
-				getEmailInfo.data[0].email,
-				moment().format('lll'),
-				getEmailInfo.data[0].name
-			)
-		} else if (getEmailInfo.data[0].smsService) {
-			const countryCode = getEmailInfo.data[0].countryCode
-			sendNewOrderSMS(
-				countryCodes[countryCode].value + getEmailInfo.data[0].phone
-			)
-		}
-	}
-}
 
 export default (app: Router) => {
 	app.use('/orders', route)
@@ -650,30 +624,12 @@ export default (app: Router) => {
 			}
 		}
 	)
-	route.post(
-		'/hideOrder',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const { order } = req.body
-			try {
-				await query(queryName.hideOrder, [order.orderId])
-				res.send({
-					status: 'SUCCESS'
-				})
-				Logger.info('hide order success')
-			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
-				})
-				Logger.info('hide order fail')
-			}
-		}
-	)
+
 	route.post(
 		'/preOrder',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
 			const preOrderResult = await wechatPay(req, myOpenId)
 			res.send(preOrderResult)
 			Logger.info('preOrder success')

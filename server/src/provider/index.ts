@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { query } from '../services'
-import { queryName } from '../services/queryName'
 
 const login = (code: string) =>
 	axios.get('https://api.weixin.qq.com/sns/jscode2session', {
@@ -38,16 +36,16 @@ const getToken = () =>
 const sendSubscribeMessage = async (
 	orderNumber: string,
 	openId: string,
-	createdAt: string,
-	openIDFather: string
+	openIdDealer: string,
+	createdAt: string
 ) => {
 	const tokenResult = await getToken()
-	const getBuyerName = await query(queryName.getUserName, [openId])
+	// const getBuyerName = await query(queryName.getUserName, [openId])
 	return axios.post(
 		'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
 		{
 			access_token: tokenResult.data.access_token,
-			touser: openIDFather,
+			touser: openIdDealer,
 			page: 'pages/account/orders/orders',
 			miniprogram_state: process.env.miniprogram_state,
 			template_id: 'GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE',
@@ -57,7 +55,7 @@ const sendSubscribeMessage = async (
 					value: orderNumber
 				},
 				thing18: {
-					value: getBuyerName.data[0].name
+					value: ''
 				},
 				time19: {
 					value: createdAt

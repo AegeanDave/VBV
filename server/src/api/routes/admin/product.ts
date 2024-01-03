@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express'
 const route = Router()
-import { query, Logger } from '../../../services'
-import { queryName } from '../../../services/queryName'
+import { Logger } from '../../../services'
 import { adminAuthenticated } from '../../../api/middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
 import { Status } from '../../../constants'
@@ -11,20 +10,6 @@ import { upload } from '../../../provider/fileAction'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
 
-export const disableWholeProductLine = async (
-	openIdFather: string,
-	productId: string
-) => {
-	const queryResult = await query(queryName.disableAllChildrenInStoreProducts, [
-		productId,
-		openIdFather
-	])
-	if (queryResult.data.length !== 0) {
-		for (const openIDItem of queryResult.data) {
-			await disableWholeProductLine(openIDItem.openIDFather, productId)
-		}
-	}
-}
 export default (app: Router) => {
 	app.use('/admin/product', route)
 	route.get(

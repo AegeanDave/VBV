@@ -1,10 +1,9 @@
 import { Router, Request, Response } from 'express'
 import { myCache } from '../../../provider/cache'
 const route = Router()
-import { query, Logger } from '../../../services'
+import { Logger } from '../../../services'
 import { login, makeCode, getQRcode } from '../../../provider'
-import { isAuthenticated, myOpenId } from '../../middleware/authorization'
-import { queryName } from '../../../services/queryName'
+import { isAuthenticated } from '../../middleware/authorization'
 import { upload } from '../../../provider/fileAction'
 import { Status, Image, DBStatus, addressField } from '../../../constants'
 import {
@@ -109,20 +108,6 @@ export default (app: Router) => {
 				res.status(500).send()
 				Logger.info('Account fetch error')
 			}
-		}
-	)
-	route.post(
-		'/updateUserInfo',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const { nickName, avatarUrl } = req.body
-			const result = await query(queryName.updateUserInfo, [
-				nickName,
-				avatarUrl,
-				myOpenId
-			])
-			res.send(result)
-			Logger.info('Upload Success')
 		}
 	)
 
