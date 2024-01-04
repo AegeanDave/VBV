@@ -20,6 +20,10 @@ const Product = db.define('products', {
 		type: DataTypes.STRING,
 		allowNull: false
 	},
+	currency: {
+		type: DataTypes.ENUM('USD', 'CNY', 'CAD'),
+		defaultValue: 'CNY'
+	},
 	description: {
 		type: DataTypes.STRING,
 		allowNull: true
