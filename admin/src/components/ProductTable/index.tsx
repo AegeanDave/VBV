@@ -19,44 +19,42 @@ interface Props {
 
 export default function ProductTable({ products }: Props) {
   return (
-    <Paper className="tableContainer">
-      <TableContainer className="tableContainer">
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.type}
-                  variant="head"
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  classes={{
-                    head: "head",
-                  }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
+    <TableContainer className="tableContainer" component={Paper}>
+      <Table stickyHeader>
+        <TableHead>
+          <TableRow>
+            {columns.map((column) => (
               <TableCell
-                key="action"
+                key={column.type}
                 variant="head"
-                align="center"
-                style={{ minWidth: 170 }}
+                align={column.align}
+                style={{ minWidth: column.minWidth }}
                 classes={{
                   head: "head",
                 }}
               >
-                操作
+                {column.label}
               </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.map((row: Product, index: number) => {
-              return <ProductRow product={row} index={index} key={row.id} />;
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Paper>
+            ))}
+            <TableCell
+              key="action"
+              variant="head"
+              align="center"
+              style={{ minWidth: 170 }}
+              classes={{
+                head: "head",
+              }}
+            >
+              操作
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {products.map((row: Product, index: number) => {
+            return <ProductRow product={row} index={index} key={row.id} />;
+          })}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
