@@ -54,7 +54,7 @@ Page({
     }
   },
   onActionSheetClose() {
-    this.setData({ showShare: false });
+    this.setData({ showActionsheet: false });
   },
   buyNew: async function () {
     wx.showLoading({

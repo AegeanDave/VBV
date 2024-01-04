@@ -6,7 +6,7 @@ let url = ''
 
 switch (envVersion) {
   case 'develop':
-    url = "http://localhost:8080/api";
+    url = "http://192.168.2.24:8080/api";
     break;
   case 'trial':
     url = "https://api.vbangv.com/api";

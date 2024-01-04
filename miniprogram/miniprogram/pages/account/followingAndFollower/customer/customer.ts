@@ -96,7 +96,6 @@ Page({
   toOrderShare: function (e: any) {
     const order = e.currentTarget.dataset.order
     order.name = this.data.customer.name
-    app.globalData.queryParameter.push(e.currentTarget.dataset.order)
     wx.navigateTo({
       url: '../../orders/shareOrder/shareOrder',
     })
@@ -136,11 +135,12 @@ Page({
       }
     })
   },
-  onSpecialPriceChange(e) {
+  onSpecialPriceChange(e: any) {
     this.setData({
       specialPrice: e.detail.value
     })
-  }, async onDialogButtonTap(e) {
+  },
+  async onDialogButtonTap(e: any) {
     if (e.detail.index === 1) {
       if (isNaN(this.data.specialPrice)) {
         wx.showToast({
@@ -150,7 +150,27 @@ Page({
         return
       }
       else {
-        const todoPrice = await updatePriceForChild(this.data.specialPrice, this.data.customer.openId, this.data.selectedProduct)
+        try {
+          await updatePriceForChild(this.data.specialPrice, this.data.customer.openId, this.data.selectedProduct)
+          this.setData({
+            products: this.data.products.map(item => {
+              if (item.id === this.data.selectedProduct.id) {
+                return { ...item, specialPrice: [{ ...item.specialPrice[0], price: { price: this.data.specialPrice } }] }
+              }
+              return item
+            })
+          })
+          wx.showToast({
+            title: '更新成功',
+            icon: 'success'
+          })
+        } catch (err) {
+          console.log(err)
+          wx.showToast({
+            title: '更新失败',
+            icon: 'error'
+          })
+        }
       }
     }
     this.setData({

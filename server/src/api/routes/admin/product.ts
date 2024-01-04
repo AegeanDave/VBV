@@ -245,6 +245,7 @@ export default (app: Router) => {
 					message: '更新成功'
 				})
 			} catch (error) {
+				console.log(error)
 				await t.rollback()
 				return res.status(500).send({
 					status: Status.FAIL,

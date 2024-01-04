@@ -47,15 +47,38 @@ function ProductProvider({ children }: { children: ReactNode }) {
     try {
       await updateProductStatus(selectedProductId, action);
       enqueueSnackbar("更新成功");
+      if (action === "Delete") {
+        setDeletePopupOpen(false);
+      }
+      if (action === "Unpublish") {
+        setEditPopupOpen(false);
+        setProducts((prev) =>
+          prev.map((item) => {
+            if (item.id === selectedProductId)
+              return {
+                ...item,
+                storeRecord: [{ ...item.storeRecord[0], status: "Inactive" }],
+              };
+            return item;
+          })
+        );
+      }
+      if (action === "Publish") {
+        setEditPopupOpen(false);
+        setProducts((prev) =>
+          prev.map((item) => {
+            if (item.id === selectedProductId)
+              return {
+                ...item,
+                storeRecord: [{ ...item.storeRecord[0], status: "Active" }],
+              };
+            return item;
+          })
+        );
+      }
     } catch (err) {
       console.log(err);
       enqueueSnackbar("更新失败");
-    }
-    if (action === "Delete") {
-      setDeletePopupOpen(false);
-    }
-    if (action === "Unpublish" || action === "Publish") {
-      setEditPopupOpen(false);
     }
   };
 
