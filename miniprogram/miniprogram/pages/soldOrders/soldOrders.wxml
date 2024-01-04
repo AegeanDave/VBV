@@ -1,4 +1,4 @@
-<van-tabs bind:change="onChange" sticky>
+<van-tabs bind:change="onTabChange" sticky>
   <van-tab title="未付款">
     <block wx:if="{{unpaidOrders.length===0}}">
       <view class="empty">
@@ -53,12 +53,8 @@
               <view class="divLine"></view>
               <view class="footerInner">
                 <text class="label">备注: </text>
-                <block wx:if="{{isCommentEditing}}">
-                  <textarea wx:if="{{editingOrderId===order.orderId}}" class="value editing" auto-height='true' maxlength="100" auto-focus="true" disable-default-padding="true" bindconfirm="handleChangeComment" value="{{order.comment}}" data-order="{{order}}"></textarea>
-                </block>
-                <view class="item comment" wx:else bindtap="handleOnEdit" data-orderId="{{order.orderId}}">
+                <view class="item comment">
                   <text class="value">{{order.comment||'空'}}</text>
-                  <image src="/image/edit.png" class="editIcon"></image>
                 </view>
               </view>
               <view class="divLine"></view>
@@ -77,7 +73,7 @@
                     <text wx:elif="{{order.status==='Canceled'}}" class="paid value">被取消</text>
                     <text wx:else class="paid value">已付款</text>
                   </view>
-                  <button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
+                  <button wx:if="{{order.status==='Unpaid'}}" bindtap="onOpenConfirmation" data-order="{{order}}">标记付款</button>
                   <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
                 </view>
               </view>
@@ -256,5 +252,14 @@
     </block>
   </van-tab>
 </van-tabs>
-<mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}" actions="{{currentTab === 0 ? unPaidGroups : currentTab === 1 ? paidGroups : shippedGroups}}">
+<mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}" actions="{{activeTab === 0 ? unPaidGroups : activeTab === 1 ? paidGroups : shippedGroups}}">
 </mp-actionSheet>
+<van-action-sheet show="{{ showPaidConfirmation }}" title="确认提交" bind:close="onMarkPaidClose" description="确认收款后将向您的供货商创建新订单">
+  <view class="confirmation custom-actionsheet">
+    <van-field value="{{ message }}" label="备注" type="textarea" placeholder="此备注只向您的供货商展示" autosize="{{newCommentSize}}" border="{{ false }}" maxlength="{{125}}" show-word-limit bind:change="onNewCommentChange"/>
+    <view>
+      <van-button round block type="info" custom-class="btn" bind:tap="markPaid">确认</van-button>
+      <van-button round block plain custom-class="btn" bind:tap="onMarkPaidClose">取消</van-button>
+    </view>
+  </view>
+</van-action-sheet>

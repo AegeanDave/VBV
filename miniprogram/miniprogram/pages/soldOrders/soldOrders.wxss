@@ -248,6 +248,14 @@ text.paid {
   line-height: 24px;
 }
 
+.custom-actionsheet {
+  padding: 32rpx;
+}
+
+.custom-actionsheet .btn {
+  margin-bottom: 10rpx;
+}
+
 @media (min-height: 720px) {
   .tab-box {
     height: 1340rpx;

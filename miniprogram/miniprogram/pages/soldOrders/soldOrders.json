@@ -2,7 +2,10 @@
   "usingComponents": {
     "mp-actionSheet": "weui-miniprogram/actionsheet/actionsheet",
     "van-tab": "@vant/weapp/tab/index",
-    "van-tabs": "@vant/weapp/tabs/index"
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-action-sheet": "@vant/weapp/action-sheet/index",
+    "van-button": "@vant/weapp/button/index",
+    "van-field": "@vant/weapp/field/index"
   },
   "navigationBarTitleText": "销售记录"
 }

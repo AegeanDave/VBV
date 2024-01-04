@@ -11,16 +11,19 @@ Page({
     unpaidOrders: null,
     paidOrders: null,
     completeOrders: null,
-    isCommentEditing: false,
+    showPaidConfirmation: false,
+    newComment: '',
+    newCommentSize: { minHeight: 100, maxHeight: 100 },
     showActionsheet: false,
+    currentOrder: null,
     unPaidGroups: [
       { text: '联系付款', value: 'CONTACT' },
     ],
     paidGroups: [
-      { text: '隐藏订单', value: 'CANCEL', type: 'warn' }
+      { text: '取消订单', value: 'CANCEL', type: 'warn' }
     ],
     shippedGroups: [
-      { text: '隐藏订单', value: 'CANCEL', type: 'warn' }
+      { text: '取消订单', value: 'CANCEL', type: 'warn' }
     ]
   },
   async onLoad() {
@@ -40,6 +43,11 @@ Page({
       })) || []
     })
   },
+  onTabChange(e: any) {
+    this.setData({
+      activeTab: e.detail.name
+    })
+  },
   bindToDetail(e: any) {
     wx.navigateTo({
       url: `./orderDetail/orderDetail?orderNumber=${e.currentTarget.dataset.order.orderNumber}&customerId=${e.currentTarget.dataset.order.userId}`,
@@ -51,9 +59,14 @@ Page({
       editingOrderId: e.currentTarget.dataset.orderid
     })
   },
+  onOpenConfirmation(e: any) {
+    this.setData({
+      currentOrder: e.currentTarget.dataset.order,
+      showPaidConfirmation: true
+    })
+  },
   showModal: function (e: any) {
-    let that = this;
-    that.setData({
+    this.setData({
       showActionsheet: true,
       currentOrder: e.currentTarget.dataset.order
     })
@@ -80,42 +93,25 @@ Page({
     this.closeActionsheet()
   },
 
-  markPaid: async function (e: any) {
-    let that = this
-    wx.showModal({
-      title: '提示',
-      content: '您确认标记付款并向上级经销商创建订单？',
-      async success(res) {
-        if (res.confirm) {
-          let order = e.currentTarget.dataset.order
-          const result: any = await markPaid([order])
-          if (result.status === Status.SUCCESS) {
-            wx.showToast({
-              title: '标记成功',
-            })
-            order.status = Status.PAID
-            that.setData({
-              unpaidOrders: that.data.unpaidOrders.filter(item => item.id !== order.id),
-              paidOrders: [...that.data.paidOrders, order]
-            })
-          }
-        } else if (res.cancel) {
-          console.log('用户点击取消')
-        }
-      }
-    })
+  markPaid: async function () {
+    let order = this.data.currentOrder!
+    const result: any = await markPaid([order])
+    if (result.status === Status.SUCCESS) {
+      wx.showToast({
+        title: '标记成功',
+      })
+      order.status = Status.PAID
+      this.setData({
+        unpaidOrders: this.data.unpaidOrders.filter(item => item.id !== order.id),
+        paidOrders: [...this.data.paidOrders, order],
+        showPaidConfirmation: false
+      })
+    }
   },
-  handleChangeComment(e: any) {
-    const input = e.detail.value
-    const currentOrder = e.currentTarget.dataset.order
+  onNewCommentChange(e: any) {
+    const input = e.detail
     this.setData({
-      unpaidOrders: this.data.unpaidOrders.map((order: any) => {
-        if (order.id === currentOrder.id) {
-          return { ...order, newComment: input }
-        }
-        return order
-      }),
-      isCommentEditing: false
+      newComment: input
     })
   },
   bindCancelOrder() {
@@ -170,6 +166,11 @@ Page({
           duration: 2000
         })
       }
+    })
+  },
+  onMarkPaidClose() {
+    this.setData({
+      showPaidConfirmation: false
     })
   }
 })

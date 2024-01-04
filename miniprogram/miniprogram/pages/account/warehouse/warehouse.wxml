@@ -35,44 +35,42 @@
     </view>
   </view>
   <view class="card products">
-    <van-sticky>
-      <van-tabs active="{{ activeTab }}">
-        <van-tab title="已发售">
-          <view wx:if="{{activeProducts.length>0}}" class="cardContent">
-            <view class="productsBox">
-              <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
-                <view class="productCard">
-                  <image class="pic" src='{{product.coverImageUrl}}'></image>
-                  <text class="name">{{product.name}}</text>
-                  <text class="price">￥{{product.price}}</text>
-                </view>
-              </block>
-            </view>
+    <van-tabs active="{{ activeTab }}" sticky>
+      <van-tab title="已发售">
+        <view wx:if="{{activeProducts.length>0}}" class="cardContent">
+          <view class="productsBox">
+            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+              <view class="productCard">
+                <image class="pic" src='{{product.coverImageUrl}}'></image>
+                <text class="name">{{product.name}}</text>
+                <text class="price">￥{{product.price}}</text>
+              </view>
+            </block>
           </view>
-          <block wx:else>
-            <van-empty description="暂无上架产品" image="/image/empty_products.png">
-              <text>登录vbangv.com上架您的专属产品吧</text>
-            </van-empty>
-          </block>
-        </van-tab>
-        <van-tab title="已删除">
-          <view wx:if="{{inactiveProducts.length>0}}" class="cardContent">
-            <view class="productsBox">
-              <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
-                <view class="productCard">
-                  <image class="pic" src='{{product.coverImageUrl}}'></image>
-                  <text class="name">{{product.name}}</text>
-                  <text class="price">￥{{product.price}}</text>
-                </view>
-              </block>
-            </view>
+        </view>
+        <block wx:else>
+          <van-empty description="暂无上架产品" image="/image/empty_products.png">
+            <text>登录vbangv.com上架您的专属产品吧</text>
+          </van-empty>
+        </block>
+      </van-tab>
+      <van-tab title="已删除">
+        <view wx:if="{{inactiveProducts.length>0}}" class="cardContent">
+          <view class="productsBox">
+            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+              <view class="productCard">
+                <image class="pic" src='{{product.coverImageUrl}}'></image>
+                <text class="name">{{product.name}}</text>
+                <text class="price">￥{{product.price}}</text>
+              </view>
+            </block>
           </view>
-          <block wx:else>
-            <van-empty description="垃圾桶空空如也" image="/image/empty_products.png">
-            </van-empty>
-          </block>
-        </van-tab>
-      </van-tabs>
-    </van-sticky>
+        </view>
+        <block wx:else>
+          <van-empty description="垃圾桶空空如也" image="/image/empty_products.png">
+          </van-empty>
+        </block>
+      </van-tab>
+    </van-tabs>
   </view>
 </view>
