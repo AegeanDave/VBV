@@ -1,109 +1,78 @@
-<block wx:if="{{warehouse.status==='Active'}}">
-  <view class="main">
-    <view class="card padding">
-      <view class="cardHeader">
-        <text>仓库信息</text>
-        <mp-icon icon="setting" size="{{16}}" class="setting" bindtap="openSheet"></mp-icon>
-      </view>
-      <view class="divider"></view>
-      <view class="cardContent">
-        <view class="warehouseInfo">
-          <view class="nameBox">
-            <text>用户名：</text>
-            <open-data class="userInfoNickname" type="userNickName" lang="zh_CN"></open-data>
-          </view>
-          <view class="nameBox">
-            <text class="label">电话号码：</text>
-            <text class="value">{{warehouse.loginPhoneNumber}}</text>
-          </view>
-          <view class="nameBox">
-            <text class="label">仓库状态：</text>
-            <text class="value">已激活</text>
-          </view>
-        </view>
-      </view>
+<view class="main">
+  <view class="card padding">
+    <view class="cardHeader">
+      <text>仓库信息</text>
     </view>
-    <view class="card padding">
-      <view class="cardHeader">
-        <text>订单发货</text>
-      </view>
-      <view class="divider"></view>
-      <view class="cardContent">
-        <view class="orderState">
-          <view>
-            <text class="label">您有待处理订单{{processingOrderNum}}个</text>
-          </view>
+    <view class="divider"></view>
+    <view class="cardContent">
+      <view class="warehouseInfo">
+        <view class="nameBox">
+          <text>用户名：</text>
+          <open-data class="userInfoNickname" type="userNickName" lang="zh_CN"></open-data>
         </view>
-      </view>
-    </view>
-    <view class="card products">
-      <view class="cardHeader products">
-        <view class="tab" bindtap="handleChangeTab" data-index="0">
-          <text class="{{tab==='1' && 'unselected'}}">已上架产品</text>
+        <view class="nameBox">
+          <text class="label">电话号码：</text>
+          <text class="value">{{warehouse.loginPhoneNumber}}</text>
         </view>
-        <view class="tab" bindtap="handleChangeTab" data-index="1">
-          <text class="{{tab==='0' && 'unselected'}}">未上架产品</text>
+        <view class="nameBox">
+          <text class="label">仓库状态：</text>
+          <text class="value">已激活</text>
         </view>
-      </view>
-      <view class="divider"></view>
-      <view wx:if="{{warehouse.products.length>0}}" class="cardContent">
-        <scroll-view scroll-y="true" class="scrollView">
-          <view class="productsBox">
-            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
-              <view class="productCard" wx:if="{{tab==='0' && product.status === 'Active'}}">
-                <image class="pic" src='{{product.coverImageUrl}}'></image>
-                <text class="name">{{product.name}}</text>
-                <text class="price">￥{{product.price}}</text>
-              </view>
-              <view class="productCard" wx:elif="{{tab==='1' && product.status ==='Idle'}}">
-                <image class="pic" src='{{product.coverImageUrl}}'></image>
-                <text class="name">{{product.name}}</text>
-                <text class="price">￥{{product.price}}</text>
-              </view>
-            </block>
-          </view>
-        </scroll-view>
-      </view>
-      <view wx:else class="cardContent empty">
-        <image src='../../image/empty_products.png' class="noProducts"></image>
-        <text>
-          暂无上架产品</text>
-        <text>登录vbangv.com上架您的专属产品吧</text>
       </view>
     </view>
   </view>
-</block>
-<block wx:else>
-  <view>
-    <view class="instruction">
-      <image src="../../../image/warehouse.svg" mode="aspectFit"></image>
-      <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
+  <view class="card padding">
+    <view class="cardHeader">
+      <text>订单发货</text>
     </view>
-    <view class="card register">
-      <form bindsubmit="submitRegistration">
-        <text class="title">请输入您的手机号码</text>
-        <view class="phoneInputGroup">
-          <view class="regionCode">
-            <picker bindchange="bindPickerChange" name="countryIndex" value="{{currentCode}}" range="{{countryCodes}}" range-key="{{'name'}}">
-              <view class="picker">
-                +{{countryCodes[currentCode].value}}
-              </view>
-            </picker>
-          </view>
-          <view class="phone">
-            <input name="phone" bindinput="handleValidation" type='number' maxlength='11'></input>
-          </view>
+    <view class="divider"></view>
+    <view class="cardContent">
+      <view class="orderState">
+        <view>
+          <text class="label">您有待处理订单{{processingOrderNum}}个</text>
         </view>
-        <view class="btnArea">
-          <button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
-        </view>
-        <mp-dialog show="{{showPopup}}" mask-closable="{{false}}" title="确认绑定" buttons="{{[{text: '取消'}, {text: '确认无误'}]}}" bindbuttontap="onDialogTap">
-          <view class="text">确认后{{phone}}将用于仓库管理平台登录
-          </view>
-        </mp-dialog>
-      </form>
+      </view>
     </view>
   </view>
-</block>
-<mp-actionSheet bindactiontap="btnClick" show="{{showActionsheet}}" actions="{{groups}}">
-</mp-actionSheet>
+  <view class="card products">
+    <van-sticky>
+      <van-tabs active="{{ activeTab }}">
+        <van-tab title="已发售">
+          <view wx:if="{{activeProducts.length>0}}" class="cardContent">
+            <view class="productsBox">
+              <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+                <view class="productCard">
+                  <image class="pic" src='{{product.coverImageUrl}}'></image>
+                  <text class="name">{{product.name}}</text>
+                  <text class="price">￥{{product.price}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+          <block wx:else>
+            <van-empty description="暂无上架产品" image="/image/empty_products.png">
+              <text>登录vbangv.com上架您的专属产品吧</text>
+            </van-empty>
+          </block>
+        </van-tab>
+        <van-tab title="已删除">
+          <view wx:if="{{inactiveProducts.length>0}}" class="cardContent">
+            <view class="productsBox">
+              <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+                <view class="productCard">
+                  <image class="pic" src='{{product.coverImageUrl}}'></image>
+                  <text class="name">{{product.name}}</text>
+                  <text class="price">￥{{product.price}}</text>
+                </view>
+              </block>
+            </view>
+          </view>
+          <block wx:else>
+            <van-empty description="垃圾桶空空如也" image="/image/empty_products.png">
+            </van-empty>
+          </block>
+        </van-tab>
+      </van-tabs>
+    </van-sticky>
+  </view>
+</view>

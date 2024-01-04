@@ -6,7 +6,7 @@ let url = ''
 
 switch (envVersion) {
   case 'develop':
-    url = "http://localhost:8080/api";
+    url = "http://192.168.2.24:8080/api";
     break;
   case 'trial':
     url = "https://api.vbangv.com/api";
@@ -49,13 +49,14 @@ const request = {
           Authorization: sessionKey
         },
         data: data,
-        success: function (res) {
+        success: async function (res) {
           if (res.statusCode === 403) {
-            wx.showToast({
+            await wx.showToast({
               title: '登录失效',
-              icon: 'none'
+              icon: 'none',
+              duration: 1000
             })
-            wx.reLaunch({url:'index'})
+            reLogin()
           }
           else {
             var result = res.data;
@@ -78,13 +79,14 @@ const request = {
           Authorization: sessionKey
         },
         data: data,
-        success: function (res) {
+        success: async function (res) {
           if (res.statusCode === 403) {
-            wx.showToast({
+            await wx.showToast({
               title: '登录失效',
-              icon: 'none'
+              icon: 'none',
+              duration: 2000
             })
-            wx.reLaunch({url:'index'})
+            reLogin()
           }
           else {
             var result = res.data;

@@ -8,10 +8,6 @@ const reLogin = () =>
       if (res.code) {
         const result: any = await getAuth(res.code)
         wx.setStorageSync('sessionKey', result.session_key)
-      } else {
-        wx.showToast({
-          title: '登录失败', icon: 'none'
-        })
       }
     },
   })

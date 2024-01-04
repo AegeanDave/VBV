@@ -168,7 +168,7 @@ export const columns: Column[] = [
   },
   {
     type: "price",
-    label: "价格",
+    label: "价格 (CNY)",
     minWidth: 120,
     align: "center",
   },

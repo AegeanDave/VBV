@@ -96,7 +96,7 @@ Page({
             order.status = Status.PAID
             that.setData({
               unpaidOrders: that.data.unpaidOrders.filter(item => item.id !== order.id),
-              paidOrders: that.data.paidOrders.unshift(order)
+              paidOrders: [...that.data.paidOrders, order]
             })
           }
         } else if (res.cancel) {
@@ -109,10 +109,11 @@ Page({
     const input = e.detail.value
     const currentOrder = e.currentTarget.dataset.order
     this.setData({
-      unpaidOrders: this.data.unpaidOrders.map(order => {
+      unpaidOrders: this.data.unpaidOrders.map((order: any) => {
         if (order.id === currentOrder.id) {
-          order.newComment = input
+          return { ...order, newComment: input }
         }
+        return order
       }),
       isCommentEditing: false
     })

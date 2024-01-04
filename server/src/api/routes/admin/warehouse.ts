@@ -1,15 +1,12 @@
 import { Router, Request, Response } from 'express'
-import { User, Warehouse } from '../../../models/sequelize'
+import { Warehouse } from '../../../models/sequelize'
 const route = Router()
-import { query, Logger } from '../../../services'
-import { disableWholeProductLine } from '../app/product'
+import { Logger } from '../../../services'
 import {
 	adminAuthenticated,
-	myOpenId,
-	myWarehouseId
+	myOpenId
 } from '../../../api/middleware/authorization'
-import { queryName } from '../../../services/queryName'
-import { Session, Product, WarehouseProduct } from '../../../models/types'
+import { Session } from '../../../models/types'
 import {
 	Status,
 	WarehouseStatus,
@@ -23,61 +20,6 @@ import { sendRegistrationSMS, handleVerify } from '../../../provider/twilio'
 import bcrypt from 'bcrypt'
 
 const saltRounds = 10
-
-const holdOriginalProduct = (product: Product) => {
-	query(queryName.onHoldProduct, [product.productId])
-	disableWholeProductLine(myOpenId, product.productId)
-}
-
-const handleUnitMessage = async (
-	orderNumber: string,
-	trackingNumber: string,
-	trackingCompany: string,
-	originalOrderID: string
-) => {
-	const openIDResult = await query(queryName.allChildrenInOrder, [
-		originalOrderID
-	])
-	if (openIDResult.data.length > 0)
-		openIDResult.data.forEach((openIDItem: { [key: string]: string }) => {
-			sentShippingMessage(
-				orderNumber,
-				trackingNumber,
-				carriers[trackingCompany].label,
-				openIDItem.openIDChild
-			)
-		})
-}
-
-const createNewProduct = async (product: WarehouseProduct) => {
-	const newProductResult = await query(queryName.newProduct, [
-		myOpenId,
-		product.productName,
-		product.productDescription,
-		product.coverImageURL,
-		product.freeShipping,
-		product.idCardRequired
-	])
-	if (newProductResult.data[0]) {
-		const newSaleResult = await query(queryName.releaseNewProduct, [
-			newProductResult.data[0].productId,
-			myOpenId,
-			myOpenId,
-			product.price
-		])
-		for (const image of product.images) {
-			query(queryName.insertImage, [
-				newProductResult.data[0].productId,
-				image.url,
-				product.images.indexOf(image)
-			])
-		}
-		if (newSaleResult.count === 1) {
-			return newProductResult.data[0].productId
-		}
-		return false
-	}
-}
 
 export default (app: Router) => {
 	app.use('/admin/warehouse', route)
@@ -292,28 +234,28 @@ export default (app: Router) => {
 	// 	}
 	// )
 
-	route.post(
-		'/updateSetting',
-		adminAuthenticated,
-		async (req: Request, res: Response) => {
-			const { smsService, emailService } = req.body
-			try {
-				await query(queryName.updateSetting, [
-					smsService,
-					emailService,
-					myOpenId
-				])
-				res.send({
-					status: Status.SUCCESS
-				})
-				Logger.info('setting updated success')
-			} catch (err) {
-				res.send({
-					status: Status.FAIL,
-					message: err
-				})
-				Logger.info('setting updated fail')
-			}
-		}
-	)
+	// route.post(
+	// 	'/updateSetting',
+	// 	adminAuthenticated,
+	// 	async (req: Request, res: Response) => {
+	// 		const { smsService, emailService } = req.body
+	// 		try {
+	// 			await query(queryName.updateSetting, [
+	// 				smsService,
+	// 				emailService,
+	// 				myOpenId
+	// 			])
+	// 			res.send({
+	// 				status: Status.SUCCESS
+	// 			})
+	// 			Logger.info('setting updated success')
+	// 		} catch (err) {
+	// 			res.send({
+	// 				status: Status.FAIL,
+	// 				message: err
+	// 			})
+	// 			Logger.info('setting updated fail')
+	// 		}
+	// 	}
+	// )
 }

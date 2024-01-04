@@ -1,4 +1,5 @@
-/* pages/account/followingAndFollower/dealer/dealer.wxss */.header {
+/* pages/account/followingAndFollower/dealer/dealer.wxss */
+.header {
   display: flex;
   background-color: #e4f5f4;
   padding: 25px 20px 15px 15px;
@@ -208,13 +209,13 @@ button {
   background-color: #d8d8d8;
 }
 
-
 .productList .orderInfo {
   padding: 5px 19px;
 }
 
 .productCard {
-  padding: 8px 18px;
+  padding: 10px 12px;
+  box-shadow: none;
 }
 
 .productCard image {
@@ -328,6 +329,22 @@ text.paid {
 .productCard.saleProduct text {
   color: #6d7278;
   font-size: 14px;
+}
+
+.price-group {
+  display: flex;
+  align-items: baseline;
+}
+
+.price.old {
+  text-decoration: line-through;
+}
+
+.price-group .price.new {
+  font-size: 30rpx;
+  margin-left: 10rpx;
+  color: #D03434;
+  font-weight: 600;
 }
 
 .productCard.horizontal text {

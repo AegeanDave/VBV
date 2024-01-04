@@ -12,16 +12,16 @@
           <text>应付：¥{{dealer.payment.payment.totalAmount||0}}</text>
         </view>
         <view wx:if="{{dealer.payment.status==='Unpaid'}}" bindtap="toContact" data-dealer="{{dealer.username}}" class="copyBtn">
-          <image class="copy" src="../../../../image/copy.png"></image>
+          <image class="copy" src="/image/copy.png"></image>
           <text>复制</text>
         </view>
         <view wx:else class="copyBtn">
-          <image class="correct" src="../../../../image/correct_grey.svg"></image>
+          <image class="correct" src="/image/correct_grey.svg"></image>
           <text>付款已确认</text>
         </view>
       </view>
     </block>
   </view>
 <view class="totalPayment">
-  <text>总价：￥{{order.totalPrice}}</text>
+  <text>总价：￥{{totalAmount}}</text>
 </view>

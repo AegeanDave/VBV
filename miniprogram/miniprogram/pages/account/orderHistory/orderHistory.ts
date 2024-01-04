@@ -1,6 +1,5 @@
 import { getAllPurchasedOrders } from '../../../services/api/api'
 import { PurchasedOrder, OrderProduct, IAppOption } from "../../../models/index"
-import { Status } from "../../../constant/index"
 import { parseTime } from "../../../utils/util"
 const app = getApp<IAppOption>()
 
@@ -12,16 +11,16 @@ Page({
   },
   async onLoad() {
     let todoOrders: any
-    if (!app.userInfoReadyCallback) {
+    if (app.globalData.user) {
+      todoOrders = await getAllPurchasedOrders()
+    }
+    else {
       app.userInfoReadyCallback = async () => {
         todoOrders = await getAllPurchasedOrders()
       }
     }
-    else {
-      todoOrders = await getAllPurchasedOrders()
-    }
     this.setData({
-      pendingOrders: todoOrders.unpaidOrders || [],
+      pendingOrders: todoOrders?.unpaidOrders || [],
       processingOrders: todoOrders.processingOrders || [],
     })
   },
@@ -43,7 +42,6 @@ Page({
     })
   },
   bindShare() {
-    app.globalData.queryParameter.push(this.data.currentOrder)
     wx.navigateTo({
       url: '../orders/shareOrder/shareOrder',
     })

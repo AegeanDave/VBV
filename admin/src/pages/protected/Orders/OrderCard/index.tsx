@@ -121,7 +121,7 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
         <Grid item xs={12} container pt={1}>
           <Paper elevation={1} sx={{ p: 2, width: "100%" }}>
             <Stack direction="row" justifyContent="space-between">
-              {order.address.quickInput ? (
+              {order.address?.quickInput ? (
                 <Typography variant="caption" fontSize={12}>
                   {order.address.quickInput}
                 </Typography>

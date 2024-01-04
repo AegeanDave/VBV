@@ -1,14 +1,6 @@
 import React from "react";
-import {
-  Button,
-  TableRow,
-  TableCell,
-  DialogContent,
-  DialogContentText,
-  ButtonGroup,
-} from "@mui/material";
+import { Button, TableRow, TableCell, ButtonGroup } from "@mui/material";
 import { columns, SaleStatus, actions } from "../../constant/index";
-import { Popup } from "../index";
 import { Product } from "../../models/index";
 import placeholder from "../../assets/images/cover_image_placeholder.png";
 import "./style.scss";
@@ -22,17 +14,6 @@ interface Props {
 export default function ProductRow({ product }: Props) {
   const { handleOpenDialog } = useProduct();
 
-  //   const popupConfirm = () => {
-  //     props.handleUpdateStatus(props.product, currentAction);
-  //     if (currentAction === actions.delete.key) {
-  //       setDeletePopupOpen(false);
-  //     } else if (currentAction === actions.edit.key) {
-  //       setEditPopupOpen(false);
-  //     }
-  //     setCurrentAction("");
-  //   };
-
-  console.log(product);
   return (
     product && (
       <TableRow hover role="checkbox" tabIndex={-1}>

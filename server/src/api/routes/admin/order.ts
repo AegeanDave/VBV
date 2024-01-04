@@ -25,7 +25,7 @@ export default (app: Router) => {
 		try {
 			const todoOrders = await Order.findAll({
 				where: { dealerId: myOpenId, status: { [Op.ne]: 'Unpaid' } },
-				include: [{ model: OrderDetail }, Address, User]
+				include: [{ model: OrderDetail }, User]
 			})
 			Logger.info('Orders get')
 			return res.send(todoOrders)
@@ -94,7 +94,6 @@ export default (app: Router) => {
 							transaction: t
 						}
 					)
-					Logger.info('order update success')
 				} else if (action === 'SHIP' || action === 'EDIT') {
 					todoOrderDetail.length > 0 &&
 						(await OrderDetail.update(
@@ -128,13 +127,14 @@ export default (app: Router) => {
 					// 	carrier,
 					// 	order.originOrderId
 					// )
-					await t.commit()
-					res.send({
-						status: Status.SUCCESS
-					})
-					Logger.info('order update success')
 				}
+				await t.commit()
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('order update success')
 			} catch (err) {
+				console.log(err)
 				await t.rollback()
 				res.send({
 					status: Status.FAIL,

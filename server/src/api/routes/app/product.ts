@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express'
 const route = Router()
-import { query, Logger } from '../../../services'
-import { queryName } from '../../../services/queryName'
+import { Logger } from '../../../services'
 import { isAuthenticated, myOpenId } from '../../middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
 import { DBStatus, SaleStatus, Status } from '../../../constants'
@@ -16,20 +15,6 @@ import {
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 
-export const disableWholeProductLine = async (
-	openIdFather: string,
-	productId: string
-) => {
-	const queryResult = await query(queryName.disableAllChildrenInStoreProducts, [
-		productId,
-		openIdFather
-	])
-	if (queryResult.data.length !== 0) {
-		for (const openIDItem of queryResult.data) {
-			await disableWholeProductLine(openIDItem.openIDFather, productId)
-		}
-	}
-}
 export default (app: Router) => {
 	app.use('/products', route)
 
@@ -182,40 +167,6 @@ export default (app: Router) => {
 		}
 	)
 
-	route.post(
-		'/myPublishedProductsForChild',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const openIdChild = req.body.openID
-			const queryResult = await query(
-				queryName.mySaleProductListWithSepcificPrice,
-				[myOpenId, openIdChild]
-			)
-			const products: ProductType[] = queryResult.data
-			res.send({
-				status: Status.SUCCESS,
-				data: products
-			})
-			Logger.info('saleProduct with child price get')
-		}
-	)
-	route.post(
-		'/productsFromDealer',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const openIdFather = req.body.openID
-			const queryResult = await query(queryName.mySaleProductListFromFather, [
-				myOpenId,
-				openIdFather
-			])
-			const products: ProductType[] = queryResult.data
-			res.send({
-				status: Status.SUCCESS,
-				data: products
-			})
-			Logger.info(queryResult)
-		}
-	)
 	route.get(
 		'/product/:id',
 		isAuthenticated,
@@ -399,43 +350,6 @@ export default (app: Router) => {
 					status: 'FAIL'
 				})
 				Logger.info('unrelease fail')
-			}
-		}
-	)
-	route.get(
-		'/productsBySerialId',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			try {
-				const { serialForQRCode } = req.query
-				const queryResult = await query(queryName.getProductBySerialId, [
-					myOpenId,
-					serialForQRCode as any
-				])
-				if (queryResult.count === 0) {
-					res.send({
-						status: Status.FAIL,
-						message: 'product not exist'
-					})
-				} else {
-					const product: ProductType = queryResult.data[0]
-					const findAliasResult = await query(
-						queryName.findEnableAliasByOpenID,
-						[product.dealerSale.openId, myOpenId]
-					)
-					res.send({
-						status: Status.SUCCESS,
-						data: {
-							product,
-							alias: findAliasResult.data[0] ? true : false
-						}
-					})
-				}
-			} catch (error) {
-				res.send({
-					status: Status.FAIL,
-					message: error
-				})
 			}
 		}
 	)

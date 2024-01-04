@@ -9,11 +9,6 @@ import "./style.scss";
 import { useProduct } from "../../../contexts/ProductProvider";
 import ProductForm from "../NewProduct";
 
-interface Props {
-  openBackdrop: () => void;
-  closeBackdrop: () => void;
-}
-
 const ProductList = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
   const handleChangeTab = (event: React.ChangeEvent<{}>, newValue: number) => {

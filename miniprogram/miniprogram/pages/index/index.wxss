@@ -7,9 +7,9 @@ text {
   background-color: #F5F0FA ;
   display: flex;
   flex-direction: column;
-  padding-top: 8px;
+  padding-top: 6px;
   padding-left: 16px;
-  padding-bottom: 10px;
+  padding-bottom: 6px;
 }
 .dealer-list-head {
   display: flex;

@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  IconButton,
   Button,
   TextField,
   MenuItem,
@@ -8,6 +7,7 @@ import {
   Grid,
   FormControl,
   InputLabel,
+  CircularProgress,
   Select,
 } from "@mui/material/";
 import { actions, OrderStatus, carriers } from "../../../../constant/index";
@@ -20,20 +20,23 @@ interface Props {
 }
 
 export default function ShippingAction({ order }: Props) {
-  const { onShipping, onCancelling } = useOrder();
-  const { control, handleSubmit } = useForm({
+  const { onShipping, onCancelling, isLoading } = useOrder();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       carrier: "",
       trackingNum: "",
     },
   });
-
   const onSubmit = async (data) => {
     onShipping(order, data);
   };
 
   return (
-    <Grid item xs={12} pl={2} pr={2} pb={2}>
+    <Grid item xs={12} pt={2}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack direction="row" spacing={1}>
           <Controller
@@ -47,6 +50,7 @@ export default function ShippingAction({ order }: Props) {
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   label="运输公司"
+                  error={!!errors.carrier}
                   autoWidth
                 >
                   {Object.values(carriers).map((carrier: any) => (
@@ -67,16 +71,31 @@ export default function ShippingAction({ order }: Props) {
                 {...field}
                 label="快递单号"
                 size="small"
+                error={!!errors.trackingNum}
                 sx={{ flex: 1 }}
               />
             )}
           />
         </Stack>
         <Stack pt={2}>
-          <Button variant="contained" size="large" type="submit">
+          <Button
+            variant="contained"
+            size="large"
+            type="submit"
+            disabled={isLoading}
+            endIcon={
+              isLoading && <CircularProgress color="primary" size={18} />
+            }
+          >
             提交发货
           </Button>
-          <Button color="error">拒绝</Button>
+          <Button
+            color="error"
+            onClick={() => onCancelling(order)}
+            disabled={isLoading}
+          >
+            拒绝
+          </Button>
         </Stack>
       </form>
     </Grid>

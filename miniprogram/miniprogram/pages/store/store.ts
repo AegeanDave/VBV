@@ -11,15 +11,16 @@ Page({
     myProductList: [],
     showCanvasMask: true,
     allFathersProducts: [],
-    selectedProduct: {} as Product,
-    showActionsheet: false,
-    groups: [
+    selectedProduct: null,
+    storeActionSheetShow: false,
+    dealerActionSheetShow: false,
+    storeActions: [
       { text: '生成朋友圈分享图', value: 1 },
       { text: '改价', value: 2 },
       { text: '预览', value: 3 },
       { text: '下架', value: 4 }
     ],
-
+    recommendationActions: [{ text: '我要售卖', value: 6 }],
     dialogShow: false,
     buttons: [{ text: '取消' }, { text: '确定' }],
 
@@ -47,6 +48,16 @@ Page({
       myProductList: myProducts,
       allFathersProducts: availableProducts
     })
+  },
+  async onShow() {
+    if (app.globalData.reload) {
+      const { myProducts, availableProducts }: any = await getMyStore()
+      this.setData({
+        myProductList: myProducts,
+        allFathersProducts: availableProducts
+      })
+      app.globalData.reload = false
+    }
   },
   bindAddToStore: function () {
     const isDuplicate = this.data.myProductList?.some(item => item.productId === this.data.selectedProduct.productId)
@@ -119,23 +130,34 @@ Page({
       })
     }
   },
-  showModal(e: any) {
+  onShowDealerActionSheet(e: any) {
     if (e.currentTarget.dataset.newproduct) {
       this.setData({
         groups: [
           { text: '我要售卖', value: 6 }
         ],
-        showActionsheet: true,
+        dealerActionSheetShow: true,
         selectedProduct: e.currentTarget.dataset.newproduct,
       })
-      return
     }
+  },
+  onShowStoreActionSheet(e: any) {
     const product = e.currentTarget.dataset.product
     if (product.status === 'Inactive') {
       this.setData({
-        groups: [
+        storeActions: [
           { text: '上架', value: 5 }
         ]
+      })
+    }
+    if (product.status === 'Active') {
+      this.setData({
+        storeActions: [
+          { text: '生成朋友圈分享图', value: 1 },
+          { text: '改价', value: 2 },
+          { text: '预览', value: 3 },
+          { text: '下架', value: 4 }
+        ],
       })
     }
     if (product.status === 'Not_Available') {
@@ -146,13 +168,14 @@ Page({
       return
     }
     this.setData({
-      showActionsheet: true,
+      storeActionSheetShow: true,
       selectedProduct: product,
     })
   },
   close: function () {
     this.setData({
-      showActionsheet: false
+      storeActionSheetShow: false,
+      dealerActionSheetShow: false
     })
   },
   onDialogClick(e: any) {
@@ -167,9 +190,13 @@ Page({
       dialogShow: false,
     })
   },
+  handleUpdatePrice() {
+    const selectedProduct = this.data.selectedProduct
+
+  },
   onActionClick(e: any) {
-    const optionIndex = e.detail.value
-    switch (optionIndex) {
+    const optionValue = e.detail.value
+    switch (optionValue) {
       case 1:
         this.setData({
           showCanvasMask: !this.data.showCanvasMask
@@ -177,7 +204,7 @@ Page({
         this.drawImage()
         break;
       case 2:
-        this.bindUpdatePrice()
+        this.handleUpdatePrice()
         break;
       case 3:
         this.bindPreview()

@@ -35,10 +35,12 @@ function OrderProvider({ children }: { children: ReactNode }) {
     fetchOrders();
   }, []);
   const onShipping = async (order: any, trackingInfo: any) => {
+    setIsLoading(true);
     try {
       await updateOrder(order, "SHIP", trackingInfo);
-      setOrders((preOrders) =>
-        preOrders.map((item) => {
+      setIsLoading((pre) => !pre);
+      setOrders((preOrders: any) =>
+        preOrders.map((item: any) => {
           if (item.id === order.id) {
             return { ...item, status: "Shipped" };
           }
@@ -46,14 +48,17 @@ function OrderProvider({ children }: { children: ReactNode }) {
         })
       );
       enqueueSnackbar("发货成功", { variant: "success" });
-    } catch (err) {}
+    } catch (err) {
+      setIsLoading((pre) => !pre);
+    }
   };
-
   const onCancelling = async (order: any) => {
+    setIsLoading(true);
     try {
       await updateOrder(order, "REJECT");
-      setOrders((preOrders) =>
-        preOrders.map((item) => {
+      setIsLoading((pre) => !pre);
+      setOrders((preOrders: any) =>
+        preOrders.map((item: any) => {
           if (item.id === order.id) {
             return { ...item, status: "Cancelled" };
           }
@@ -61,7 +66,9 @@ function OrderProvider({ children }: { children: ReactNode }) {
         })
       );
       enqueueSnackbar("订单已取消", { variant: "info" });
-    } catch (err) {}
+    } catch (err) {
+      setIsLoading((pre) => !pre);
+    }
   };
 
   const values = useMemo(

@@ -64,8 +64,8 @@ const router = createBrowserRouter(
           <Route index element={<Orders></Orders>}></Route>
           <Route path="history" element={<OrderHistory />}></Route>
         </Route>
-        <Route path="setting" element={<Account />}></Route>
-        <Route path="account" element={<Setting />}></Route>
+        <Route path="setting" element={<Setting />}></Route>
+        <Route path="account" element={<Account />}></Route>
       </Route>
       <Route
         path="/logout"

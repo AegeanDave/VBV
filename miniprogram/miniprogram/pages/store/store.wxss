@@ -33,6 +33,7 @@ page {
   width: fit-content;
   flex-direction: column;
   padding: 20rpx 28rpx;
+  margin-bottom: 16rpx;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
@@ -123,6 +124,16 @@ page {
   height: 44rpx
 }
 
+.price.old{
+  text-decoration: line-through;
+}
+
+.price.new{
+  margin-left: 12rpx;
+  font-size: 32rpx;
+  color: crimson;
+}
+
 @media (min-height: 700px) {
   page {
     padding: 12px 0;
@@ -135,10 +146,11 @@ page {
 
 @media (min-height: 800px) {
   .productCard {
-    padding: 24rpx 48rpx;
+    padding: 24rpx 30rpx;
   }
 
   .middleBox .divider {
     max-width: 32%;
   }
 }
+

@@ -1,7 +1,7 @@
 <view class="header">
   <view class="tapLeft" bindtap="toCustomer" data-path="customer">
     <image src="../../image/follower.png"></image>
-    <text>客户端 | {{customerNum}}</text>
+    <text>我的客户 | {{customerNum}}</text>
     <view wx:if="{{waitForPayment}}" class="redDot follower"></view>
   </view>
   <view class="openData">
@@ -17,14 +17,14 @@
   </view>
   <view class="tapRight" bindtap="toDealer">
     <image src="../../image/follows.png"></image>
-    <text>供应端 | {{dealerNum}}</text>
+    <text>我的供应 | {{dealerNum}}</text>
     <view wx:if="{{needToPay}}" class="redDot"></view>
   </view>
 </view>
 <view class="nav account">
   <van-grid column-num="3" clickable square>
     <van-grid-item icon="/image/store.png" text="我的在售" bind:click="toStore" />
-    <van-grid-item icon="/image/warehouse.png" bind:click="toWarehouse" text="{{hasWarehouse ? '仓库管理':'我要买货'}}" />
+    <van-grid-item icon="/image/warehouse.png" bind:click="toWarehouse" text="{{hasWarehouse&&account.warehouse.status==='Active' ? '仓库管理':'我要买货'}}" />
     <van-grid-item icon="/image/order.png" bind:click="toOrder" text="销售记录" />
     <van-grid-item icon="/image/history.png" bind:click="toHistory" text="采购记录" />
     <van-grid-item icon="/image/couponCode.png" bind:click="toInvitation" text="邀请客户" />

@@ -53,7 +53,9 @@
               <view class="divLine"></view>
               <view class="footerInner">
                 <text class="label">备注: </text>
-                <textarea wx:if="{{isCommentEditing && editingOrderId===order.orderId}}" class="value editing" auto-height='true' maxlength="100" auto-focus="true" disable-default-padding="true" bindconfirm="handleChangeComment" value="{{order.comment}}" data-order="{{order}}"></textarea>
+                <block wx:if="{{isCommentEditing}}">
+                  <textarea wx:if="{{editingOrderId===order.orderId}}" class="value editing" auto-height='true' maxlength="100" auto-focus="true" disable-default-padding="true" bindconfirm="handleChangeComment" value="{{order.comment}}" data-order="{{order}}"></textarea>
+                </block>
                 <view class="item comment" wx:else bindtap="handleOnEdit" data-orderId="{{order.orderId}}">
                   <text class="value">{{order.comment||'空'}}</text>
                   <image src="/image/edit.png" class="editIcon"></image>

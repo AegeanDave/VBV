@@ -101,6 +101,7 @@ text,
 .productCard {
   width: 100%;
   display: flex;
+  box-shadow: none;
   background-color: rgba(244, 244, 244, 0.3);
   flex-direction: column;
 }

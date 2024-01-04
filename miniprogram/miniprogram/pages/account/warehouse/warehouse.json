@@ -1,7 +1,11 @@
 {
   "usingComponents": {
-    "mp-dialog": "weui-miniprogram/dialog/dialog",
+    "van-sticky": "@vant/weapp/sticky/index",
     "mp-actionSheet": "/miniprogram_npm/weui-miniprogram/actionsheet/actionsheet",
-    "mp-icon": "weui-miniprogram/icon/icon"
-  }
+    "mp-icon": "weui-miniprogram/icon/icon",
+    "van-tab": "@vant/weapp/tab/index",
+    "van-tabs": "@vant/weapp/tabs/index",
+    "van-empty": "@vant/weapp/empty/index"
+  },
+  "navigationBarTitleText": "仓库管理"
 }

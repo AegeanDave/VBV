@@ -11,14 +11,22 @@ Page({
     searching: false,
     selectedDealer: ''
   },
-  onLoad() {
-    app.userInfoReadyCallback = async () => {
-      const { products, alias }: any = await getProductList()
-      this.setData({
-        productList: products || [],
-        dealers: alias,
-      })
+  async onLoad() {
+    if (!app.globalData.user) {
+      app.userInfoReadyCallback = async () => {
+        const { products, alias }: any = await getProductList()
+        this.setData({
+          productList: products || [],
+          dealers: alias,
+        })
+      }
+      return
     }
+    const { products, alias }: any = await getProductList()
+    this.setData({
+      productList: products || [],
+      dealers: alias,
+    })
   },
   onPullDownRefresh: async function () {
     wx.showNavigationBarLoading()
@@ -43,6 +51,14 @@ Page({
       wx.removeTabBarBadge({
         index: Tabs.CART
       })
+    }
+    if (app.globalData.reload) {
+      const { products, alias }: any = await getProductList()
+      this.setData({
+        productList: products || [],
+        dealers: alias,
+      })
+      app.globalData.reload = false
     }
   },
   onSearch(e: any) {
