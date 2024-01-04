@@ -111,8 +111,9 @@ Page({
     this.setData({
       unpaidOrders: this.data.unpaidOrders.map((order: any) => {
         if (order.id === currentOrder.id) {
-          order.newComment = input
+          return { ...order, newComment: input }
         }
+        return order
       }),
       isCommentEditing: false
     })

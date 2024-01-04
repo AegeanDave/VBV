@@ -146,7 +146,7 @@ page {
 
 @media (min-height: 800px) {
   .productCard {
-    padding: 24rpx 48rpx;
+    padding: 24rpx 30rpx;
   }
 
   .middleBox .divider {

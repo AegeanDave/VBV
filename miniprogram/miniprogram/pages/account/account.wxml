@@ -1,7 +1,7 @@
 <view class="header">
   <view class="tapLeft" bindtap="toCustomer" data-path="customer">
     <image src="../../image/follower.png"></image>
-    <text>客户端 | {{customerNum}}</text>
+    <text>我的客户 | {{customerNum}}</text>
     <view wx:if="{{waitForPayment}}" class="redDot follower"></view>
   </view>
   <view class="openData">
@@ -17,7 +17,7 @@
   </view>
   <view class="tapRight" bindtap="toDealer">
     <image src="../../image/follows.png"></image>
-    <text>供应端 | {{dealerNum}}</text>
+    <text>我的供应 | {{dealerNum}}</text>
     <view wx:if="{{needToPay}}" class="redDot"></view>
   </view>
 </view>
