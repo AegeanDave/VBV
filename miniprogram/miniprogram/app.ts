@@ -3,7 +3,7 @@ import { IAppOption } from './models/index'
 import { getAuth } from "./services/api/api"
 
 App<IAppOption>({
-  globalData: { reload: false, queryParameter: [] },
+  globalData: { reload: false },
   onLaunch() {
     // 登录
     wx.login({
@@ -14,7 +14,7 @@ App<IAppOption>({
           if (user.status === 'Not_Verified') {
             wx.navigateTo({ url: '/pages/register/register' })
           }
-          wx.setStorageSync('sessionKey', user.session_key)
+          wx.setStorageSync('sessionKey', user.token)
           this.globalData.user = user
           if (this.userInfoReadyCallback) {
             this.userInfoReadyCallback(user)

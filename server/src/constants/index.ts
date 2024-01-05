@@ -95,3 +95,5 @@ export const addressField = {
 export type S3Data = {
 	Location: string
 }
+
+export const RANDOM_TOKEN_SECRET = 'vbv2023'

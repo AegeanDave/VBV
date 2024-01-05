@@ -2,10 +2,7 @@ import { Router, Request, Response } from 'express'
 import { Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { Logger } from '../../../services'
-import {
-	adminAuthenticated,
-	myOpenId
-} from '../../../api/middleware/authorization'
+import { adminAuthenticated } from '../../../api/middleware/authorization'
 import { Session } from '../../../models/types'
 import {
 	Status,

@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 const route = Router()
 import { Logger } from '../../../services'
-import { isAuthenticated, myOpenId } from '../../middleware/authorization'
+import { isAuthenticated } from '../../middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
 import { DBStatus, SaleStatus, Status } from '../../../constants'
 import {

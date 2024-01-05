@@ -1,11 +1,15 @@
 import { Router, Request, Response } from 'express'
-import { myCache } from '../../../provider/cache'
-const route = Router()
+import jwt from 'jsonwebtoken'
 import { Logger } from '../../../services'
 import { login, makeCode, getQRcode } from '../../../provider'
 import { isAuthenticated } from '../../middleware/authorization'
 import { upload } from '../../../provider/fileAction'
-import { Status, Image, DBStatus, addressField } from '../../../constants'
+import {
+	Status,
+	DBStatus,
+	addressField,
+	RANDOM_TOKEN_SECRET
+} from '../../../constants'
 import {
 	Address,
 	Connection,
@@ -19,6 +23,8 @@ import {
 import db from '../../../config/database'
 import { Op } from 'sequelize'
 
+const route = Router()
+
 export default (app: Router) => {
 	app.use('/users', route)
 
@@ -28,14 +34,17 @@ export default (app: Router) => {
 			const {
 				data: { session_key, openid }
 			} = await login(code)
-			myCache.set(session_key, openid, 10000)
+			const token = jwt.sign(
+				{ openId: openid, sessionKey: session_key },
+				RANDOM_TOKEN_SECRET,
+				{ expiresIn: '10d' }
+			)
 			const [{ dataValues }] = await User.upsert({ openId: openid })
 			const { username, status, avatarUrl } = dataValues
-			res.send({ session_key, openid, username, avatarUrl, status })
+			res.send({ token, openid, username, avatarUrl, status })
 			Logger.info('Login Success')
 		} catch (err) {
-			res.send({ success: false, message: 'Login fail' })
-			return
+			return res.send({ success: false, message: 'Login fail' })
 		}
 	})
 	route.post(

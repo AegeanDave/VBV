@@ -6,6 +6,7 @@ const User = db.define('users', {
 		type: DataTypes.STRING,
 		primaryKey: true
 	},
+	unionId: { type: DataTypes.STRING, unique: true },
 	username: {
 		type: DataTypes.STRING
 	},

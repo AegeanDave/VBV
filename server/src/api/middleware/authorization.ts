@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import { Session } from '../../models/types/index'
-import { Status } from '../../constants'
+import { Status, RANDOM_TOKEN_SECRET } from '../../constants'
 import { myCache } from '../../provider/cache'
-
-export let myOpenId: string
-export let myWarehouseId: string
+import jwt from 'jsonwebtoken'
 
 export const isAuthenticated = async (
 	req: Request,
@@ -17,14 +15,18 @@ export const isAuthenticated = async (
 			.status(403)
 			.send({ status: Status.FAIL, message: 'Authorization fail!' })
 	}
-	const checkSessionResult: string | undefined = myCache.get(authorization)
+	const checkSessionResult = jwt.verify(
+		authorization,
+		RANDOM_TOKEN_SECRET
+	) as any
+	console.log(checkSessionResult)
 	if (!checkSessionResult) {
 		res
 			.status(403)
 			.send({ status: Status.FAIL, message: 'Authorization fail!' })
 		return
 	}
-	req.params.myOpenId = checkSessionResult
+	req.params.myOpenId = checkSessionResult.openId
 	return next()
 }
 
