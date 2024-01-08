@@ -1,7 +1,7 @@
 <view class="orderBox">
   <view class="boxHeader">
     <view class="item">
-      <text>买家: {{order.buyer.name}}</text>
+      <text>买家: {{order.customer.username}}</text>
     </view>
     <view class="item">
       <text>订单状态：</text>
@@ -14,12 +14,12 @@
       <text>订单编号: {{order.orderNumber}}</text>
     </view>
     <scroll-view scroll-y="true">
-      <block wx:for="{{order.orderProducts}}" wx:key="id" wx:for-item="product">
+      <block wx:for="{{order.orderDetails}}" wx:key="id" wx:for-item="product">
         <view class="productCard">
-          <image src="{{product.coverImageURL}}"></image>
+          <image src="{{product.productInfo.coverImageUrl}}"></image>
           <view class="productInfo">
-            <text class="price">￥{{product.price}}</text>
-            <text>{{product.productName}}</text>
+            <text class="price">￥{{product.productInfo.price}}</text>
+            <text>{{product.productInfo.name}}</text>
             <text>数量：{{product.quantity}}</text>
           </view>
         </view>

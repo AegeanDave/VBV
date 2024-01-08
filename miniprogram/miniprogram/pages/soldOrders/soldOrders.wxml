@@ -177,7 +177,7 @@
     </block>
     <block wx:else>
       <view class="orderList">
-        <block wx:for="{{paidOrders}}" wx:key="id" wx:for-item="order">
+        <block wx:for="{{completeOrders}}" wx:key="id" wx:for-item="order">
           <view class="orderBox card">
             <view class="boxHeader">
               <view class="item">
@@ -198,10 +198,17 @@
                     <text class="price">￥{{product.productInfo.price}}</text>
                     <text>{{product.productInfo.name}}</text>
                     <text>数量：{{product.quantity}}</text>
-                    <view wx:if="{{order.status==='Paid' || order.status==='Complete'}}" class="tagBox">
-                      <view class="tag {{product.status==='Pending'?'pending':product.status==='Shipping'?'shipping': product.status==='Canceled' && 'canceled'}}">
-                        {{product.status==='Pending'?'未发货':product.status==='Shipping'? '已发货' :product.status==='Canceled' && '被取消'}}
-                      </view>
+                    <view class="tagBox">
+                      <block wx:if="{{product.status==='Completed'}}">
+                        <view class="tag {{product.status==='Completed'?'completed': product.status==='Canceled' && 'canceled'}}">
+                          已送达
+                        </view>
+                      </block>
+                      <block wx:if="{{product.status==='Cancelled'}}">
+                        <view class="tag {{product.status==='Cancelled' && 'canceled'}}">
+                          被取消
+                        </view>
+                      </block>
                     </view>
                   </view>
                 </view>
@@ -237,9 +244,8 @@
                 <view class="itemOuter">
                   <view class="item">
                     <text class="label">订单状态: </text>
-                    <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
-                    <text wx:elif="{{order.status==='Canceled'}}" class="paid value">被取消</text>
-                    <text wx:else class="paid value">已付款</text>
+                    <text wx:if="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
+                    <text wx:else class="paid value">已完成</text>
                   </view>
                   <button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
                   <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
@@ -256,7 +262,7 @@
 </mp-actionSheet>
 <van-action-sheet show="{{ showPaidConfirmation }}" title="确认提交" bind:close="onMarkPaidClose" description="确认收款后将向您的供货商创建新订单">
   <view class="confirmation custom-actionsheet">
-    <van-field value="{{ message }}" label="备注" type="textarea" placeholder="此备注只向您的供货商展示" autosize="{{newCommentSize}}" border="{{ false }}" maxlength="{{125}}" show-word-limit bind:change="onNewCommentChange"/>
+    <van-field value="{{ message }}" label="备注" type="textarea" placeholder="此备注只向您的供货商展示" autosize="{{newCommentSize}}" border="{{ false }}" maxlength="{{125}}" show-word-limit bind:change="onNewCommentChange" />
     <view>
       <van-button round block type="info" custom-class="btn" bind:tap="markPaid">确认</van-button>
       <van-button round block plain custom-class="btn" bind:tap="onMarkPaidClose">取消</van-button>

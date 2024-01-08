@@ -95,9 +95,9 @@ Page({
   },
   toOrderShare: function (e: any) {
     const order = e.currentTarget.dataset.order
-    order.name = this.data.customer.name
+    console.log(order)
     wx.navigateTo({
-      url: '../../orders/shareOrder/shareOrder',
+      url: `../../../soldOrders/shareOrder/shareOrder?userId=${order.userId}&orderNumber=${order.orderNumber}`,
     })
   },
   markPaid: function () {

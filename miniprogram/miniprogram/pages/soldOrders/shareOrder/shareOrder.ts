@@ -1,4 +1,5 @@
-import { Order, IAppOption } from "../../../models/index"
+import { IAppOption } from "../../../models/index"
+import { getSoldOrderWithCustomer } from '../../../services/api/api'
 
 const app = getApp<IAppOption>()
 
@@ -8,16 +9,16 @@ Page({
    * Page initial data
    */
   data: {
-    order: {} as Order
+    order: null
   },
 
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function () {
-    const order = app.globalData.queryParameter.pop()
+  onLoad: async function (option: any) {
+    const todoOrder = await getSoldOrderWithCustomer(option.orderNumber, option.userId)
     this.setData({
-      order: order
+      order: todoOrder
     })
   },
   bindBack() {

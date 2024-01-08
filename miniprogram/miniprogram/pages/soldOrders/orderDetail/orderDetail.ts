@@ -1,5 +1,5 @@
 import { IAppOption } from "../../../models/index"
-import { getSoldOrderWithCustomer, getSoldOrder } from '../../../services/api/api'
+import { getSoldOrderWithCustomer } from '../../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({

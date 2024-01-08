@@ -41,6 +41,7 @@ scroll-view {
 .productCard {
   padding-top: 6px;
   padding-bottom: 6px;
+  box-shadow: none;
 }
 
 .unpaid {

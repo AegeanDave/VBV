@@ -144,7 +144,12 @@ export default (app: Router) => {
 						}
 					]
 				})
-				res.send(todoOrder)
+				res.send({
+					...todoOrder?.dataValues,
+					createdAt: moment(todoOrder?.dataValues.creadtedAt).format(
+						'MM Do YYYY, h:mm'
+					)
+				})
 				Logger.info('sold order get')
 			} catch (err) {
 				console.log(err)
@@ -217,7 +222,7 @@ export default (app: Router) => {
 							grouped[key] = []
 						}
 						const createdAt = moment(order.dataValues.creadtedAt).format(
-							'MMMM Do YYYY'
+							'MM Do YYYY, h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
 

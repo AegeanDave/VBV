@@ -39,7 +39,7 @@
                 <text class="label">下单时间: </text>
                 <text class="value">{{order.createdAt}}</text>
               </view>
-              <image wx:if="{{customer}}" src="/image/share.png" class="share" bindtap="toOrderShare" data-order="{{order}}"></image>
+              <image src="/image/share.png" class="share" bindtap="toOrderShare" data-order="{{order}}"></image>
             </view>
             <view class="productList" bindtap="bindToDetail" data-order="{{order}}">
               <block wx:for="{{order.orderDetails}}" wx:key="id" wx:for-item="product">
