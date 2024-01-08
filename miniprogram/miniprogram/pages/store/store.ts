@@ -259,11 +259,10 @@ Page({
   async drawing() {
     const that = this;
     wx.showLoading({ title: "生成中" }) // 显示loading
-    const url = await generateQRcode(that.data.currentProduct.dealerSale.serialForQRCode as number)
     that.drawPoster()               // 绘制海报
-      .then(function () {           // 这里用同步阻塞一下，因为需要先拿到海报的高度计算整体画布的高度
+      .then(() => {           // 这里用同步阻塞一下，因为需要先拿到海报的高度计算整体画布的高度
         that.drawInfoBg()           // 绘制底部白色背景
-        that.drawQrcode(url as string)           // 绘制小程序码
+        that.drawQrcode('/image/qr_code.jpg')           // 绘制小程序码
         that.drawText()
         wx.hideLoading()            // 隐藏loading
       })
@@ -275,11 +274,13 @@ Page({
       canvas: that.data.canvasDom.node,
       success(res) {
         let productList = that.data.myProductList
-        productList.forEach((product: Product, index: number) => {
-          if (product.dealerSale.serialForQRCode === that.data.currentProduct.dealerSale.serialForQRCode) {
-            productList[index].imageTempUrl = res.tempFilePath
+
+        productList.map(product => {
+          if (product.id === that.data.selectedProduct.id) {
+            return { ...product, imageTempUrl: res.tempFilePath }
           }
-        });
+          product
+        })
         that.setData({
           myProductList: productList
         })
@@ -290,7 +291,7 @@ Page({
     const that = this
     return new Promise(function (resolve, reject) {
       let poster = that.data.canvas.createImage();          // 创建一个图片对象
-      poster.src = that.data.currentProduct.coverImageURL                      // 图片对象地址赋值
+      poster.src = that.data.selectedProduct.coverImageUrl                      // 图片对象地址赋值
       poster.onload = () => {
         that.computeCanvasSize(poster.width, poster.height) // 计算画布尺寸
           .then(function (res: any) {
@@ -352,7 +353,7 @@ Page({
     this.data.ctx.font = "bold 16px Arial";             // 设置字体大小
     this.data.ctx.fillStyle = "#101820";           // 设置文字颜色
     // 姓名（距左：间距 + 头像直径 + 间距）（距下：总高 - 间距 - 文字高 - 头像直径 + 下移一点 ）
-    this.data.ctx.fillText(this.data.currentProduct.productName, infoSpace, this.data.canvasHeight - infoSpace - 14 - 40, this.data.canvasWidth - infoSpace - this.data.qrcodeDiam - 14);
+    this.data.ctx.fillText(this.data.selectedProduct.name, infoSpace, this.data.canvasHeight - infoSpace - 14 - 40, this.data.canvasWidth - infoSpace - this.data.qrcodeDiam - 14);
     this.data.ctx.font = "14px Arial";             // 设置字体大小
     this.data.ctx.fillStyle = "#02A69F";
     // 电话（距左：间距 + 头像直径 + 间距 - 微调 ）（距下：总高 - 间距 - 文字高 - 上移一点 ）

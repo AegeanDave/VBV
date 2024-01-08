@@ -22,7 +22,7 @@ const Connection = db.define('connections', {
 		type: DataTypes.ENUM('Active', 'Inactive'),
 		defaultValue: 'Active'
 	},
-	invitationId: { type: DataTypes.INTEGER, allowNull: false },
+	invitationId: { type: DataTypes.INTEGER, allowNull: false, unique: true },
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW

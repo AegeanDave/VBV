@@ -25,18 +25,24 @@ Page({
     })
   },
   formSubmit: async function (e) {
-    const result: any = await makeNewConnection(e.detail.value.code)
-    if (result.status === Status.SUCCESS) {
-      app.globalData.reload = true
+    wx.showLoading({
+      title: '加载中'
+    })
+    try {
+      const result: any = await makeNewConnection(e.detail.value.code)
+      if (result.status === Status.SUCCESS) {
+        app.globalData.reload = true
+        wx.hideLoading()
+        await wx.showToast({
+          title: '关注成功',
+          icon: 'success'
+        })
+        wx.navigateBack()
+      }
+    } catch (err) {
+      wx.hideLoading()
       wx.showToast({
-        title: '关注成功',
-        icon: 'success'
-      })
-      wx.navigateBack()
-    }
-    if (result.status === Status.FAIL) {
-      wx.showToast({
-        title: result.message,
+        title: '关注失败',
         icon: "error"
       })
     }

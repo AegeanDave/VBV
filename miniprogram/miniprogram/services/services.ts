@@ -13,10 +13,4 @@ const reLogin = () =>
   })
 
 
-const handleUpdateUserInfo = (userInfo) => {
-  wx.setStorageSync('userInfo', userInfo)
-  app.globalData.userInfo = userInfo
-  updateUserInfo(app.globalData.userInfo as WechatMiniprogram.UserInfo)
-}
-
-export { handleUpdateUserInfo, reLogin }
+export { reLogin }

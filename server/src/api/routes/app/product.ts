@@ -10,7 +10,6 @@ import {
 	StoreProduct,
 	Price,
 	User,
-	Order,
 	Image
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
