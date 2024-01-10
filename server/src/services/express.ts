@@ -1,11 +1,12 @@
-import express from 'express'
+import express, { Express } from 'express'
 import { Request, Response, NextFunction } from 'express'
 import bodyParser from 'body-parser'
 import errorHandler from 'errorhandler'
 import cors from 'cors'
 import routes from '../api'
 import config from '../config'
-export default async ({ app }: { app: express.Application }) => {
+
+export default async (app: Express) => {
 	// Useful if you"re behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
 	// It shows the real origin IP in the heroku or Cloudwatch logs
 	app.enable('trust proxy')

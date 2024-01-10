@@ -2,18 +2,18 @@ import { Router, Request, Response } from 'express'
 import { Status, countryCodes, OrderStatus } from '../../../constants'
 import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
-import wechatPay from '../../../provider/weChatPay'
 import { v4 as uuidv4 } from 'uuid'
 import { sendNewOrderSMS } from '../../../provider/twilio'
-import { makeOrderNumber, sendSubscribeMessage } from '../../../provider/index'
+import {
+	makeOrderNumber,
+	sendOrderSubscribeMessage
+} from '../../../provider/index'
 import { newOrderMail } from '../../../provider/mailer'
 import moment from 'moment-timezone'
 import {
 	Address,
 	Order,
 	OrderDetail,
-	Price,
-	Product,
 	StoreProduct,
 	User
 } from '../../../models/sequelize'
@@ -96,7 +96,6 @@ export default (app: Router) => {
 						}
 					]
 				})
-
 				res.send({
 					unpaid: todoUnpaidOrder,
 					paid: todoPaidOrder,
@@ -439,9 +438,14 @@ export default (app: Router) => {
 					orderData[index].orderDetails?.push(orderDetail)
 				}
 			})
-			await Order.bulkCreate(orderData, {
-				include: [OrderDetail]
+			const result = await Order.bulkCreate(orderData, {
+				include: [OrderDetail],
+				returning: true
 			})
+			console.log(result)
+			for (const item of orderData) {
+				sendOrderSubscribeMessage(orderNumber, myOpenId, item.dealerId, comment)
+			}
 			res.send({ orderNumber })
 			Logger.info('Order create successfully')
 		} catch (err) {
@@ -631,13 +635,19 @@ export default (app: Router) => {
 	)
 
 	route.post(
-		'/preOrder',
+		'/prepay',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
-			const preOrderResult = await wechatPay(req, myOpenId)
-			res.send(preOrderResult)
+			// const preOrderResult = await wechatPay(req, myOpenId)
+			res.send()
 			Logger.info('preOrder success')
 		}
 	)
+	route.post('/payment/result', async (req: Request, res: Response) => {
+		const { myOpenId } = req.body
+		// const preOrderResult = await wechatPay(req, myOpenId)
+		res.send()
+		Logger.info('Code order made success')
+	})
 }

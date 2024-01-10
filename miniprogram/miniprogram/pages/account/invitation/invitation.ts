@@ -1,4 +1,4 @@
-import { getCodes, newCode, preOrder, charge } from '../../../services/api/api'
+import { getCodes, preOrder, charge } from '../../../services/api/api'
 import { IAppOption } from '../../../models/index'
 import { Status } from '../../../constant/index'
 const app = getApp<IAppOption>()
@@ -64,19 +64,11 @@ Page({
     if (prePay) {
       wx.hideLoading()
       try {
-        const payResult = await charge(prePay)
-        const result = await newCode()
-        if (result.status !== Status.FAIL) {
-          wx.showToast({
-            title: '购买成功',
-            icon: 'success',
-            duration: 2000
-          })
-        }
-        const updateCodes = this.data.unusedCodes
-        updateCodes.unshift(result)
-        this.setData({
-          unusedCodes: updateCodes,
+        await charge(prePay)
+        wx.showToast({
+          title: '购买成功',
+          icon: 'success',
+          duration: 2000
         })
       } catch (error) {
         wx.showToast({

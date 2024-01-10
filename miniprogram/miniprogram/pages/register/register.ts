@@ -29,6 +29,7 @@ Page({
     if (user?.status === 'Active') {
       wx.navigateBack()
     }
+
   },
 
   /**
@@ -78,8 +79,13 @@ Page({
       wx.showToast({ title: '请补全信息', icon: 'none' })
       return
     }
+    await wx.requestSubscribeMessage({
+      tmplIds: ['uk13xyUe0w-DSHVl5rnu4FMQ8EYQIsFh4MU6Zm_NZLc', '0_8ksH5gYQCdSYmrZDoO5Mep1zifl_dF8pOis7TZ-uI']
+    })
+    wx.showLoading({ title: '加载中' })
     const result: any = await getSignup(username, this.data.avatarUrl)
     app.globalData.user = { ...app.globalData.user, ...JSON.parse(result) }
+    wx.hideLoading()
     wx.navigateBack()
   }
 })

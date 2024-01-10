@@ -1,65 +1,56 @@
 import { Request, Response } from 'express'
-import queryString from 'querystring'
-import crypto from 'crypto'
-import { makeCode } from './index'
-const tenpay = require('tenpay')
+import axios from 'axios'
+import { generateRandomString, makeCode } from '.'
+import { KJUR, hextob64 } from 'jsrsasign'
 
-const apiKey = process.env.api_Key
-const mchID = process.env.mch_ID
-const appID = process.env.APP_ID
-const price = process.env.ALIAS_CODE_PRICE
-
-const wechatPay = async (req: Request, openID: string) => {
-	const getSign = (signParams: any) => {
-		const stringA =
-			'appId=' +
-			signParams.appid +
-			'&nonceStr=' +
-			signParams.nonceStr +
-			'&package=' +
-			signParams.package +
-			'&signType=MD5' +
-			'&timeStamp=' +
-			signParams.timeStamp
-
-		const stringSignTemp = stringA + '&key=' + apiKey
-
-		return crypto
-			.createHash('md5')
-			.update(queryString.unescape(stringSignTemp), 'utf8')
-			.digest('hex')
-			.toUpperCase()
-	}
-	const clientIP =
-		req.headers['X-Forwarded-For'] ||
-		req.headers['x-forwarded-for'] ||
-		req.connection.remoteAddress ||
-		req.socket.remoteAddress
-
-	const config = {
-		appid: appID,
-		mchid: mchID,
-		partnerKey: apiKey,
-		notify_url: 'http://www.weixin.qq.com/wxpay/pay.php',
-		spbill_create_ip: clientIP
-	}
-	const api = new tenpay(config)
-	const sandboxAPI = await tenpay.sandbox(config)
-	const result = await api.unifiedOrder({
+export const getPrepay = async (req: Request) => {
+	const { myOpenId } = req.params
+	const { quantity } = req.body
+	const bodyParams = {
+		appid: process.env.APP_ID,
+		mchid: process.env.mch_ID,
+		description: '用来关注上级供货商的邀请码',
 		out_trade_no: makeCode(),
-		body: '购买单个邀请码',
-		total_fee: price,
-		openid: openID
-	})
-	const paymentParam: { [key: string]: string } = {
-		appid: result.appid,
-		timeStamp: JSON.stringify(Date.now()),
-		nonceStr: result.nonce_str,
-		package: 'prepay_id=' + result.prepay_id,
-		signType: 'MD5'
+		amount: {
+			total: (Number(process.env.ALIAS_CODE_PRICE) || 5) * quantity,
+			currency: 'CNY'
+		},
+		payer: {
+			openid: myOpenId
+		}
 	}
-	paymentParam.paySign = getSign(paymentParam)
-	return paymentParam
+	const timestamp = Math.round(new Date().getTime() / 1000)
+	const oneceStr = generateRandomString(32)
+	const privateKey = ``
+	const signature = rsaSign(
+		`POST\n/v3/pay/transactions/jsapi\n${timestamp}\n${oneceStr}\n${JSON.stringify(
+			bodyParams
+		)}`,
+		privateKey,
+		'SHA256withRSA'
+	)
+	const Authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${process.env.mch_ID}",nonce_str="${oneceStr}",timestamp="${timestamp}",signature="${signature}",serial_no="${process.env.SERIAL_NO}"`
+	return axios.post(
+		`https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
+		bodyParams,
+		{
+			headers: {
+				Authorization
+			}
+		}
+	)
 }
 
-export default wechatPay
+const rsaSign = (
+	content: string,
+	privateKey: string,
+	hash = 'SHA256withRSA'
+) => {
+	const signature = new KJUR.crypto.Signature({
+		alg: hash
+	})
+	signature.init(privateKey)
+	signature.updateString(content)
+	const signData = signature.sign()
+	return hextob64(signData)
+}

@@ -5,3 +5,7 @@ admin/yarn.lock
 miniprogram/miniprogram/miniprogram_npm/
 miniprogram/miniprogram/node_modules/
 miniprogram/miniprogram/package-lock.json
+server/vbangv-new.pem
+server/.env-production
+*.crt
+*.key

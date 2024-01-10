@@ -31,7 +31,8 @@ Page({
       this.setData({
         account: todoAccount,
         username: app.globalData.user?.username,
-        avatarUrl: app.globalData.user?.avatarUrl
+        avatarUrl: app.globalData.user?.avatarUrl,
+        hasWarehouse: !!todoAccount.warehouse
       })
       app.globalData.reload = false
     }

@@ -4,20 +4,29 @@ import Logger from './services/logger'
 import db from './config/database'
 import loader from './services/index'
 
-const app: Express = express()
+const https = require('https')
+const fs = require('fs')
 
-db.sync({ alter: process.env.NODE_ENV === 'dev' })
-	.then(() => {
-		console.log('All table created')
-		loader({ expressApp: app })
-		app.listen(config.port, () => {
+const app: Express = express()
+loader(app)
+
+const credentials = {
+	key: fs.readFileSync('private.key', 'utf8'),
+	cert: fs.readFileSync('certificate.crt', 'utf8'),
+	ca: fs.readFileSync('ca_bundle.crt', 'utf8')
+}
+
+https.createServer(credentials, app).listen(config.port, () => {
+	db.sync({ alter: process.env.NODE_ENV === 'dev' })
+		.then(() => {
+			console.log('All table created')
 			Logger.info(`
-				################################################
-				🛡️  Server listening on port: ${config.port} env: ${process.env.NODE_ENV} 🛡️
-				################################################
-			  `)
+		################################################
+		🛡️  HTTPS Server listening on port: ${config.port} env: ${process.env.NODE_ENV} 🛡️
+		################################################
+	  `)
 		})
-	})
-	.catch(error => {
-		console.error('Error syncing models:', error)
-	})
+		.catch(error => {
+			console.error('Error syncing models:', error)
+		})
+})
