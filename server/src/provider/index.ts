@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { User } from '../models/sequelize'
 
 const login = (code: string) =>
 	axios.get('https://api.weixin.qq.com/sns/jscode2session', {
@@ -33,41 +34,39 @@ const getToken = () =>
 			grant_type: 'client_credential'
 		}
 	})
-const sendSubscribeMessage = async (
+
+const sendOrderSubscribeMessage = async (
 	orderNumber: string,
-	openId: string,
+	userId: string,
 	openIdDealer: string,
-	createdAt: string
+	createdAt: string,
+	comment?: string
 ) => {
-	const tokenResult = await getToken()
-	// const getBuyerName = await query(queryName.getUserName, [openId])
+	const {
+		data: { access_token }
+	} = await getToken()
+	const todoUser = await User.findByPk(userId, { attributes: ['username'] })
 	return axios.post(
-		'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
+		`https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${access_token}`,
 		{
-			access_token: tokenResult.data.access_token,
 			touser: openIdDealer,
 			page: 'pages/account/orders/orders',
 			miniprogram_state: process.env.miniprogram_state,
-			template_id: 'GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE',
+			template_id: process.env.ORDER_MESSAGE_TEMP_ID,
 			// need new template to update
 			data: {
-				character_string1: {
-					value: orderNumber
+				name1: {
+					value: todoUser?.dataValues.username
 				},
 				thing18: {
 					value: ''
 				},
-				time19: {
+				date2: {
 					value: createdAt
 				},
-				thing12: {
-					value: '您有新订单未处理，请及时处理'
+				thing3: {
+					value: comment || '您有新订单未处理，请及时处理'
 				}
-			}
-		},
-		{
-			params: {
-				access_token: tokenResult.data.access_token
 			}
 		}
 	)
@@ -76,38 +75,31 @@ const sentShippingMessage = async (
 	orderNumber: string,
 	trackingNumber: string,
 	trackingCompany: string,
-	openID: string
+	openId: string,
+	updatedAt: string
 ) => {
 	const tokenResult = await getToken()
 
 	return axios.post(
-		'https://api.weixin.qq.com/cgi-bin/message/subscribe/send',
+		`https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${tokenResult.data.access_token}`,
 		{
 			access_token: tokenResult.data.access_token,
-			touser: openID,
+			touser: openId,
 			// page:
 			// 	'pages/account/followingAndFollower/followingAndFollower?group=following',
-			template_id: 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc',
+			template_id: process.env.SHIPMENT_MESSAGE_TEMP_ID,
 			miniprogram_state: process.env.miniprogram_state,
 			// need new template to update
 			data: {
 				character_string1: {
-					value: orderNumber
-				},
-				thing5: {
-					value: '商家已发货'
-				},
-				character_string9: {
 					value: trackingNumber
 				},
-				thing8: {
+				thing2: {
 					value: trackingCompany
+				},
+				time3: {
+					value: updatedAt
 				}
-			}
-		},
-		{
-			params: {
-				access_token: tokenResult.data.access_token
 			}
 		}
 	)
@@ -140,6 +132,19 @@ const makeOrderNumber = () => {
 	}
 	return orderNumber
 }
+
+function generateRandomString(length: number) {
+	const characters =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	let result = ''
+
+	for (let i = 0; i < length; i++) {
+		const randomIndex = Math.floor(Math.random() * characters.length)
+		result += characters.charAt(randomIndex)
+	}
+
+	return result
+}
 export {
 	login,
 	getQRcode,
@@ -147,6 +152,7 @@ export {
 	makeOrderNumber,
 	getToken,
 	makeVerificationCode,
-	sendSubscribeMessage,
-	sentShippingMessage
+	sendOrderSubscribeMessage,
+	sentShippingMessage,
+	generateRandomString
 }

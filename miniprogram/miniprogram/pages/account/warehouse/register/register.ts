@@ -87,7 +87,9 @@ Page({
           icon: 'error',
           duration: 2000
         })
+        return
       }
+      wx.redirectTo({url:`./mailer/mailer?phone=${this.data.phone}`})
     }
     else {
       this.setData({

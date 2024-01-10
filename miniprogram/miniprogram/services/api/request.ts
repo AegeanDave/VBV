@@ -3,10 +3,10 @@ import { reLogin } from "../services";
 const { miniProgram: { envVersion } } = wx.getAccountInfoSync()
 
 let url = ''
-
+console.log(envVersion)
 switch (envVersion) {
   case 'develop':
-    url = "http://192.168.2.30:8080/api";
+    url = "https://localhost:3000/api";
     break;
   case 'trial':
     url = "https://api.vbangv.com/api";

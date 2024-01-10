@@ -21,12 +21,15 @@ if (fs.existsSync('.env')) {
 } else {
 	dotenv.config({ path: '.env.example' }) // you can delete this after you create your own .env file!
 }
-
+const PORT =
+	process.env.STATUS === 'production'
+		? process.env.PROD_PORT
+		: process.env.DEV_PORT
 export default {
 	/**
 	 * Your favorite port
 	 */
-	port: parseInt(process.env.PORT || '8080', 10),
+	port: parseInt(PORT || '8080', 10),
 
 	/**
 	 * API configs
