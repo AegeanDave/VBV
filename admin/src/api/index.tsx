@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Product, Order, Image } from "../models/index";
+import { Product } from "../models/index";
 
 interface Auth {
   phoneNumber: string;
@@ -19,7 +19,11 @@ axios.interceptors.response.use(
 axios.defaults.headers.common = {
   authorization: localStorage.getItem("sessionKey"),
 };
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+
+axios.defaults.baseURL = import.meta.env.PROD
+  ? import.meta.env.VITE_PROD_API_URL
+  : import.meta.env.VITE_API_URL;
+
 export const login = async (auth: Auth) =>
   await axios.post("/admin/warehouse/login", auth);
 

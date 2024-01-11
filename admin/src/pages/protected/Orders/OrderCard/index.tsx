@@ -12,10 +12,9 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
-import { Product, Order } from "../../../../models/index";
+import { Order } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { OrderStatus } from "../../../../constant/index";
-import { ContentCopy, GetApp } from "@mui/icons-material";
+import { ContentCopy } from "@mui/icons-material";
 import ActionField from "./ActionField";
 import moment from "moment";
 import { useSnackbar } from "notistack";

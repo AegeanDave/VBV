@@ -1,4 +1,3 @@
-import React from "react";
 import logo from "../../../assets/images/logo.png";
 import {
   Avatar,
@@ -6,7 +5,6 @@ import {
   Grid,
   Box,
   Card,
-  Divider,
   Button,
   TextField,
 } from "@mui/material";

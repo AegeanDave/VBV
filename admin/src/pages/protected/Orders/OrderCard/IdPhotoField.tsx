@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   Skeleton,
@@ -7,9 +7,7 @@ import {
   ImageList,
   ImageListItemBar,
 } from "@mui/material";
-import { getPresignedUrl, getIdPhoto } from "../../../../api/order";
-import JSZip from "jszip";
-import { useSnackbar } from "notistack";
+import { getIdPhoto } from "../../../../api/order";
 import DownloadIcon from "@mui/icons-material/Download";
 
 interface Props {
