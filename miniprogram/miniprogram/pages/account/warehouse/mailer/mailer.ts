@@ -11,15 +11,10 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function (options) {
+  onLoad: function (options: any) {
     const phone = options.phone
     this.setData({
       phone: phone
-    })
-  },
-  bindResend: async function () {
-    wx.redirectTo({
-      url:'../setting/setting?phone=' + this.data.phone
     })
   },
   confirm() {

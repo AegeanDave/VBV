@@ -4,12 +4,7 @@ const route = Router()
 import { Logger } from '../../../services'
 import { adminAuthenticated } from '../../../api/middleware/authorization'
 import { Session } from '../../../models/types'
-import {
-	Status,
-	WarehouseStatus,
-	carriers,
-	countryCodes
-} from '../../../constants'
+import { Status } from '../../../constants'
 import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
 import { sentShippingMessage } from '../../../provider'

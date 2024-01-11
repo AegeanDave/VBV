@@ -170,22 +170,35 @@ export default (app: Router) => {
 		'/product/:id',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { id } = req.params
+			const { id, myOpenId } = req.params
 			try {
 				const todoProduct = await StoreProduct.findOne({
 					where: {
 						id
 					},
-					include: {
-						model: Product,
-						attributes: [
-							'name',
-							'description',
-							'shortDescription',
-							'setting',
-							'coverImageUrl'
-						]
-					}
+					include: [
+						{
+							model: Product,
+							attributes: [
+								'name',
+								'description',
+								'shortDescription',
+								'setting',
+								'coverImageUrl'
+							]
+						},
+						{
+							model: User,
+							as: 'specialPrice',
+							through: {
+								where: {
+									openIdChild: myOpenId
+								},
+								attributes: ['price']
+							},
+							attributes: ['username', 'avatarUrl']
+						}
+					]
 				})
 				const todoImage = await Image.findAll({
 					where: { productId: todoProduct?.dataValues.productId }

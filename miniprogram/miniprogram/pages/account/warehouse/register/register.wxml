@@ -1,5 +1,15 @@
 <!--pages/account/warehouse/register/register.wxml-->
-<view>
+<view wx:if="{{pending}}">
+  <view class="instruction">
+    <image src="/image/warehouse.svg" mode="aspectFit"></image>
+    <text>您已提交仓库开通申请，注册号码为{{phone}}</text>
+  </view>
+  <view class="instruction">
+    <text>请在电脑端打开</text>
+    <text class="underline bold">vbangv.com</text>
+  </view>
+</view>
+<view wx:else>
   <view class="instruction">
     <image src="/image/warehouse.svg" mode="aspectFit"></image>
     <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>

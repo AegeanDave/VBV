@@ -3,14 +3,7 @@ import { Order, Product, Warehouse } from '../../../models/sequelize'
 const route = Router()
 import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
-import {
-	Status,
-	WarehouseStatus,
-	carriers,
-	countryCodes
-} from '../../../constants'
-import { sentShippingMessage } from '../../../provider'
-import { sendRegistrationSMS } from '../../../provider/twilio'
+import { Status } from '../../../constants'
 
 export default (app: Router) => {
 	app.use('/warehouse', route)
@@ -22,11 +15,20 @@ export default (app: Router) => {
 			try {
 				const { phoneNumber } = req.body
 				const { myOpenId } = req.params
-				await Warehouse.create({
-					openId: myOpenId,
-					loginPhoneNumber: phoneNumber,
-					status: 'Not_Verified'
+				const [_warehouse, created] = await Warehouse.findOrCreate({
+					where: { openId: myOpenId, loginPhoneNumber: phoneNumber },
+					defaults: {
+						status: 'Not_Verified'
+					}
 				})
+				if (!created) {
+					Warehouse.update(
+						{ status: 'Not_Verified', loginPhoneNumber: phoneNumber },
+						{
+							where: { openId: myOpenId }
+						}
+					)
+				}
 				res.send({
 					status: Status.SUCCESS
 				})

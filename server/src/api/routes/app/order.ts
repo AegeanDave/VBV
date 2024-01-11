@@ -384,6 +384,17 @@ export default (app: Router) => {
 							(item: { item: any; quantity: number }) => item.item.id
 						)
 					}
+				},
+				include: {
+					model: User,
+					as: 'specialPrice',
+					through: {
+						where: {
+							openIdChild: myOpenId
+						},
+						attributes: ['price']
+					},
+					attributes: ['openId']
 				}
 			})
 			if (items.length !== todoStoreProducts.length) {
@@ -405,9 +416,14 @@ export default (app: Router) => {
 				const quantity = items.find(
 					(item: any) => item.item.id === dataValues.id
 				).quantity
+				const actualPrice =
+					dataValues.specialPrice.length > 0
+						? dataValues.specialPrice[0]?.price.price
+						: dataValues.defaultPrice
 				const orderDetail = {
 					productInfo: {
 						price: dataValues.defaultPrice,
+						specialPrice: dataValues.specialPrice[0]?.price.price,
 						coverImageUrl: dataValues.coverImageUrl,
 						name: dataValues.name,
 						storeProductId: dataValues.id
@@ -416,14 +432,14 @@ export default (app: Router) => {
 					quantity,
 					comment,
 					groupId,
-					subtotal: quantity * dataValues.defaultPrice
+					subtotal: quantity * actualPrice
 				}
 				if (index === -1) {
 					orderData.push({
 						orderNumber,
 						groupId,
 						payment: {
-							totalAmount: quantity * dataValues.defaultPrice
+							totalAmount: quantity * actualPrice
 						},
 						userId: myOpenId,
 						dealerId: dataValues.openId,
@@ -433,8 +449,7 @@ export default (app: Router) => {
 						orderDetails: [orderDetail]
 					})
 				} else {
-					orderData[index].payment.totalAmount +=
-						quantity * dataValues.defaultPrice
+					orderData[index].payment.totalAmount += quantity * actualPrice
 					orderData[index].orderDetails?.push(orderDetail)
 				}
 			})
@@ -442,7 +457,6 @@ export default (app: Router) => {
 				include: [OrderDetail],
 				returning: true
 			})
-			console.log(result)
 			for (const item of orderData) {
 				sendOrderSubscribeMessage(orderNumber, myOpenId, item.dealerId, comment)
 			}
@@ -469,7 +483,6 @@ export default (app: Router) => {
 					where: { orderNumber, userId: myOpenId },
 					attributes: ['payment', 'dealerId', 'status']
 				})
-
 				const todoDealer = await User.findAll({
 					where: {
 						openId: {
