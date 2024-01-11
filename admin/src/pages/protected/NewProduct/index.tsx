@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   FormControlLabel,
+  Tooltip,
 } from "@mui/material";
 import "./style.scss";
 import { useForm, Controller } from "react-hook-form";
@@ -225,7 +226,7 @@ const ProductForm = ({ onClose }: Props) => {
                   inputProps={{ step: 0.01 }}
                   InputProps={{
                     startAdornment: (
-                      <InputAdornment position="start">RMB</InputAdornment>
+                      <InputAdornment position="start">¥</InputAdornment>
                     ),
                   }}
                 />
@@ -250,18 +251,23 @@ const ProductForm = ({ onClose }: Props) => {
               }
               label="包邮"
             />
-            <FormControlLabel
-              control={
-                <Controller
-                  name="isIdRequired"
-                  control={control}
-                  render={({ field }) => (
-                    <Checkbox {...field} checked={field.value} />
-                  )}
-                ></Controller>
-              }
-              label="海外直邮"
-            />
+            <Tooltip
+              title="勾选后，用户在购买此商品时需要上传并核对身份证件。"
+              placement="right-start"
+            >
+              <FormControlLabel
+                control={
+                  <Controller
+                    name="isIdRequired"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox {...field} checked={field.value} />
+                    )}
+                  ></Controller>
+                }
+                label="海外直邮"
+              />
+            </Tooltip>
           </Grid>
           <Grid item xs={2}>
             <Typography variant="body2" component="label">

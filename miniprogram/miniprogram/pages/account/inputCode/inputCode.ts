@@ -30,15 +30,21 @@ Page({
     })
     try {
       const result: any = await makeNewConnection(e.detail.value.code)
-      if (result.status === Status.SUCCESS) {
-        app.globalData.reload = true
-        wx.hideLoading()
-        await wx.showToast({
-          title: '关注成功',
-          icon: 'success'
+      wx.hideLoading()
+      if (result.status === Status.FAIL) {
+        wx.showToast({
+          title: result.message,
+          icon: 'error'
         })
-        wx.navigateBack()
+        return
       }
+      app.globalData.reload = true
+      await wx.showToast({
+        title: '关注成功',
+        icon: 'success'
+      })
+      wx.navigateBack()
+
     } catch (err) {
       wx.hideLoading()
       wx.showToast({

@@ -2,7 +2,7 @@
 <mp-searchbar placeholder="输入好友微信名搜索产品" bindinput="onSearch" bindclear="onClear"></mp-searchbar>
 <view class="dealerContainer">
   <view class="dealer-list-head">
-    <text class="title">关注商家</text>
+    <text class="title">我的供应商</text>
     <block wx:if="{{dealer.length>0}}">
       <van-button plain type="primary" class="btn" hairline type="info" size="small" bind:click='onPickDealer' data-dealer="all">查看全部</van-button>
     </block>
@@ -85,9 +85,9 @@
     </block>
   </view>
   <view wx:elif="{{productList.length===0 && dealers.length===0}}" class="empty">
-    <text>您还没有关注任何商家</text>
-    <text>请通过邀请码添加好友</text>
-    <button bindtap="onToConnection">去添加好友</button>
+    <text>您还没有关注任供应商</text>
+    <text>请通过邀请码关注</text>
+    <van-button type="default" bind:tap="onToConnection" size="large">去关注</van-button>
   </view>
   <view wx:elif="{{productList.length===0 && dealers.length>0}}" class="empty">
     <image src='../../image/empty_products.png' class="noProducts"></image>
