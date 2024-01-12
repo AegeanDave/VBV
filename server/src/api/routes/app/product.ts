@@ -217,8 +217,31 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.post('/price', isAuthenticated, async (req: Request, res: Response) => {
+		const { price, product } = req.body
+		try {
+			await StoreProduct.update(
+				{ defaultPrice: price },
+				{
+					where: {
+						id: product.id
+					}
+				}
+			)
+			res.send({
+				status: Status.SUCCESS
+			})
+			Logger.info('updatePrice success')
+		} catch (err) {
+			console.log(err)
+			res.send({
+				status: Status.FAIL
+			})
+			Logger.info('updatePrice fail')
+		}
+	})
 	route.post(
-		'/special-price',
+		'/price/special',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { openIdChild, price, product } = req.body

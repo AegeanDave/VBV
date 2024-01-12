@@ -98,7 +98,7 @@
     <view class="weui-cells__title">为您的下线制定专属价格</view>
     <view class="weui-cells weui-cells_after-title">
       <view class="weui-cell weui-cell_input">
-        <input name='specialPrice' placeholder="CNY99.99" type="digit" bindinput="onSpecialPriceChange" maxlength="10"></input>
+        <input name='specialPrice' placeholder="¥99.99" type="digit" bindinput="onSpecialPriceChange" maxlength="10"></input>
       </view>
     </view>
 

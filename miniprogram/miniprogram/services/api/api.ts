@@ -1,10 +1,9 @@
 import request from './request'
-import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild } from './product'
+import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, updatePrice } from './product'
 import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer, uploadPhotoBack, uploadPhotoFront, addAddress, getAddresses, deleteAddress } from './user'
-import { submitOrder, markPaid, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, hideOrder, preOrder, getOrderResult, getPurchasedOrder,getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder } from './order'
+import { submitOrder, markPaid, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, hideOrder, preOrder, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder } from './order'
 
 const updateUserInfo = (userInfo: {}) => request.postRequest("users/updateUserInfo", userInfo)
-const getFatherAndChildNumber = () => request.getRequest("users/fatherAndChildNumber")
 const newCode = () => request.postRequest("users/newCode")
 const getCountriesData = () => request.getRequest("users/countries")
 const updatePhone = (phone: string, countryCode: string) => request.postRequest("warehouse/updatePhone", { phone: phone, countryCode: countryCode })
@@ -19,8 +18,7 @@ export {
   getProduct,
   updateUserInfo,
   getProductList,
-  getFatherAndChildNumber,
-  getAddresses,
+  updatePrice, getAddresses,
   addAddress,
   deleteAddress,
   getAlias,

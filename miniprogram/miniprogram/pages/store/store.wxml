@@ -91,3 +91,12 @@
 <mp-dialog title='确认下架"{{selectedProduct.name}}"' show="{{dialogShow}}" bindbuttontap="onDialogClick" buttons="{{buttons}}">
 </mp-dialog>
 <van-toast id="van-toast" />
+<van-action-sheet show="{{ priceActionSheetShow }}" title="改价" bind:close="onPriceActionSheetClose">
+  <van-cell-group>
+    <van-field value="{{ newPriceInput }}" center clearable label="¥" placeholder="请输入新的价格" border="{{ false }}" use-button-slot bind:change="onPriceChange">
+      <van-button slot="button" type="primary" bind:tap="handleUpdatePrice" disabled="{{!newPrice}}">
+        确认改价
+      </van-button>
+    </van-field>
+  </van-cell-group>
+</van-action-sheet>
