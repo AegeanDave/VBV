@@ -12,10 +12,9 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
-import { Product, Order } from "../../../../models/index";
+import { Order } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
-import { OrderStatus } from "../../../../constant/index";
-import { ContentCopy, GetApp } from "@mui/icons-material";
+import { ContentCopy } from "@mui/icons-material";
 import ActionField from "./ActionField";
 import moment from "moment";
 import { useSnackbar } from "notistack";
@@ -128,27 +127,27 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
               ) : (
                 <Box textAlign="left">
                   <Typography fontSize={14} fontWeight={600}>
-                    {order.address.recipient}
+                    {order.address?.recipient}
                   </Typography>
-                  <Typography fontSize={12}>{order.address.phone}</Typography>
+                  <Typography fontSize={12}>{order.address?.phone}</Typography>
                   <Typography fontSize={14}>
-                    {order.address.province} {order.address.city}{" "}
-                    {order.address.street}
+                    {order.address?.province} {order.address?.city}{" "}
+                    {order.address?.street}
                   </Typography>
                 </Box>
               )}
               <CopyToClipboard
                 text={
-                  order.address.quickInput ||
-                  order.address.recipient +
+                  order.address?.quickInput ||
+                  order.address?.recipient +
                     " " +
-                    order.address.phone +
+                    order.address?.phone +
                     " " +
-                    order.address.province +
+                    order.address?.province +
                     " " +
-                    order.address.city +
+                    order.address?.city +
                     " " +
-                    order.address.street
+                    order.address?.street
                 }
                 onCopy={handleCopy}
               >

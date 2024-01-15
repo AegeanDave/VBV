@@ -1,7 +1,6 @@
-import { getMyStore, publishProduct, unpublishProduct } from "../../services/api/api"
-import { Product, IAppOption } from "../../models/index"
+import { getMyStore, publishProduct, unpublishProduct, updatePrice } from "../../services/api/api"
+import { IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
-import { generateQRcode } from '../../services/QRcode'
 import Toast from '@vant/weapp/toast/toast';
 
 const app = getApp<IAppOption>()
@@ -23,6 +22,7 @@ Page({
     recommendationActions: [{ text: '我要售卖', value: 6 }],
     dialogShow: false,
     buttons: [{ text: '取消' }, { text: '确定' }],
+    priceActionSheetShow: false,
 
     // 设置区，针对部件的数据设置
     qrcodeDiam: 80,               // 小程序码直径
@@ -190,9 +190,40 @@ Page({
       dialogShow: false,
     })
   },
-  handleUpdatePrice() {
+  onPriceChange(e: any) {
+    this.setData({
+      newPrice: e.detail
+    })
+  },
+  async handleUpdatePrice() {
     const selectedProduct = this.data.selectedProduct
 
+    wx.showLoading({ title: '提交中' })
+    try {
+      await updatePrice(selectedProduct, this.data.newPrice)
+      this.setData({
+        myProductList: this.data.myProductList.map(item => {
+          if (item.id === selectedProduct.id) {
+            return { ...item, defaultPrice: this.data.newPrice }
+          }
+          return item
+        })
+      })
+      wx.hideLoading()
+      wx.showToast({
+        title: '更新成功',
+        icon: 'error'
+      })
+    } catch (err) {
+      console.log(err)
+      wx.hideLoading()
+      wx.showToast({
+        title: '更新失败',
+        icon: 'error'
+      })
+    } finally {
+      this.onPriceActionSheetClose()
+    }
   },
   onActionClick(e: any) {
     const optionValue = e.detail.value
@@ -204,7 +235,9 @@ Page({
         this.drawImage()
         break;
       case 2:
-        this.handleUpdatePrice()
+        this.setData({
+          priceActionSheetShow: true
+        })
         break;
       case 3:
         this.bindPreview()
@@ -225,6 +258,13 @@ Page({
     }
     this.close()
   },
+  onPriceActionSheetClose() {
+    this.setData({
+      priceActionSheetShow: false
+    })
+  },
+
+
   closeCanvas() {
     this.setData({
       showCanvasMask: !this.data.showCanvasMask,

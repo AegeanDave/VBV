@@ -4,10 +4,9 @@
   <view class="text">
     <text>请在电脑端打开</text>
     <text class="underline bold">vbangv.com</text>
-    <text>使用此手机号码进行登录</text>
+    <text>使用此手机号码进行注册</text>
   </view>
   <view class="btnField">
-    <button bindtap="bindResend">号码错误，重新输入手机号</button>
     <button bindtap="confirm" class="confirm">确认</button>
   </view>
 </view>

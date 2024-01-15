@@ -103,14 +103,21 @@ Page({
         url: '../register/register'
       })
     }
-    if (this.data.hasWarehouse && this.data.account.warehouse.status === 'Active') {
+    const { warehouse } = this.data.account
+    if (warehouse?.status === 'Active') {
       wx.navigateTo({
         url: './warehouse/warehouse'
       })
     }
-    wx.navigateTo({
-      url: './warehouse/register/register'
-    })
+    else if (warehouse?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: `./warehouse/register/register?phone=${warehouse.loginPhoneNumber}`
+      })
+    } else {
+      wx.navigateTo({
+        url: './warehouse/register/register'
+      })
+    }
   },
   toConnection: function () {
     if (app.globalData.user?.status === 'Not_Verified') {

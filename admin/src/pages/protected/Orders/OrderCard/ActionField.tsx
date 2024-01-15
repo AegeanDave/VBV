@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   TextField,
@@ -11,7 +10,6 @@ import {
   Select,
 } from "@mui/material/";
 import { actions, OrderStatus, carriers } from "../../../../constant/index";
-import { Edit, ExpandMore } from "@mui/icons-material";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { useOrder } from "../../../../contexts/OrderProvider";
 
@@ -31,7 +29,7 @@ export default function ShippingAction({ order }: Props) {
       trackingNum: "",
     },
   });
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     onShipping(order, data);
   };
 

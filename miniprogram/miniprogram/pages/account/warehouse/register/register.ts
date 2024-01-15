@@ -29,15 +29,20 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad() {
-
+  onLoad(option) {
+    if (option.phone) {
+      this.setData({
+        pending: true,
+        phone: option.phone
+      })
+    }
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
   onReady() {
-
+    
   },
 
   /**
@@ -89,7 +94,7 @@ Page({
         })
         return
       }
-      wx.redirectTo({url:`./mailer/mailer?phone=${this.data.phone}`})
+      wx.redirectTo({ url: `../mailer/mailer?phone=${this.data.phone}` })
     }
     else {
       this.setData({

@@ -1,5 +1,5 @@
 <mp-form-page class="card inputBox">
-  <text>请输入您的邀请码来添加好友</text>
+  <text>请输入您的邀请码来关注供应商</text>
   <form bindsubmit='formSubmit'>
     <input name="code" value="{{currentValue}}" bindinput="onInputChange"></input>
     <view class="btnArea">

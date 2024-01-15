@@ -85,7 +85,15 @@
             <view class="productCard saleProduct horizontal" bindtap="onShowDialog" data-product="{{product}}">
               <image src="{{product.coverImageUrl}}"></image>
               <text class="name store">{{product.name}}</text>
-              <text class="price">¥{{product.specialPrice[0].price.price||product.defaultPrice}}</text>
+              <block wx:if="{{product.specialPrice[0].price.price}}">
+                <view style="margin-top: 4px;">
+                  <text class="price deprecate">¥{{product.defaultPrice}}</text>
+                  <text class="price special">¥{{product.specialPrice[0].price.price}}</text>
+                </view>
+              </block>
+              <block wx:else>
+                <text class="price">¥{{product.defaultPrice}}</text>
+              </block>
             </view>
           </block>
         </view>
@@ -93,14 +101,12 @@
     </van-tab>
   </van-tabs>
 </view>
-<mp-half-screen-dialog bindbuttontap="buttontap" show="{{showDialog}}" maskClosable="{{false}}" title="单品改价" buttons="{{dialogButtons}}" bindbuttontap="onDialogButtonTap">
-  <view slot="desc">
-    <view class="weui-cells__title">为您的下线制定专属价格</view>
-    <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_input">
-        <input name='specialPrice' placeholder="CNY99.99" type="digit" bindinput="onSpecialPriceChange" maxlength="10"></input>
-      </view>
-    </view>
-
-  </view>
-</mp-half-screen-dialog>
+<van-action-sheet show="{{ showDialog }}" title="改价" bind:close="onPriceActionSheetClose">
+  <van-cell-group>
+    <van-field value="{{ specialPrice }}" center clearable label="¥" placeholder="请输入新的价格" border="{{ false }}" type="digit" use-button-slot bind:change="onSpecialPriceChange">
+      <van-button slot="button" type="primary" bind:click="handleUpdatePrice" disabled="{{!specialPrice}}">
+        确认改价
+      </van-button>
+    </van-field>
+  </van-cell-group>
+</van-action-sheet>

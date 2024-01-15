@@ -1,6 +1,5 @@
-import React from "react";
 import { Button, TableRow, TableCell, ButtonGroup } from "@mui/material";
-import { columns, SaleStatus, actions } from "../../constant/index";
+import { columns, actions } from "../../constant/index";
 import { Product } from "../../models/index";
 import placeholder from "../../assets/images/cover_image_placeholder.png";
 import "./style.scss";
@@ -11,6 +10,7 @@ interface Props {
   product: Product;
   index: number;
 }
+
 export default function ProductRow({ product }: Props) {
   const { handleOpenDialog } = useProduct();
 
@@ -48,7 +48,7 @@ export default function ProductRow({ product }: Props) {
             </Link>
             <Button
               size="small"
-              onClick={() => handleOpenDialog(actions.delete.key, "Delete")}
+              onClick={() => handleOpenDialog(product.id, "Delete")}
             >
               {actions.delete.label}
             </Button>

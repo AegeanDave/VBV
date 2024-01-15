@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import AuthProvider from "../contexts/AuthProvider";
 import { useOutlet, useLoaderData, Await } from "react-router-dom";
 import { LinearProgress } from "@mui/material";

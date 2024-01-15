@@ -3,6 +3,7 @@ import { Product } from "../models/index";
 import { getProducts, updateProductStatus } from "../api/product";
 import { Popup } from "../components";
 import { useSnackbar } from "notistack";
+import { useLocation } from "react-router-dom";
 
 interface ProductContextType {
   loading: boolean;
@@ -20,14 +21,15 @@ function useProduct() {
 
 function ProductProvider({ children }: { children: ReactNode }) {
   const { enqueueSnackbar } = useSnackbar();
+  const location = useLocation();
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedProductId, setSelectedProductId] = useState<string>("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [deletePopupOpen, setDeletePopupOpen] = React.useState(false);
   const [editPopupOpen, setEditPopupOpen] = React.useState(false);
-
   useEffect(() => {
+    setLoading(true);
     const fetchProducts = async () => {
       try {
         const result = await getProducts();
@@ -39,7 +41,7 @@ function ProductProvider({ children }: { children: ReactNode }) {
       }
     };
     fetchProducts();
-  }, []);
+  }, [location.state?.key]);
 
   const handleConfirmUpdate = async (
     action: "Publish" | "Unpublish" | "Delete"

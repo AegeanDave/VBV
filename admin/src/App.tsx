@@ -1,4 +1,3 @@
-import React from "react";
 import "./App.css";
 import ReactGA from "react-ga";
 import Login from "./pages/public/Login";
@@ -33,7 +32,6 @@ const getUserData = () =>
     const user = localStorage.getItem("user");
     resolve(user);
   });
-
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route

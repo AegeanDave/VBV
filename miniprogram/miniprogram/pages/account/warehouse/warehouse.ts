@@ -1,5 +1,4 @@
 import { getWarehouse } from '../../../services/api/api'
-import { Status } from "../../../constant/index"
 
 Page({
   data: {

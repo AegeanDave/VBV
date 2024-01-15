@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Typography,
@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
   FormControlLabel,
+  Tooltip,
 } from "@mui/material";
 import "./style.scss";
 import { useForm, Controller } from "react-hook-form";
@@ -15,6 +16,7 @@ import { AddBoxSharp, Delete } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { snackMessage } from "../../../constant/index";
 import { createNewProduct } from "../../../api/product";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   onClose: () => void;
@@ -22,7 +24,15 @@ interface Props {
 
 const ProductForm = ({ onClose }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { control, handleSubmit, watch, register, setValue } = useForm({
+  const navigate = useNavigate();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    register,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       name: "",
       shortDescription: "",
@@ -38,11 +48,11 @@ const ProductForm = ({ onClose }: Props) => {
   const onSubmit = async (data: any) => {
     try {
       const result = await createNewProduct(data);
-
       if (!result.data) {
         enqueueSnackbar("上传失败", { variant: "error" });
         return;
       }
+      navigate("/product", { state: { key: result.data?.id }, replace: true });
       enqueueSnackbar(snackMessage.success.submit);
       onClose();
     } catch (err) {
@@ -225,7 +235,7 @@ const ProductForm = ({ onClose }: Props) => {
                   inputProps={{ step: 0.01 }}
                   InputProps={{
                     startAdornment: (
-                      <InputAdornment position="start">RMB</InputAdornment>
+                      <InputAdornment position="start">¥</InputAdornment>
                     ),
                   }}
                 />
@@ -250,18 +260,23 @@ const ProductForm = ({ onClose }: Props) => {
               }
               label="包邮"
             />
-            <FormControlLabel
-              control={
-                <Controller
-                  name="isIdRequired"
-                  control={control}
-                  render={({ field }) => (
-                    <Checkbox {...field} checked={field.value} />
-                  )}
-                ></Controller>
-              }
-              label="海外直邮"
-            />
+            <Tooltip
+              title="勾选后，用户在购买此商品时需要上传并核对身份证件。"
+              placement="right-start"
+            >
+              <FormControlLabel
+                control={
+                  <Controller
+                    name="isIdRequired"
+                    control={control}
+                    render={({ field }) => (
+                      <Checkbox {...field} checked={field.value} />
+                    )}
+                  ></Controller>
+                }
+                label="海外直邮"
+              />
+            </Tooltip>
           </Grid>
           <Grid item xs={2}>
             <Typography variant="body2" component="label">
@@ -338,7 +353,12 @@ const ProductForm = ({ onClose }: Props) => {
               variant="contained"
               type="submit"
               className="btn"
-              disabled={!watch("name") || !agreementChecked || !watch("price")}
+              disabled={
+                !watch("name") ||
+                !agreementChecked ||
+                !watch("price") ||
+                isSubmitting
+              }
             >
               上传
             </Button>

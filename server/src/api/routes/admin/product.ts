@@ -71,6 +71,7 @@ export default (app: Router) => {
 					{
 						name,
 						description,
+						shortDescription,
 						price,
 						coverImageUrl: coverImage[0].location,
 						setting: { isFreeShipping, isIdRequired },
@@ -202,7 +203,6 @@ export default (app: Router) => {
 		adminAuthenticated,
 		async (req: Request, res: Response) => {
 			const { id, action } = req.body
-
 			const { myOpenId, myWarehouseId } = req.params
 			const t = await db.transaction()
 
