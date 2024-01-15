@@ -42,17 +42,20 @@ export const updateProductStatus = async (product: Product, action: string) => {
   return result;
 };
 
-export const sendSMSVerifcation = (phone: {
-  countryCode: string;
-  tel: string;
-}) => axios.post("/admin/warehouse/sms", { phone });
-
 export const getVerificationCode = (countryCode: string, phoneNumber: string) =>
   axios.post("/admin/warehouse/verification-code", {
     phoneNumber: countryCode + phoneNumber,
   });
-export const verification = (verificationCode: string) =>
-  axios.post("/warehouse/phoneVerification", { verificationCode });
+
+export const sendSecondaryVerificationCode = (
+  countryCode: number,
+  phoneNumber: string
+) =>
+  axios.post("/admin/warehouse/secondary/verification-code", {
+    phoneNumber: countryCode + phoneNumber,
+  });
+export const secondaryVerify = (data: any) =>
+  axios.post("/admin/warehouse/secondary/verify", data);
 
 export const signup = (data: any) =>
   axios.post("/admin/warehouse/verify", data);

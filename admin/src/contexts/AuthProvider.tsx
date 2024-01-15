@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { login, logout } from "../api";
 import axios from "axios";
@@ -11,7 +11,7 @@ interface AuthContextType {
   signout: () => void;
 }
 
-let AuthContext = React.createContext<AuthContextType>(null!);
+const AuthContext = React.createContext<AuthContextType>(null!);
 
 function useAuth() {
   return React.useContext(AuthContext);

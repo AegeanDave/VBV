@@ -165,7 +165,66 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.post(
+		'/secondary/verification-code',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const { phoneNumber } = req.body
+			try {
+				const smsResult = await sendRegistrationSMS(phoneNumber)
+				if (smsResult.errorCode) {
+					res.send({
+						status: Status.FAIL,
+						message: '发送失败，请检查手机号'
+					})
+					return
+				}
+				res.send({
+					status: Status.SUCCESS
+				})
+			} catch (err) {
+				console.log(err)
+				res.send({
+					status: Status.FAIL,
+					message: '网络错误'
+				})
+			}
+		}
+	)
+	route.post(
+		'/secondary/verify',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const { verificationCode, phoneNumber, areaCode } = req.body
+			const { myOpenId } = req.params
 
+			try {
+				const todoVerify = await handleVerify(
+					areaCode + phoneNumber,
+					verificationCode
+				)
+				if (todoVerify.status !== 'approved') {
+					return res.send({
+						status: Status.FAIL,
+						message: '验证失败'
+					})
+				}
+				await Warehouse.update(
+					{ secondaryPhoneNumber: areaCode + phoneNumber },
+					{ where: { openId: myOpenId } }
+				)
+				res.send({
+					status: Status.SUCCESS
+				})
+			} catch (err) {
+				console.log(err)
+				res.status(500).send({
+					status: Status.FAIL,
+					message: '网络错误'
+				})
+			}
+		}
+	)
 	// route.post(
 	// 	'/updateSale',
 	// 	adminAuthenticated,

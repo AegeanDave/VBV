@@ -320,6 +320,16 @@ text.paid {
   margin-top: 8px;
 }
 
+.productCard.horizontal .price.special {
+  margin-left: 4px;
+  color: #D03434;
+  font-size: 16px;
+}
+
+.productCard.horizontal .price.deprecate {
+  text-decoration: line-through;
+}
+
 .itemContainer.vertical {
   flex-direction: column;
   margin: 12px 24px;

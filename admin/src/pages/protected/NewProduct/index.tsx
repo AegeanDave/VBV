@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   TextField,
   Typography,
@@ -16,6 +16,7 @@ import { AddBoxSharp, Delete } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
 import { snackMessage } from "../../../constant/index";
 import { createNewProduct } from "../../../api/product";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   onClose: () => void;
@@ -23,7 +24,15 @@ interface Props {
 
 const ProductForm = ({ onClose }: Props) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { control, handleSubmit, watch, register, setValue } = useForm({
+  const navigate = useNavigate();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    register,
+    setValue,
+    formState: { isSubmitting },
+  } = useForm({
     defaultValues: {
       name: "",
       shortDescription: "",
@@ -39,11 +48,11 @@ const ProductForm = ({ onClose }: Props) => {
   const onSubmit = async (data: any) => {
     try {
       const result = await createNewProduct(data);
-
       if (!result.data) {
         enqueueSnackbar("上传失败", { variant: "error" });
         return;
       }
+      navigate("/product", { state: { key: result.data?.id }, replace: true });
       enqueueSnackbar(snackMessage.success.submit);
       onClose();
     } catch (err) {
@@ -344,7 +353,12 @@ const ProductForm = ({ onClose }: Props) => {
               variant="contained"
               type="submit"
               className="btn"
-              disabled={!watch("name") || !agreementChecked || !watch("price")}
+              disabled={
+                !watch("name") ||
+                !agreementChecked ||
+                !watch("price") ||
+                isSubmitting
+              }
             >
               上传
             </Button>
