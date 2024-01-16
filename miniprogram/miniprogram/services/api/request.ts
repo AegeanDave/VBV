@@ -102,11 +102,7 @@ const request = {
     return new Promise(function (resolve: any, reject: any) {
       wx.requestPayment(
         {
-          'timeStamp': params.timeStamp,
-          'nonceStr': params.nonceStr,
-          'package': params['package'],
-          'signType': params.signType,
-          'paySign': params.paySign,
+          ...params,
           'success': function (res) {
             resolve(res)
           },

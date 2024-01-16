@@ -5,6 +5,7 @@ import { isAuthenticated } from '../../middleware/authorization'
 import { v4 as uuidv4 } from 'uuid'
 import { sendNewOrderSMS } from '../../../provider/twilio'
 import {
+	generateRandomString,
 	makeOrderNumber,
 	sendOrderSubscribeMessage
 } from '../../../provider/index'
@@ -19,6 +20,7 @@ import {
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
+import { getPrepay, pay } from '../../../provider/weChatPay'
 
 const route = Router()
 
@@ -647,20 +649,24 @@ export default (app: Router) => {
 		}
 	)
 
-	route.post(
-		'/prepay',
+	route.get(
+		'/pay/instance',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { myOpenId } = req.params
-			// const preOrderResult = await wechatPay(req, myOpenId)
-			res.send()
-			Logger.info('preOrder success')
+			try {
+				const todoInstance = await getPrepay(req)
+				res.send(todoInstance.data)
+				Logger.info('preOrder success')
+			} catch (err) {
+				console.log(err)
+				res.status(500)
+			}
 		}
 	)
-	route.post('/payment/result', async (req: Request, res: Response) => {
-		const { myOpenId } = req.body
-		// const preOrderResult = await wechatPay(req, myOpenId)
-		res.send()
+	route.post('/pay/webhook', async (req: Request, res: Response) => {
+		const todoInstance = await getPrepay(req)
+		// res.send()
+		console.log(todoInstance)
 		Logger.info('Code order made success')
 	})
 }

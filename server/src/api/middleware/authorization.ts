@@ -19,7 +19,6 @@ export const isAuthenticated = async (
 		authorization,
 		RANDOM_TOKEN_SECRET
 	) as any
-	console.log(checkSessionResult)
 	if (!checkSessionResult) {
 		res
 			.status(403)

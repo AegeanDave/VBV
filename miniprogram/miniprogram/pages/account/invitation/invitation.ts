@@ -1,4 +1,4 @@
-import { getCodes, preOrder, charge } from '../../../services/api/api'
+import { getCodes, getInstance, charge } from '../../../services/api/api'
 import { IAppOption } from '../../../models/index'
 import { Status } from '../../../constant/index'
 const app = getApp<IAppOption>()
@@ -60,11 +60,11 @@ Page({
     wx.showLoading({
       title: '请稍后',
     })
-    const prePay: any = await preOrder()
-    if (prePay) {
+    const todoInstance: any = await getInstance()
+    if (todoInstance) {
       wx.hideLoading()
       try {
-        await charge(prePay)
+        await charge(todoInstance)
         wx.showToast({
           title: '购买成功',
           icon: 'success',

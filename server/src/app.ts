@@ -3,9 +3,9 @@ import express, { Express } from 'express'
 import Logger from './services/logger'
 import db from './config/database'
 import loader from './services/index'
+import fs from 'fs'
 
 const https = require('https')
-const fs = require('fs')
 
 const app: Express = express()
 loader(app)
