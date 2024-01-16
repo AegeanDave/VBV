@@ -1,56 +1,38 @@
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import axios from 'axios'
-import { generateRandomString, makeCode } from '.'
-import { KJUR, hextob64 } from 'jsrsasign'
+import { generateRandomString, makeCodeOrderNumber } from '.'
+import fs from 'fs'
+import WechatPay from 'wechatpay-node-v3'
+
+export const pay = new WechatPay({
+	appid: process.env.APP_ID!,
+	mchid: process.env.mch_ID!,
+	publicKey: fs.readFileSync('./wechat_cert/apiclient_cert.pem'), // 公钥
+	privateKey: fs.readFileSync('./wechat_cert/apiclient_key.pem') // 秘钥
+})
 
 export const getPrepay = async (req: Request) => {
 	const { myOpenId } = req.params
 	const { quantity } = req.body
+	const totalAmount =
+		process.env.NODE_ENV === 'dev'
+			? 1
+			: (Number(process.env.ALIAS_CODE_PRICE) || 5) * (quantity * 100 || 1)
+
 	const bodyParams = {
-		appid: process.env.APP_ID,
-		mchid: process.env.mch_ID,
+		appid: process.env.APP_ID!,
+		mchid: process.env.mch_ID!,
 		description: '用来关注上级供货商的邀请码',
-		out_trade_no: makeCode(),
+		out_trade_no: makeCodeOrderNumber(),
 		amount: {
-			total: (Number(process.env.ALIAS_CODE_PRICE) || 5) * quantity,
+			total: totalAmount,
 			currency: 'CNY'
 		},
 		payer: {
 			openid: myOpenId
-		}
+		},
+		notify_url: process.env.CALLBACK_URL!
 	}
-	const timestamp = Math.round(new Date().getTime() / 1000)
-	const oneceStr = generateRandomString(32)
-	const privateKey = ``
-	const signature = rsaSign(
-		`POST\n/v3/pay/transactions/jsapi\n${timestamp}\n${oneceStr}\n${JSON.stringify(
-			bodyParams
-		)}`,
-		privateKey,
-		'SHA256withRSA'
-	)
-	const Authorization = `WECHATPAY2-SHA256-RSA2048 mchid="${process.env.mch_ID}",nonce_str="${oneceStr}",timestamp="${timestamp}",signature="${signature}",serial_no="${process.env.SERIAL_NO}"`
-	return axios.post(
-		`https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi`,
-		bodyParams,
-		{
-			headers: {
-				Authorization
-			}
-		}
-	)
-}
 
-const rsaSign = (
-	content: string,
-	privateKey: string,
-	hash = 'SHA256withRSA'
-) => {
-	const signature = new KJUR.crypto.Signature({
-		alg: hash
-	})
-	signature.init(privateKey)
-	signature.updateString(content)
-	const signData = signature.sign()
-	return hextob64(signData)
+	return pay.transactions_jsapi(bodyParams)
 }

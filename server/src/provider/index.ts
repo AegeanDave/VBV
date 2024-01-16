@@ -106,19 +106,18 @@ const sentShippingMessage = async (
 }
 const makeCode = () => {
 	let result = ''
-	const characters: string =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 	const charactersLength: number = characters.length
 	for (let i = 0; i < 13; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength))
 	}
 	return result
 }
-const makeVerificationCode = () => {
+const makeCodeOrderNumber = () => {
 	let result = ''
 	const characters: string = '0123456789'
 	const charactersLength: number = characters.length
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < 10; i++) {
 		result += characters.charAt(Math.floor(Math.random() * charactersLength))
 	}
 	return result
@@ -134,8 +133,7 @@ const makeOrderNumber = () => {
 }
 
 function generateRandomString(length: number) {
-	const characters =
-		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 	let result = ''
 
 	for (let i = 0; i < length; i++) {
@@ -151,7 +149,7 @@ export {
 	makeCode,
 	makeOrderNumber,
 	getToken,
-	makeVerificationCode,
+	makeCodeOrderNumber,
 	sendOrderSubscribeMessage,
 	sentShippingMessage,
 	generateRandomString
