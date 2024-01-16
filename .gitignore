@@ -9,5 +9,5 @@ server/vbangv-new.pem
 server/.env-production
 *.crt
 *.key
-admin/.env
+.env
 *.production
