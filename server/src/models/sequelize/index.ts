@@ -9,6 +9,7 @@ import Address from './address'
 import Invitation from './invitation'
 import Connection from './connection'
 import Price from './price'
+import ConnectionOrder from './connectionOrder'
 
 User.hasOne(Warehouse, { foreignKey: 'openId' })
 Warehouse.belongsTo(User, { foreignKey: 'openId' })
@@ -98,5 +99,6 @@ export {
 	OrderDetail,
 	Invitation,
 	Connection,
-	Price
+	Price,
+	ConnectionOrder
 }

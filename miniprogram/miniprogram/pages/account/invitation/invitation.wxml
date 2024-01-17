@@ -1,6 +1,6 @@
 <view class="mainBox">
   <view class="introduction">
-    <text>发送邀请码给您的微信好友，好友即可加入微帮微并关注购买您上架的商品，新用户享五个免费邀请码。邀请码原价9.9/个</text>
+    <text>发送邀请码给您的微信好友，好友即可加入微帮微并关注购买您上架的商品，新用户享五个免费邀请码。邀请码原价¥9.9/个</text>
   </view>
   <view class="codeBox avaliable">
     <text class="subtitle">我的邀请码（{{activeCodes.length}}）</text>

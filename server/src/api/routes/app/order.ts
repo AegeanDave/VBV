@@ -16,7 +16,8 @@ import {
 	Order,
 	OrderDetail,
 	StoreProduct,
-	User
+	User,
+	ConnectionOrder
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
@@ -511,7 +512,6 @@ export default (app: Router) => {
 			}
 		}
 	)
-
 	route.post(
 		'/mark-paid',
 		isAuthenticated,
@@ -605,13 +605,11 @@ export default (app: Router) => {
 								orderData[index].orderDetails?.push(orderDetail)
 							}
 					})
-					console.log(orderData)
 					orderData.length > 0 &&
 						(await Order.bulkCreate(orderData, {
 							transaction: t
 						}))
 				}
-
 				await t.commit()
 				res.send({
 					status: Status.SUCCESS
@@ -664,9 +662,27 @@ export default (app: Router) => {
 		}
 	)
 	route.post('/pay/webhook', async (req: Request, res: Response) => {
-		const todoInstance = await getPrepay(req)
-		// res.send()
-		console.log(todoInstance)
-		Logger.info('Code order made success')
+		const {
+			resource: { ciphertext, associated_data, nonce }
+		} = req.body
+		try {
+			const { payer, out_trade_no, amount, ...rest }: any = pay.decipher_gcm(
+				ciphertext,
+				associated_data,
+				nonce,
+				process.env.API_V3_KEY!
+			)
+			const todoOrder = await ConnectionOrder.create({
+				openId: payer.openid,
+				orderNumber: out_trade_no,
+				amount,
+				status: 'Paid'
+			})
+			res.end()
+			Logger.info('Code order made success')
+		} catch (err) {
+			console.log(err)
+			res.status(500).end()
+		}
 	})
 }
