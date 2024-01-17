@@ -80,7 +80,7 @@ Page({
       return
     }
     await wx.requestSubscribeMessage({
-      tmplIds: ['uk13xyUe0w-DSHVl5rnu4FMQ8EYQIsFh4MU6Zm_NZLc', '0_8ksH5gYQCdSYmrZDoO5Mep1zifl_dF8pOis7TZ-uI']
+      tmplIds: ['uk13xyUe0w-DSHVl5rnu4ObW8zdBIA7pSPOvGiNoDe4', '0_8ksH5gYQCdSYmrZDoO5Mep1zifl_dF8pOis7TZ-uI']
     })
     wx.showLoading({ title: '加载中' })
     const result: any = await getSignup(username, this.data.avatarUrl)

@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express'
-import { Status, countryCodes, OrderStatus } from '../../../constants'
+import { Status } from '../../../constants'
 import { adminAuthenticated } from '../../../api/middleware/authorization'
 import { Logger } from '../../../services'
-import { sendNewOrderSMS } from '../../../provider/twilio'
 import { sendOrderSubscribeMessage } from '../../../provider/index'
 import moment from 'moment-timezone'
 import { Order, OrderDetail, User } from '../../../models/sequelize/'
@@ -20,7 +19,7 @@ export default (app: Router) => {
 	app.use('/admin/order', route)
 
 	route.get('/all', adminAuthenticated, async (req: Request, res: Response) => {
-		const { myOpenId, myWarehouseId } = req.params
+		const { myOpenId } = req.params
 		try {
 			const todoOrders = await Order.findAll({
 				where: { dealerId: myOpenId, status: { [Op.ne]: 'Unpaid' } },
@@ -164,13 +163,11 @@ export default (app: Router) => {
 		adminAuthenticated,
 		async (req: Request, res: Response) => {
 			const { urls }: any = req.query
-			console.log(urls)
 			const zipFileName = 'id-photos.zip'
 			try {
 				const file1 = createPresignedUrlWithClient(urls[0])
 				const file2 = createPresignedUrlWithClient(urls[1])
 				const files = await Promise.all([file1, file2])
-				console.log(files)
 
 				res.setHeader(
 					'Content-Disposition',

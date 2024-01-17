@@ -3,13 +3,10 @@ import { Status, countryCodes, OrderStatus } from '../../../constants'
 import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
 import { v4 as uuidv4 } from 'uuid'
-import { sendNewOrderSMS } from '../../../provider/twilio'
 import {
-	generateRandomString,
 	makeOrderNumber,
 	sendOrderSubscribeMessage
 } from '../../../provider/index'
-import { newOrderMail } from '../../../provider/mailer'
 import moment from 'moment-timezone'
 import {
 	Address,
@@ -21,7 +18,8 @@ import {
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
-import { getPrepay, pay } from '../../../provider/weChatPay'
+import { getPrepay, pay } from '../../../provider/wechat'
+import { handleWarehouseOrderSMS } from '../../../utils/order'
 
 const route = Router()
 
@@ -516,7 +514,7 @@ export default (app: Router) => {
 		'/mark-paid',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
-			const { orders } = req.body
+			const { orders, newComment } = req.body
 			const { myOpenId } = req.params
 			const t = await db.transaction()
 			try {
@@ -525,6 +523,7 @@ export default (app: Router) => {
 						{ status: 'Paid' },
 						{ where: { id: order.id }, transaction: t, returning: true }
 					)
+					handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
 					const todoOrderDetails = await OrderDetail.findAll({
 						where: { orderId: order.id }
 					})
@@ -580,7 +579,7 @@ export default (app: Router) => {
 							},
 							productId: dataValues.productId,
 							quantity,
-							comment: order.comment,
+							comment: newComment || order.comment,
 							groupId: order.groupId,
 							subtotal: quantity * actualPrice
 						}
@@ -595,7 +594,7 @@ export default (app: Router) => {
 									userId: myOpenId,
 									dealerId: dataValues.openId,
 									address: { ...todoOrder[1][0].dataValues.address },
-									comment: order.comment,
+									comment: newComment || order.comment,
 									status: 'Unpaid',
 									orderDetails: [orderDetail]
 								})
@@ -609,7 +608,16 @@ export default (app: Router) => {
 						(await Order.bulkCreate(orderData, {
 							transaction: t
 						}))
+					for (const item of orderData) {
+						sendOrderSubscribeMessage(
+							orderNumber,
+							myOpenId,
+							item.dealerId,
+							item.comment
+						)
+					}
 				}
+
 				await t.commit()
 				res.send({
 					status: Status.SUCCESS

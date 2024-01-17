@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
 import db from '../../config/database'
 
-const ConnectionOrder = db.define('connections', {
+const ConnectionOrder = db.define('connectionOrders', {
 	openId: {
 		type: DataTypes.STRING,
 		allowNull: false

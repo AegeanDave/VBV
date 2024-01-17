@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { Logger } from '../../../services'
-import { login, makeCode, getQRcode } from '../../../provider'
+import { login, makeCode } from '../../../provider'
 import { isAuthenticated } from '../../middleware/authorization'
 import { upload } from '../../../provider/fileAction'
 import {
@@ -424,17 +424,17 @@ export default (app: Router) => {
 		}
 	)
 
-	route.get(
-		'/wxQRcode',
-		isAuthenticated,
-		async (req: Request, res: Response) => {
-			const result = await getQRcode(req.query)
-			res.send({
-				status: Status.SUCCESS,
-				data: result.data
-			})
-		}
-	)
+	// route.get(
+	// 	'/wxQRcode',
+	// 	isAuthenticated,
+	// 	async (req: Request, res: Response) => {
+	// 		const result = await getQRcode(req.query)
+	// 		res.send({
+	// 			status: Status.SUCCESS,
+	// 			data: result.data
+	// 		})
+	// 	}
+	// )
 
 	route.post(
 		'/remove-connection',
