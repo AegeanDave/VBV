@@ -1,4 +1,4 @@
-import { getMyStore, publishProduct, unpublishProduct, updatePrice } from "../../services/api/api"
+import { getMyStore, publishProduct, unpublishProduct, updatePrice, deleteProduct } from "../../services/api/api"
 import { IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
 import Toast from '@vant/weapp/toast/toast';
@@ -146,7 +146,7 @@ Page({
     if (product.status === 'Inactive') {
       this.setData({
         storeActions: [
-          { text: '上架', value: 5 }
+          { text: '上架', value: 5 },
         ]
       })
     }
@@ -156,16 +156,16 @@ Page({
           { text: '生成朋友圈分享图', value: 1 },
           { text: '改价', value: 2 },
           { text: '预览', value: 3 },
-          { text: '下架', value: 4 }
+          { text: '下架', value: 4 },
         ],
       })
     }
     if (product.status === 'Not_Available') {
-      wx.showToast({
-        title: '请联系商家',
-        icon: "error"
+      this.setData({
+        storeActions: [
+          { text: '删除', value: 7 }
+        ],
       })
-      return
     }
     this.setData({
       storeActionSheetShow: true,
@@ -253,6 +253,9 @@ Page({
       case 6:
         this.bindAddToStore()
         break;
+      case 7:
+        this.handleDeleteProduct()
+        break
       default:
         break;
     }
@@ -263,8 +266,18 @@ Page({
       priceActionSheetShow: false
     })
   },
-
-
+  async handleDeleteProduct() {
+    const product = this.data.selectedProduct
+    try {
+      await deleteProduct(product)
+      this.setData({
+        myProductList: this.data.myProductList.filter(item => item.id !== product.id)
+      })
+      wx.showToast({ title: '成功删除' })
+    } catch (err) {
+      console.log(err)
+    }
+  },
   closeCanvas() {
     this.setData({
       showCanvasMask: !this.data.showCanvasMask,

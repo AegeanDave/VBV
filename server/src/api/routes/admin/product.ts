@@ -225,10 +225,10 @@ export default (app: Router) => {
 					)
 				}
 				if (action === 'Delete') {
-					await Product.update(
-						{ status: 'Inactive' },
-						{ where: { id, warehouseId: myWarehouseId }, transaction: t }
-					)
+					await Product.destroy({
+						where: { id, warehouseId: myWarehouseId },
+						transaction: t
+					})
 					await StoreProduct.update(
 						{ status: 'Not_Available' },
 						{

@@ -1,5 +1,5 @@
 import request from './request'
-import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, updatePrice } from './product'
+import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, updatePrice, deleteProduct } from './product'
 import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer, uploadPhotoBack, uploadPhotoFront, addAddress, getAddresses, deleteAddress } from './user'
 import { submitOrder, markPaid, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, hideOrder, getInstance, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder } from './order'
 
@@ -45,5 +45,5 @@ export {
   getQRcode,
   getProductInfoBySerialID,
   makeNewConnection,
-  hideOrder, getSignup, getCodes, getDealer, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder
+  hideOrder, getSignup, getCodes, getDealer, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, deleteProduct
 }

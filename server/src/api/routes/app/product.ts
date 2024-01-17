@@ -13,6 +13,7 @@ import {
 	Image
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
+import db from '../../../config/database'
 
 export default (app: Router) => {
 	app.use('/products', route)
@@ -385,6 +386,45 @@ export default (app: Router) => {
 					status: 'FAIL'
 				})
 				Logger.info('unrelease fail')
+			}
+		}
+	)
+	route.delete(
+		'/store/product',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { product } = req.body
+			const { myOpenId } = req.params
+			const t = await db.transaction()
+
+			try {
+				await StoreProduct.destroy({
+					where: { id: product.id, openId: myOpenId },
+					transaction: t
+				})
+				await StoreProduct.update(
+					{
+						status: 'Not_Available'
+					},
+					{
+						where: {
+							openIdFather: myOpenId,
+							productId: product.productId
+						},
+						transaction: t
+					}
+				)
+				await t.commit()
+				res.send({
+					status: 'SUCCESS'
+				})
+				Logger.info('release success')
+			} catch (err) {
+				t.rollback()
+				res.status(500).send({
+					status: 'FAIL'
+				})
+				Logger.info('release fail')
 			}
 		}
 	)

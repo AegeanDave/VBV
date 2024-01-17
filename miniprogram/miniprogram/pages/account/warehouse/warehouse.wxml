@@ -39,7 +39,7 @@
       <van-tab title="已发售">
         <view wx:if="{{activeProducts.length>0}}" class="cardContent">
           <view class="productsBox">
-            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+            <block wx:for="{{activeProducts}}" wx:key="id" wx:for-item="product">
               <view class="productCard">
                 <image class="pic" src='{{product.coverImageUrl}}'></image>
                 <text class="name">{{product.name}}</text>
@@ -57,7 +57,7 @@
       <van-tab title="已删除">
         <view wx:if="{{inactiveProducts.length>0}}" class="cardContent">
           <view class="productsBox">
-            <block wx:for="{{warehouse.products}}" wx:key="id" wx:for-item="product">
+            <block wx:for="{{inactiveProducts}}" wx:key="id" wx:for-item="product">
               <view class="productCard">
                 <image class="pic" src='{{product.coverImageUrl}}'></image>
                 <text class="name">{{product.name}}</text>

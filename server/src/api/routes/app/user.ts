@@ -137,7 +137,7 @@ export default (app: Router) => {
 						include: [
 							[
 								db.literal(
-									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."userId" = "connections"."openIdChild" AND "orders"."status" = \'Unpaid\') > 0'
+									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."dealerId" = "connections"."openId" AND "orders"."userId" = "connections"."openIdChild" AND "orders"."status" = \'Unpaid\') > 0'
 								),
 								'hasUnpaidOrders'
 							]
@@ -175,7 +175,7 @@ export default (app: Router) => {
 						include: [
 							[
 								db.literal(
-									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."dealerId" = "connections"."openId" AND "orders"."status" = \'Unpaid\') > 0'
+									'(SELECT COUNT(*) FROM "orders" WHERE "orders"."dealerId" = "connections"."openId" AND "orders"."userId" = "connections"."openIdChild" AND "orders"."status" = \'Unpaid\') > 0'
 								),
 								'hasUnpaidOrders'
 							]
@@ -445,16 +445,13 @@ export default (app: Router) => {
 
 			const t = await db.transaction()
 			try {
-				await Connection.update(
-					{ status: DBStatus.INACTIVE },
-					{
-						where: {
-							openIdChild: myOpenId,
-							openId: id
-						},
-						transaction: t
-					}
-				)
+				await Connection.destroy({
+					where: {
+						openIdChild: myOpenId,
+						openId: id
+					},
+					transaction: t
+				})
 				await StoreProduct.update(
 					{ status: 'Not_Available' },
 					{

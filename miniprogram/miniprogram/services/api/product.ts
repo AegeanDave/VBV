@@ -8,6 +8,7 @@ const publishProduct = (product: Product) => request.postRequest("products/publi
 const publishToStore = (product: any, newPrice: number) => request.postRequest("products/publish/new", { product, newPrice })
 const updatePrice = (product: any, price: number) => request.postRequest("products/price", { product, price })
 const updatePriceForChild = (price: number, openIdChild: string, product: any) => request.postRequest("products/price/special", { price: price, openIdChild, product })
+const deleteProduct = (product: any) => request.deleteRequest("products/store/product", { product })
 
 
-export { getProductList, getMyStore, updatePrice, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild }
+export { getProductList, getMyStore, updatePrice, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, deleteProduct }

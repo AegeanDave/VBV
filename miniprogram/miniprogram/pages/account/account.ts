@@ -14,7 +14,9 @@ Page({
     username: app.globalData.user?.username,
     avatarUrl: app.globalData.user?.avatarUrl
   },
-  async onLoad() {
+  onLoad() {
+  },
+  onShow: async function () {
     const todoAccount: any = await getAccount()
     this.setData({
       account: todoAccount,
@@ -24,18 +26,7 @@ Page({
       avatarUrl: todoAccount.avatarUrl,
       hasWarehouse: !!todoAccount.warehouse
     })
-  },
-  onShow: async function () {
-    if (app.globalData.reload) {
-      const todoAccount: any = await getAccount()
-      this.setData({
-        account: todoAccount,
-        username: app.globalData.user?.username,
-        avatarUrl: app.globalData.user?.avatarUrl,
-        hasWarehouse: !!todoAccount.warehouse
-      })
-      app.globalData.reload = false
-    }
+
   },
   toCustomer: function () {
     if (app.globalData.user?.status === 'Not_Verified') {

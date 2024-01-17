@@ -14,7 +14,8 @@ export const sendRegistrationSMS = (to: string) =>
 
 export const sendNewOrderSMS = (to: string) =>
 	client.messages.create({
-		body: `您有新订单了，请点击查看${process.env.ORDER_URL}`,
+		body: `您有新订单了，请点击查看
+				${process.env.ADMIN_URL}/order`,
 		from: `+${process.env.TWILIO_SENDER_PHONE}`,
 		to: `+${to}`
 	})
