@@ -1,5 +1,5 @@
-import { getCustomer, removeConnection, markPaid, updatePriceForChild } from '../../../../services/api/api'
-import { IAppOption, SaleOrder, OrderProduct } from "../../../../models/index"
+import { getCustomer, removeConnection, markPaidAll, updatePriceForChild } from '../../../../services/api/api'
+import { IAppOption } from "../../../../models/index"
 import { Status } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
 const app = getApp<IAppOption>()
@@ -94,7 +94,6 @@ Page({
   },
   toOrderShare: function (e: any) {
     const order = e.currentTarget.dataset.order
-    console.log(order)
     wx.navigateTo({
       url: `../../../soldOrders/shareOrder/shareOrder?userId=${order.userId}&orderNumber=${order.orderNumber}`,
     })
@@ -107,29 +106,27 @@ Page({
       confirmText: '是',
       success: async function (res) {
         if (res.confirm) {
-          const result: any = await markPaid(that.data.customer)
-          if (result.status === Status.SUCCESS) {
+          wx.showLoading({
+            title: '更新中'
+          })
+          try {
+            const result: any = await markPaidAll(that.data.customer.openId)
             wx.showToast({
               title: '已标记付款',
               icon: 'success',
               duration: 2000
             })
+            that.setData({
+              orders: result.data,
+              valueUnpaid: 0
+            })
+            wx.hideLoading()
+          } catch (err) {
+            wx.hideLoading()
+            wx.showToast({
+              title: '更新失败'
+            })
           }
-          const ordersResult: any = await getOrdersFromChild(that.data.customer.openId)
-          let unpaidAmount: number = 0
-          ordersResult.data.forEach((order: SaleOrder) => {
-            order.createdAt = parseTime(new Date(order.createdAt))
-            if (order.subOrders) {
-              order.totalPrice = Number(order.subOrders.reduce((sum: number, subOrder: any) => sum + subOrder.orderProducts ? subOrder.orderProducts.reduce((subSum: number, product: OrderProduct) => subSum + (product.price as number) * product.quantity, 0) : 0, 0).toFixed(2))
-              if (order.status === Status.UNPAID) {
-                unpaidAmount += order.totalPrice
-              }
-            }
-          })
-          that.setData({
-            orders: ordersResult.data,
-            valueUnpaid: unpaidAmount
-          })
         }
       }
     })
@@ -139,11 +136,11 @@ Page({
       specialPrice: e.detail
     })
   },
-  async handleUpdatePrice(e: any) {
+  async handleUpdatePrice() {
     try {
       await updatePriceForChild(this.data.specialPrice, this.data.customer.openId, this.data.selectedProduct)
       this.setData({
-        products: this.data.products.map(item => {
+        products: this.data.products?.map(item => {
           if (item.id === this.data.selectedProduct.id) {
             return { ...item, specialPrice: [{ ...item.specialPrice[0], price: { price: this.data.specialPrice } }] }
           }

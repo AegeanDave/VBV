@@ -247,8 +247,7 @@
                     <text wx:if="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
                     <text wx:else class="paid value">已完成</text>
                   </view>
-                  <button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
-                  <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
+                  <button bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
                 </view>
               </view>
             </view>

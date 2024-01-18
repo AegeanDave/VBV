@@ -12,11 +12,11 @@
 <view wx:else>
   <view class="instruction">
     <image src="/image/warehouse.svg" mode="aspectFit"></image>
-    <text>开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
+    <text>申请开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
   </view>
   <view class="card register">
     <form bindsubmit="submitRegistration">
-      <text class="title">请输入您的手机号码</text>
+      <text class="title">请输入您的手机号码，此号码将作为您的仓库登录账号</text>
       <view class="phoneInputGroup">
         <view class="regionCode">
           <picker bindchange="bindPickerChange" name="countryIndex" value="{{currentCode}}" range="{{countryCodes}}" range-key="{{'name'}}">

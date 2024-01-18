@@ -7,7 +7,7 @@ import { Session } from '../../../models/types'
 import { Status } from '../../../constants'
 import { myCache } from '../../../provider/cache'
 import { v4 as uuidv4 } from 'uuid'
-import { sentShippingMessage } from '../../../provider'
+import { sendShippingSubscribeMessage } from '../../../provider'
 import { sendRegistrationSMS, handleVerify } from '../../../provider/twilio'
 import bcrypt from 'bcrypt'
 

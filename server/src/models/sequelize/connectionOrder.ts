@@ -1,16 +1,13 @@
 import { DataTypes } from 'sequelize'
 import db from '../../config/database'
 
-const Connection = db.define('connections', {
+const ConnectionOrder = db.define('connectionOrders', {
 	openId: {
 		type: DataTypes.STRING,
-		allowNull: false,
-		references: {
-			model: 'users',
-			key: 'openId'
-		}
+		allowNull: false
 	},
-	quantity: { type: DataTypes.INTEGER, allowNull: false },
+	orderNumber: { type: DataTypes.STRING, allowNull: false },
+	amount: { type: DataTypes.JSONB, allowNull: false },
 	status: {
 		type: DataTypes.ENUM('Paid', 'Unpaid'),
 		defaultValue: 'Unpaid'
@@ -22,4 +19,4 @@ const Connection = db.define('connections', {
 	updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 })
 
-export default Connection
+export default ConnectionOrder

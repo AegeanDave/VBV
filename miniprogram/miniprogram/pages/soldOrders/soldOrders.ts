@@ -95,7 +95,7 @@ Page({
 
   markPaid: async function () {
     let order = this.data.currentOrder!
-    const result: any = await markPaid([order])
+    const result: any = await markPaid([order], this.data.newComment)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
         title: '标记成功',

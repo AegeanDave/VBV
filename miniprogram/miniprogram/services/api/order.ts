@@ -2,7 +2,8 @@ import { Product, SaleOrder } from "../../models/index"
 import request from './request'
 
 const submitOrder = (items: Product[], addressId: string, comment: string) => request.postRequest("orders/new", { items, addressId, comment })
-const markPaid = (orders: SaleOrder[]) => request.postRequest("orders/mark-paid", { orders })
+const markPaid = (orders: SaleOrder[], newComment?: string) => request.postRequest("orders/mark-paid", { orders, newComment })
+const markPaidAll = (userId: string) => request.postRequest("orders/mark-paid/all", { userId })
 const getAllSoldOrders = () => request.getRequest("orders/sold/all")
 const getSoldOrder = (orderNumber: string) => request.getRequest("orders/sold", { orderNumber })
 const getSoldOrderWithCustomer = (orderNumber: string, customerId) => request.getRequest("orders/sold-customer", { orderNumber, customerId })
@@ -12,8 +13,8 @@ const getPurchasedOrderWithDealer = (orderNumber: string, dealerId: string) => r
 const cancelOrder = (order: SaleOrder) => request.postRequest("orders/cancelOrder", { order })
 const hideOrder = (order: SaleOrder) => request.postRequest("orders/hideOrder", { order })
 const getOrderResult = (orderNumber: string) => request.getRequest('orders/contact', { orderNumber })
-const getInstance = ()=> request.getRequest('orders/pay/instance')
+const getInstance = () => request.getRequest('orders/pay/instance')
 
 export {
-  submitOrder, hideOrder, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, markPaid, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder,getInstance
+  submitOrder, hideOrder, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, markPaid, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, getInstance, markPaidAll
 }

@@ -88,7 +88,7 @@ export default function Login() {
                         label="电话号码"
                         variant="outlined"
                         size="small"
-                        inputProps={{ maxLength: 10 }}
+                        inputProps={{ maxLength: 11 }}
                         type="tel"
                       />
                     </FormControl>
