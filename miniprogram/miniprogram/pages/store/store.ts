@@ -113,9 +113,9 @@ Page({
       })
       const newList = this.data.myProductList.map(item => {
         if (product.id === item.id) {
-          return { ...product, status: 'Inactive' }
+          return { ...item, status: 'Inactive' }
         }
-        return product
+        return item
       })
       this.setData({
         myProductList: newList
