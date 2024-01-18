@@ -34,8 +34,18 @@ Page({
       valueUnpaid: unpaidAmount
     })
   },
-  onPullDownRefresh: function () {
-    this.onLoad()
+  onPullDownRefresh: async function () {
+    const { user, products, orders, unpaidAmount }: any = await getCustomer(this.data.customer.openId)
+    this.setData({
+      customer: user,
+      orders: orders.map((order: any) => ({
+        ...order,
+        createdAt: parseTime(new Date(order.createdAt))
+      })),
+      products: products,
+      valueUnpaid: unpaidAmount
+    })
+    wx.stopPullDownRefresh()
   },
   onShow: function () {
 
