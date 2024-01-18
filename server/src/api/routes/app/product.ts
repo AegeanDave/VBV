@@ -78,7 +78,7 @@ export default (app: Router) => {
 				const todoAlias = await Connection.findAll({
 					where: {
 						openIdChild: myOpenId,
-						status: 'Active'
+						status: DBStatus.ACTIVE
 					}
 				})
 
@@ -94,7 +94,7 @@ export default (app: Router) => {
 						openIdFather: {
 							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
 						},
-						status: 'Active'
+						status: DBStatus.ACTIVE
 					}
 				})
 				res.send(todoProduct)

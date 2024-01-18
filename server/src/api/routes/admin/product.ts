@@ -232,14 +232,16 @@ export default (app: Router) => {
 					await StoreProduct.update(
 						{ status: 'Not_Available' },
 						{
-							where: { productId: id }
+							where: { productId: id },
+							transaction: t
 						}
 					)
-					await t.commit()
 				}
 				if (todoProduct && todoProduct[0] === 0) {
+					await t.rollback()
 					return res.status(204).end()
 				}
+				await t.commit()
 				return res.send({
 					status: Status.SUCCESS,
 					message: '更新成功'

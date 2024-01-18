@@ -51,6 +51,9 @@ function ProductProvider({ children }: { children: ReactNode }) {
       enqueueSnackbar("更新成功");
       if (action === "Delete") {
         setDeletePopupOpen(false);
+        setProducts((prev) =>
+          prev.filter((item) => item.id !== selectedProductId)
+        );
       }
       if (action === "Unpublish") {
         setEditPopupOpen(false);
