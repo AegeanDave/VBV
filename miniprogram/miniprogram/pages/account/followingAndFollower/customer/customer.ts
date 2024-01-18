@@ -34,7 +34,9 @@ Page({
       valueUnpaid: unpaidAmount
     })
   },
-
+  onPullDownRefresh: function () {
+    this.onLoad()
+  },
   onShow: function () {
 
   },

@@ -7,5 +7,7 @@
     "van-button": "@vant/weapp/button/index",
     "van-cell-group": "@vant/weapp/cell-group/index"
   },
-  "navigationBarTitleText": "用户详情"
+  "enablePullDownRefresh": true,
+  "navigationBarTitleText": "用户详情",
+  "backgroundTextStyle": "dark" 
 }
