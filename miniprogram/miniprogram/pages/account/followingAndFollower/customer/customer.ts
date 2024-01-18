@@ -120,6 +120,7 @@ Page({
               orders: result.data,
               valueUnpaid: 0
             })
+            app.globalData.reload = true
             wx.hideLoading()
           } catch (err) {
             wx.hideLoading()
