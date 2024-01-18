@@ -29,8 +29,8 @@
 }
 
 .pic {
-  width: 30.1vw;
-  height: 30.1vw;
+  width: 28vw;
+  height: 28vw;
   object-fit: contain;
 }
 
@@ -73,7 +73,6 @@
   right: 19px;
   justify-content: space-around;
   align-items: center;
-  border: 1px solid #f1f1f1;
   z-index: 1;
 }
 

@@ -1,28 +1,23 @@
 export type Product = {
-  productId: string
-  productName: string
-  productDescription: string
-  coverImageURL: string
-  images: string[]
-  quantity: number
-  disabled: boolean
-  idCardRequired: boolean
-  freeShipping: boolean
-  dealerSale: Sale
-  mySale?: Sale
-}
-type Sale = {
-  openId: string
-  openIdFather: string
+  id: string
   name: string
-  avatar: string
-  price: string | number
-  newPrice?: string | number
-  priceId?: string
-  serialForQRCode?: number
-  inStoreProductId: string
-  status: string
+  description: string
+  coverImageUrl: string
+  images: string[]
+  disabled: boolean
+  setting: any
+  defaultPrice: number
+  specialPrice: any[]
 }
+
+export type Cart = {
+  item: Product
+  quantity: number
+  amount?: number
+  disabled?: boolean
+}
+
+
 export type SaleOrder = {
   orderId: string
   orderNumber: string

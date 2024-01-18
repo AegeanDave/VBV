@@ -1,20 +1,21 @@
-import { Product, IAppOption } from "../../models/index"
+import { Cart, IAppOption } from "../../models/index"
 import { Tabs } from '../../constant/index'
 
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    products: [] as Product[],
+    products: [] as Cart[],
     totalPrice: 0
   },
   onLoad() {
   },
   onShow() {
     const cartItems = wx.getStorageSync('cart')
-    const totalPrice = (cartItems || []).reduce((sum: number, product: Product) => {
+    const totalPrice = (cartItems || []).reduce((sum: number, product: Cart) => {
       if (!product?.disabled) {
-        return sum + Number(product.quantity * product.item.defaultPrice)
+        const { item: { defaultPrice, specialPrice }, quantity } = product
+        return sum + Number(quantity * (specialPrice[0]?.price.price || defaultPrice))
       }
       return sum + 0
     }, 0)
@@ -49,36 +50,19 @@ Page({
     wx.setStorageSync("cart", newOrder)
     this.onShow()
   },
-  reduce: function (e: any) {
-    const index: number = e.currentTarget.dataset.index
-    let order: Product[] = this.data.products
-    order[index].quantity--
-    wx.setStorageSync("cart", order)
-    this.onShow()
-  },
-  bindKeyblur: function (e: any) {
-    const index: number = e.currentTarget.dataset.index
-    let order: Product[] = this.data.products
-    if (!e.detail.value) {
-      this.onShow()
-    }
-    else {
-      order[index].quantity = parseInt(e.detail.value)
-      wx.setStorageSync("cart", order)
-      this.onShow()
-    }
-  },
-  plus: function (e: any) {
-    const index: number = e.currentTarget.dataset.index
-    let order: Product[] = this.data.products
-    order[index].quantity++
-    wx.setStorageSync("cart", order)
+  onQuantityChange: function (e: any) {
+    const currIndex = e.currentTarget.dataset.index
+    wx.setStorageSync("cart", this.data.products.map((item, index) => {
+      if (index === currIndex) {
+        return { ...item, quantity: e.detail }
+      }
+      return item
+    }))
     this.onShow()
   },
   submitOrder: function () {
-    let that = this
     wx.requestSubscribeMessage({
-      tmplIds: ['GtlvtLoN0wUrr5EKt84_yD9SpFSNH2skL7PKIOrCrXE', 'xsHbpWWEeNfDkS4bYLSF1B6N2sOxwRtxoHsew69Jvmc'],
+      tmplIds: ['0_8ksH5gYQCdSYmrZDoO5Mep1zifl_dF8pOis7TZ-uI'],
       complete() {
         wx.navigateTo({
           url: `../checkOut/checkOut?mode=CART`

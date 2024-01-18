@@ -9,19 +9,19 @@
         <image class="pic inCart" src="{{product.item.coverImageUrl}}"></image>
         <view class="productInfo inCart">
           <text class="name inCart">{{product.item.name}}</text>
-          <text class="price inCart">￥{{product.item.defaultPrice}}</text>
+          <block wx:if="{{product.item.specialPrice[0]}}">
+            <text class="price inCart">￥{{product.item.specialPrice[0].price.price}}</text>
+          </block>
+          <block wx:else>
+            <text class="price inCart">￥{{product.item.defaultPrice}}</text>
+          </block>
           <text wx:if="{{product.disabled}}" class="disabled">失效</text>
         </view>
         <view class="delete" data-index="{{index}}" bindtap="onDelete">
           <image src="../../image/delete.png"></image>
         </view>
         <view class="amount">
-          <button bindtap='reduce' data-index="{{index}}" disabled='{{product.quantity==1||product.disabled}}'
-            class="reduce amountComponent">-</button>
-          <input class="input amountComponent" data-index="{{index}}" type='number' bindblur="bindKeyblur" maxlength='2'
-            value='{{product.quantity}}' disabled="{{product.disabled}}"></input>
-          <button bindtap='plus' data-index="{{index}}" class="plus amountComponent"
-            disabled='{{product.quantity==99||product.disabled}}'>+</button>
+          <van-stepper value="{{ product.quantity }}" bind:change="onQuantityChange" long-press="{{ false }}" input-width="40px" button-size="32px" min="1" max="99" data-index="{{index}}" />
         </view>
       </view>
       <view wx:if="{{product.setting.isIdRequired}}" class="credential">
