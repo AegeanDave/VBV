@@ -93,7 +93,8 @@ export default (app: Router) => {
 					where: {
 						openIdFather: {
 							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
-						}
+						},
+						status: 'Active'
 					}
 				})
 				res.send(todoProduct)

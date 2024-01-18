@@ -36,6 +36,7 @@ const StoreProduct = db.define('inStoreProducts', {
 	},
 	setting: { type: DataTypes.JSONB },
 	warehouseId: { type: DataTypes.UUID },
+	sort: { type: DataTypes.INTEGER, defaultValue: 0 },
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW
