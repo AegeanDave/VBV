@@ -635,6 +635,134 @@ export default (app: Router) => {
 		}
 	)
 	route.post(
+		'/mark-paid/all',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { userId } = req.body
+			const { myOpenId } = req.params
+			const t = await db.transaction()
+			try {
+				const todoOrder = await Order.update(
+					{ status: 'Paid' },
+					{
+						where: { userId, dealerId: myOpenId, status: 'Unpaid' },
+						transaction: t,
+						returning: true
+					}
+				)
+				for (const order of todoOrder[1][0].dataValues) {
+					handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
+					const todoOrderDetails = await OrderDetail.findAll({
+						where: { orderId: order.id }
+					})
+					//find all products in store
+					const todoStoreProducts = await StoreProduct.findAll({
+						where: {
+							productId: {
+								[Op.or]: todoOrderDetails.map(orderDetail => {
+									return orderDetail.dataValues.productId
+								})
+							},
+							openId: myOpenId
+						}
+					})
+					//find all related products from father
+					const todoDealerProducts = await StoreProduct.findAll({
+						where: {
+							[Op.or]: todoStoreProducts.map(product => ({
+								openId: product.dataValues.openIdFather,
+								productId: product.dataValues.productId
+							}))
+						},
+						include: {
+							model: User,
+							as: 'specialPrice',
+							through: {
+								where: {
+									openIdChild: myOpenId
+								}
+							},
+							attributes: ['username', 'avatarUrl']
+						}
+					})
+					const orderNumber = makeOrderNumber()
+					const orderData: any = []
+					todoDealerProducts.forEach(({ dataValues }) => {
+						const index = orderData.findIndex(
+							(element: any) => element.dealerId! === dataValues.openId
+						)
+						const quantity = (todoOrderDetails as any).find(
+							({ dataValues: orderValue }: any) =>
+								orderValue.productId === dataValues.productId
+						).quantity
+						const actualPrice =
+							dataValues.specialPrice.length > 0
+								? dataValues.specialPrice[0]?.price.price
+								: dataValues.defaultPrice
+						const orderDetail = {
+							productInfo: {
+								price: actualPrice,
+								coverImageUrl: dataValues.coverImageUrl,
+								name: dataValues.name
+							},
+							productId: dataValues.productId,
+							quantity,
+							comment: order.comment,
+							groupId: order.groupId,
+							subtotal: quantity * actualPrice
+						}
+						if (dataValues.openId !== dataValues.openIdFather)
+							if (index === -1) {
+								orderData.push({
+									orderNumber,
+									groupId: order.groupId,
+									payment: {
+										totalAmount: quantity * actualPrice
+									},
+									userId: myOpenId,
+									dealerId: dataValues.openId,
+									address: { ...todoOrder[1][0].dataValues.address },
+									comment: order.comment,
+									status: 'Unpaid',
+									orderDetails: [orderDetail]
+								})
+							} else {
+								orderData[index].payment.totalAmount +=
+									quantity * dataValues.actualPrice
+								orderData[index].orderDetails?.push(orderDetail)
+							}
+					})
+					orderData.length > 0 &&
+						(await Order.bulkCreate(orderData, {
+							transaction: t
+						}))
+					for (const item of orderData) {
+						sendOrderSubscribeMessage(
+							orderNumber,
+							myOpenId,
+							item.dealerId,
+							item.comment
+						)
+					}
+				}
+
+				await t.commit()
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('Success sign to paid and transfer to father')
+			} catch (error) {
+				await t.rollback()
+				console.log(error)
+				res.send({
+					status: Status.FAIL,
+					message: error
+				})
+				Logger.info('mark fail')
+			}
+		}
+	)
+	route.post(
 		'/cancel',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
