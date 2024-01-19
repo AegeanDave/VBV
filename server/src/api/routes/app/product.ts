@@ -3,7 +3,7 @@ const route = Router()
 import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
 import { Product as ProductType } from '../../../models/types'
-import { DBStatus, SaleStatus, Status } from '../../../constants'
+import { DBStatus, Status } from '../../../constants'
 import {
 	Connection,
 	Product,
@@ -148,7 +148,7 @@ export default (app: Router) => {
 											connection => connection.dataValues.openId
 										)
 									},
-									status: 'Active'
+									status: DBStatus.ACTIVE
 								}
 						  })
 						: []

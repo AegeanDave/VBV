@@ -25,7 +25,7 @@
   <van-grid column-num="3" clickable square>
     <van-grid-item icon="/image/store.png" text="我的在售" bind:click="toStore" />
     <van-grid-item icon="/image/warehouse.png" bind:click="toWarehouse" text="{{hasWarehouse&&account.warehouse.status==='Active' ? '仓库管理':'我要买货'}}" />
-    <van-grid-item icon="/image/order.png" bind:click="toOrder" text="销售记录" />
+    <van-grid-item icon="/image/order.png" bind:click="toOrder" text="销售记录" badge="{{newOrderNumber}}" />
     <van-grid-item icon="/image/history.png" bind:click="toHistory" text="采购记录" />
     <van-grid-item icon="/image/couponCode.png" bind:click="toInvitation" text="邀请客户" />
     <van-grid-item icon="/image/plainCode.png" bind:click="toConnection" text="输入邀请码" />

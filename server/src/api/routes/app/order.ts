@@ -20,6 +20,8 @@ import { Op } from 'sequelize'
 import db from '../../../config/database'
 import { getPrepay, pay } from '../../../provider/wechat'
 import { handleWarehouseOrderSMS } from '../../../utils/order'
+import { handleCreateTransferingOrders } from '../../../utils/order'
+import { OrderType } from '../../../models/types'
 
 const route = Router()
 
@@ -517,106 +519,142 @@ export default (app: Router) => {
 			const { orders, newComment } = req.body
 			const { myOpenId } = req.params
 			const t = await db.transaction()
+			const todoOrder = await Order.update(
+				{ status: 'Paid' },
+				{
+					where: {
+						id: orders.map((order: OrderType) => order.id),
+						dealerId: myOpenId,
+						status: 'Unpaid'
+					},
+					transaction: t,
+					returning: true
+				}
+			)
 			try {
-				for (const order of orders) {
-					const todoOrder = await Order.update(
-						{ status: 'Paid' },
-						{ where: { id: order.id }, transaction: t, returning: true }
+				let orderData: any[] = []
+				if (!todoOrder[1][0].dataValues[0]) {
+					orderData = await handleCreateTransferingOrders(
+						todoOrder[1][0].dataValues,
+						newComment
 					)
-					handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
-					const todoOrderDetails = await OrderDetail.findAll({
-						where: { orderId: order.id }
-					})
-					//find all products in store
-					const todoStoreProducts = await StoreProduct.findAll({
-						where: {
-							productId: {
-								[Op.or]: todoOrderDetails.map(orderDetail => {
-									return orderDetail.dataValues.productId
-								})
-							},
-							openId: myOpenId
-						}
-					})
-					//find all related products from father
-					const todoDealerProducts = await StoreProduct.findAll({
-						where: {
-							[Op.or]: todoStoreProducts.map(product => ({
-								openId: product.dataValues.openIdFather,
-								productId: product.dataValues.productId
-							}))
-						},
-						include: {
-							model: User,
-							as: 'specialPrice',
-							through: {
-								where: {
-									openIdChild: myOpenId
-								}
-							},
-							attributes: ['username', 'avatarUrl']
-						}
-					})
-					const orderNumber = makeOrderNumber()
-					const orderData: any = []
-					todoDealerProducts.forEach(({ dataValues }) => {
-						const index = orderData.findIndex(
-							(element: any) => element.dealerId! === dataValues.openId
+				} else {
+					for (const order of todoOrder[1][0].dataValues) {
+						const newOrder = await handleCreateTransferingOrders(
+							order,
+							newComment
 						)
-						const quantity = (todoOrderDetails as any).find(
-							({ dataValues: orderValue }: any) =>
-								orderValue.productId === dataValues.productId
-						).quantity
-						const actualPrice =
-							dataValues.specialPrice.length > 0
-								? dataValues.specialPrice[0]?.price.price
-								: dataValues.defaultPrice
-						const orderDetail = {
-							productInfo: {
-								price: actualPrice,
-								coverImageUrl: dataValues.coverImageUrl,
-								name: dataValues.name
-							},
-							productId: dataValues.productId,
-							quantity,
-							comment: newComment || order.comment,
-							groupId: order.groupId,
-							subtotal: quantity * actualPrice
-						}
-						if (dataValues.openId !== dataValues.openIdFather)
-							if (index === -1) {
-								orderData.push({
-									orderNumber,
-									groupId: order.groupId,
-									payment: {
-										totalAmount: quantity * actualPrice
-									},
-									userId: myOpenId,
-									dealerId: dataValues.openId,
-									address: { ...todoOrder[1][0].dataValues.address },
-									comment: newComment || order.comment,
-									status: 'Unpaid',
-									orderDetails: [orderDetail]
-								})
-							} else {
-								orderData[index].payment.totalAmount +=
-									quantity * dataValues.actualPrice
-								orderData[index].orderDetails?.push(orderDetail)
-							}
-					})
-					orderData.length > 0 &&
-						(await Order.bulkCreate(orderData, {
-							transaction: t
-						}))
-					for (const item of orderData) {
-						sendOrderSubscribeMessage(
-							orderNumber,
-							myOpenId,
-							item.dealerId,
-							item.comment
-						)
+						orderData = [...orderData, ...newOrder]
 					}
 				}
+				orderData.length > 0 &&
+					(await Order.bulkCreate(orderData, {
+						include: [OrderDetail],
+						transaction: t
+					}))
+				for (const item of orderData) {
+					sendOrderSubscribeMessage(
+						item.orderNumber,
+						myOpenId,
+						item.dealerId,
+						item.comment
+					)
+				}
+				// for (const order of orders) {
+				// 	// handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
+				// 	const todoOrderDetails = await OrderDetail.findAll({
+				// 		where: { orderId: order.id }
+				// 	})
+				// 	//find all products in store
+				// 	const todoStoreProducts = await StoreProduct.findAll({
+				// 		where: {
+				// 			productId: {
+				// 				[Op.or]: todoOrderDetails.map(orderDetail => {
+				// 					return orderDetail.dataValues.productId
+				// 				})
+				// 			},
+				// 			openId: myOpenId
+				// 		}
+				// 	})
+				// 	//find all related products from father
+				// 	const todoDealerProducts = await StoreProduct.findAll({
+				// 		where: {
+				// 			[Op.or]: todoStoreProducts.map(product => ({
+				// 				openId: product.dataValues.openIdFather,
+				// 				productId: product.dataValues.productId
+				// 			}))
+				// 		},
+				// 		include: {
+				// 			model: User,
+				// 			as: 'specialPrice',
+				// 			through: {
+				// 				where: {
+				// 					openIdChild: myOpenId
+				// 				}
+				// 			},
+				// 			attributes: ['username', 'avatarUrl']
+				// 		}
+				// 	})
+				// 	const orderNumber = makeOrderNumber()
+				// 	const orderData: any = []
+				// 	todoDealerProducts.forEach(({ dataValues }) => {
+				// 		const index = orderData.findIndex(
+				// 			(element: any) => element.dealerId! === dataValues.openId
+				// 		)
+				// 		const quantity = (todoOrderDetails as any).find(
+				// 			({ dataValues: orderValue }: any) =>
+				// 				orderValue.productId === dataValues.productId
+				// 		).quantity
+				// 		const actualPrice =
+				// 			dataValues.specialPrice.length > 0
+				// 				? dataValues.specialPrice[0]?.price.price
+				// 				: dataValues.defaultPrice
+				// 		const orderDetail = {
+				// 			productInfo: {
+				// 				price: actualPrice,
+				// 				coverImageUrl: dataValues.coverImageUrl,
+				// 				name: dataValues.name
+				// 			},
+				// 			productId: dataValues.productId,
+				// 			quantity,
+				// 			comment: newComment || order.comment,
+				// 			groupId: order.groupId,
+				// 			subtotal: quantity * actualPrice
+				// 		}
+				// 		if (dataValues.openId !== dataValues.openIdFather)
+				// 			if (index === -1) {
+				// 				orderData.push({
+				// 					orderNumber,
+				// 					groupId: order.groupId,
+				// 					payment: {
+				// 						totalAmount: quantity * actualPrice
+				// 					},
+				// 					userId: myOpenId,
+				// 					dealerId: dataValues.openId,
+				// 					address: { ...todoOrder[1][0].dataValues.address },
+				// 					comment: newComment || order.comment,
+				// 					status: 'Unpaid',
+				// 					orderDetails: [orderDetail]
+				// 				})
+				// 			} else {
+				// 				orderData[index].payment.totalAmount +=
+				// 					quantity * dataValues.actualPrice
+				// 				orderData[index].orderDetails?.push(orderDetail)
+				// 			}
+				// 	})
+				// 	orderData.length > 0 &&
+				// 		(await Order.bulkCreate(orderData, {
+				// 			transaction: t
+				// 		}))
+				// 	for (const item of orderData) {
+				// 		sendOrderSubscribeMessage(
+				// 			orderNumber,
+				// 			myOpenId,
+				// 			item.dealerId,
+				// 			item.comment
+				// 		)
+				// 	}
+				// }
 
 				await t.commit()
 				res.send({
@@ -650,102 +688,30 @@ export default (app: Router) => {
 						returning: true
 					}
 				)
-				for (const order of todoOrder[1][0].dataValues) {
-					handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
-					const todoOrderDetails = await OrderDetail.findAll({
-						where: { orderId: order.id }
-					})
-					//find all products in store
-					const todoStoreProducts = await StoreProduct.findAll({
-						where: {
-							productId: {
-								[Op.or]: todoOrderDetails.map(orderDetail => {
-									return orderDetail.dataValues.productId
-								})
-							},
-							openId: myOpenId
-						}
-					})
-					//find all related products from father
-					const todoDealerProducts = await StoreProduct.findAll({
-						where: {
-							[Op.or]: todoStoreProducts.map(product => ({
-								openId: product.dataValues.openIdFather,
-								productId: product.dataValues.productId
-							}))
-						},
-						include: {
-							model: User,
-							as: 'specialPrice',
-							through: {
-								where: {
-									openIdChild: myOpenId
-								}
-							},
-							attributes: ['username', 'avatarUrl']
-						}
-					})
-					const orderNumber = makeOrderNumber()
-					const orderData: any = []
-					todoDealerProducts.forEach(({ dataValues }) => {
-						const index = orderData.findIndex(
-							(element: any) => element.dealerId! === dataValues.openId
-						)
-						const quantity = (todoOrderDetails as any).find(
-							({ dataValues: orderValue }: any) =>
-								orderValue.productId === dataValues.productId
-						).quantity
-						const actualPrice =
-							dataValues.specialPrice.length > 0
-								? dataValues.specialPrice[0]?.price.price
-								: dataValues.defaultPrice
-						const orderDetail = {
-							productInfo: {
-								price: actualPrice,
-								coverImageUrl: dataValues.coverImageUrl,
-								name: dataValues.name
-							},
-							productId: dataValues.productId,
-							quantity,
-							comment: order.comment,
-							groupId: order.groupId,
-							subtotal: quantity * actualPrice
-						}
-						if (dataValues.openId !== dataValues.openIdFather)
-							if (index === -1) {
-								orderData.push({
-									orderNumber,
-									groupId: order.groupId,
-									payment: {
-										totalAmount: quantity * actualPrice
-									},
-									userId: myOpenId,
-									dealerId: dataValues.openId,
-									address: { ...todoOrder[1][0].dataValues.address },
-									comment: order.comment,
-									status: 'Unpaid',
-									orderDetails: [orderDetail]
-								})
-							} else {
-								orderData[index].payment.totalAmount +=
-									quantity * dataValues.actualPrice
-								orderData[index].orderDetails?.push(orderDetail)
-							}
-					})
-					orderData.length > 0 &&
-						(await Order.bulkCreate(orderData, {
-							transaction: t
-						}))
-					for (const item of orderData) {
-						sendOrderSubscribeMessage(
-							orderNumber,
-							myOpenId,
-							item.dealerId,
-							item.comment
-						)
+				let orderData: any[] = []
+				if (!todoOrder[1][0].dataValues[0]) {
+					orderData = await handleCreateTransferingOrders(
+						todoOrder[1][0].dataValues
+					)
+				} else {
+					for (const order of todoOrder[1][0].dataValues) {
+						const newOrder = await handleCreateTransferingOrders(order)
+						orderData = [...orderData, ...newOrder]
 					}
 				}
-
+				orderData.length > 0 &&
+					(await Order.bulkCreate(orderData, {
+						include: [OrderDetail],
+						transaction: t
+					}))
+				for (const item of orderData) {
+					sendOrderSubscribeMessage(
+						item.orderNumber,
+						myOpenId,
+						item.dealerId,
+						item.comment
+					)
+				}
 				await t.commit()
 				res.send({
 					status: Status.SUCCESS

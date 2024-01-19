@@ -12,21 +12,22 @@ Page({
     dealerNum: 0,
     hasWarehouse: false,
     username: app.globalData.user?.username,
-    avatarUrl: app.globalData.user?.avatarUrl
+    avatarUrl: app.globalData.user?.avatarUrl,
+    newOrderNumber: 0
   },
   onLoad() {
   },
   onShow: async function () {
-    const todoAccount: any = await getAccount()
+    const { account, newOrderNumber }: any = await getAccount()
     this.setData({
-      account: todoAccount,
-      customerNum: todoAccount.customer.length,
-      dealerNum: todoAccount.dealer.length,
-      username: todoAccount.username,
-      avatarUrl: todoAccount.avatarUrl,
-      hasWarehouse: !!todoAccount.warehouse
+      account: account,
+      customerNum: account.customer.length,
+      dealerNum: account.dealer.length,
+      username: account.username,
+      avatarUrl: account.avatarUrl,
+      hasWarehouse: !!account.warehouse,
+      newOrderNumber: newOrderNumber
     })
-
   },
   toCustomer: function () {
     if (app.globalData.user?.status === 'Not_Verified') {

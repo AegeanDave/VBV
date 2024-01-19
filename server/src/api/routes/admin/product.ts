@@ -33,7 +33,6 @@ export default (app: Router) => {
 	)
 	route.get('/:id', adminAuthenticated, async (req: Request, res: Response) => {
 		const { myOpenId, id } = req.params
-		console.log(id)
 		const todoProducts = await Product.findByPk(id, {
 			include: [
 				{

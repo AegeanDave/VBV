@@ -13,7 +13,7 @@
     </view>
   </block>
   <view class="upload-footer">
-    <van-button type="primary" disabled="{{imageFront.length===0||imageBack.length===0}}" bindtap="onShowOverlay">确认上传</van-button>
+    <van-button type="primary" disabled="{{imageFront.length===0||imageBack.length===0}}" bind:click="onShowOverlay">确认上传</van-button>
   </view>
 </view>
 <van-overlay show="{{ showOverlay }}" bind:click="onClickHide">
@@ -23,7 +23,7 @@
         <view class="text-block">
           <text>{{agreement}}</text>
         </view>
-        <van-button type="primary" bindtap="onUpload" class="agreement-btn">我已同意并上传</van-button>
+        <van-button type="primary" bind:click="onUpload" class="agreement-btn">我已同意并上传</van-button>
       </view>
     </scroll-view>
   </view>
