@@ -3,7 +3,7 @@
 <view class="dealerContainer">
   <view class="dealer-list-head">
     <text class="title">我的供应商</text>
-    <block wx:if="{{dealer.length>0}}">
+    <block wx:if="{{dealers.length>0}}">
       <van-button plain type="primary" class="btn" hairline type="info" size="small" bind:click='onPickDealer' data-dealer="all">查看全部</van-button>
     </block>
   </view>
@@ -59,8 +59,8 @@
             <text>￥{{product.defaultPrice}}</text>
           </view>
           <view class="dealerBox">
-            <image src="{{product.dealerSale.avatar}}"></image>
-            <text>{{product.dealerSale.name}}</text>
+            <image src="{{product.from.dealer.avatarUrl}}"></image>
+            <text>{{product.from.dealer.username}}</text>
           </view>
         </view>
       </block>
@@ -77,8 +77,8 @@
             <text>￥{{product.defaultPrice}}</text>
           </view>
           <view class="dealerBox">
-            <image src="{{product.dealer.avatarUrl}}"></image>
-            <text>{{product.dealer.username}}</text>
+            <image src="{{product.from.dealer.avatarUrl}}"></image>
+            <text>{{product.from.dealer.username}}</text>
           </view>
         </view>
       </block>

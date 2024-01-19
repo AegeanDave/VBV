@@ -59,7 +59,15 @@ export default (app: Router) => {
 							]
 					  })
 					: []
-			res.send({ alias: todoAlias, products: todoProducts })
+			res.send({
+				alias: todoAlias,
+				products: todoProducts.map(({ dataValues }: any) => ({
+					...dataValues,
+					from: todoAlias.find(
+						(user: any) => user.dataValues.openId === dataValues.openId
+					)
+				}))
+			})
 			Logger.info('products get')
 		} catch (error) {
 			res.status(500).send({

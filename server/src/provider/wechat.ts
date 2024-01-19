@@ -49,9 +49,10 @@ export const sendOrderSubscribeMessage = async (
 		`https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=${access_token}`,
 		{
 			touser: openIdDealer,
-			page: 'pages/account/orders/orders',
-			miniprogram_state: process.env.miniprogram_state || 'trial',
+			page: `pages/soldOrders/orderDetail/orderDetail?orderNumber=${orderNumber}&customerId=${userId}`,
+			miniprogram_state: process.env.MINIPROGRAM_STATE || 'trial',
 			template_id: process.env.ORDER_MESSAGE_TEMP_ID,
+			lang: 'zh_CN',
 			// need new template to update
 			data: {
 				name1: {
@@ -98,7 +99,8 @@ export const sendShippingSubscribeMessage = async (
 			// page:
 			// 	'pages/account/followingAndFollower/followingAndFollower?group=following',
 			template_id: process.env.SHIPMENT_MESSAGE_TEMP_ID,
-			miniprogram_state: process.env.miniprogram_state,
+			miniprogram_state: process.env.MINIPROGRAM_STATE || 'trial',
+			lang: 'zh_CN',
 			// need new template to update
 			data: {
 				character_string1: {

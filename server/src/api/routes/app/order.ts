@@ -456,12 +456,18 @@ export default (app: Router) => {
 					orderData[index].orderDetails?.push(orderDetail)
 				}
 			})
-			const result = await Order.bulkCreate(orderData, {
+			await Order.bulkCreate(orderData, {
 				include: [OrderDetail],
 				returning: true
 			})
 			for (const item of orderData) {
-				sendOrderSubscribeMessage(orderNumber, myOpenId, item.dealerId, comment)
+				sendOrderSubscribeMessage(
+					orderNumber,
+					myOpenId,
+					item.dealerId,
+					moment().format('YYYY-MM-DD HH:mm'),
+					comment
+				)
 			}
 			res.send({ orderNumber })
 			Logger.info('Order create successfully')
@@ -557,6 +563,7 @@ export default (app: Router) => {
 						item.orderNumber,
 						myOpenId,
 						item.dealerId,
+						moment().format('YYYY-MM-DD HH:mm'),
 						item.comment
 					)
 				}
@@ -709,6 +716,7 @@ export default (app: Router) => {
 						item.orderNumber,
 						myOpenId,
 						item.dealerId,
+						moment().format('YYYY-MM-DD HH:mm'),
 						item.comment
 					)
 				}
