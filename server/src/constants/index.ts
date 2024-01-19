@@ -21,8 +21,10 @@ export const AddressStatus = {
 
 export const DBStatus = {
 	INACTIVE: 'Inactive',
-	ACTIVE: 'Active'
+	ACTIVE: 'Active',
+	NOT_AVAILABLE: 'Not_Available'
 }
+
 export const OrderStatus = {
 	UNPAID: 'Unpaid',
 	PAID: 'Paid',

@@ -112,7 +112,22 @@ export default (app: Router) => {
 						Warehouse
 					]
 				})
-				res.send(todoUser)
+				const todayStart = new Date()
+				todayStart.setHours(0, 0, 0, 0) // Set the time to the beginning of the day
+
+				const todayEnd = new Date()
+				todayEnd.setHours(23, 59, 59, 999) // Set the time to the end of the day
+
+				const todoOrders = await Order.findAll({
+					where: {
+						createdAt: {
+							[Op.between]: [todayStart, todayEnd]
+						},
+						dealerId: myOpenId,
+						status: 'Unpaid'
+					}
+				})
+				res.send({ newOrderNumber: todoOrders.length, account: todoUser })
 				Logger.info('Account fetch successfully')
 			} catch (err) {
 				console.log(err)

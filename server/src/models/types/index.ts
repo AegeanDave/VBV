@@ -37,18 +37,19 @@ type Sale = {
 	inStoreProductId: string
 	status: string
 }
-export type SaleOrder = {
-	orderId: string
+export type OrderType = {
+	id: string
 	orderNumber: string
-	originOrderId: string
+	groupId: string
+	userId: string
+	dealerId: string
+	payment: any
 	status: OrderStatus
-	buyer: User
 	createdAt: string
-	subOrders: SubOrder[]
-	lastUpdatedAt: string
-	address: Address
+	orderDetails?: any[]
+	updatedAt: string
+	address: any
 	comment?: string
-	commentEdited?: string
 }
 
 export type PurchasedOrder = {
@@ -87,7 +88,7 @@ type User = {
 	avatar: string
 }
 export type Address = {
-	addressId: string
+	id: string
 	name: string
 	phone: string
 	country: string
@@ -98,8 +99,8 @@ export type Address = {
 	idBackImage?: string
 	quickInputAddress?: string
 }
-type OrderStatus = 'Paid' | 'Unpaid' | 'Canceled'
-type ShipmentStatus = 'Pending' | 'Canceled' | 'Shipping'
+type OrderStatus = 'Paid' | 'Unpaid' | 'Cancelled' | 'Completed'
+type ShipmentStatus = 'Pending' | 'Cancelled' | 'Shipping'
 export type Session = {
 	openId: string
 	warehouseId: string
