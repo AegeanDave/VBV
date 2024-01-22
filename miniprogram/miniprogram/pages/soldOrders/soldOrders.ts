@@ -151,7 +151,7 @@ Page({
   bindCopy(e: any) {
     let that = this
     wx.setClipboardData({
-      data: e ? e.currentTarget.dataset.name : that.data.currentOrder.buyer.name,
+      data: e ? e.currentTarget.dataset.name : that.data.currentOrder.user.username,
       success: function () {
         wx.showToast({
           title: '已成功复制',
