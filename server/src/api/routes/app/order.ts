@@ -756,7 +756,22 @@ export default (app: Router) => {
 			}
 		}
 	)
-
+	route.delete('/', isAuthenticated, async (req: Request, res: Response) => {
+		const { order } = req.body
+		try {
+			await Order.destroy({ where: { id: order.id } })
+			res.send({
+				status: 'SUCCESS'
+			})
+			Logger.info('Order has been removed')
+		} catch (err) {
+			res.send({
+				status: Status.FAIL,
+				message: err
+			})
+			Logger.info('Remove order failed')
+		}
+	})
 	route.get(
 		'/pay/instance',
 		isAuthenticated,

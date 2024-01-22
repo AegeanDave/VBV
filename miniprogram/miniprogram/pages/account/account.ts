@@ -29,6 +29,16 @@ Page({
       newOrderNumber: newOrderNumber
     })
   },
+  toProfile() {
+    if (app.globalData.user?.status === 'Not_Verified') {
+      wx.navigateTo({
+        url: '../register/register'
+      })
+    }
+    wx.navigateTo({
+      url: `./profile/profile`
+    })
+  },
   toCustomer: function () {
     if (app.globalData.user?.status === 'Not_Verified') {
       wx.navigateTo({

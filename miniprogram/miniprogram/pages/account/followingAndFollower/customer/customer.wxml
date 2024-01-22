@@ -20,7 +20,7 @@
       <text wx:elif='{{customer}}'>未结算：</text>
       <text class="unpaid amount">￥{{valueUnpaid}}</text>
     </view>
-    <button wx:if='{{customer}}' bindtap="markPaid" disabled="{{valueUnpaid==0}}">标记付款</button>
+    <button wx:if='{{customer}}' bindtap="markPaid" disabled="{{valueUnpaid==0}}">结清欠款</button>
   </view>
 </view>
 <view class="main">

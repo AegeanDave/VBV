@@ -1,0 +1,6 @@
+<!--pages/account/profile/profile.wxml-->
+<van-cell-group>
+  <van-cell title="用户名" value="{{username}}" is-link is-link link-type="navigateTo" center url="../../register/register?mode=edit" />
+  <van-cell center title="默认地址" value="{{selectedAddress?'更改':'去添加'}}" label="{{selectedAddress?selectedAddress.quickInput||selectedAddress.state + ' ' + selectedAddress.city+' '+ selectedAddress.street:'您还未添加过地址'}}" is-link link-type="navigateTo" url="../../address/address" />
+  <van-cell title="身份认证" value="{{hasId?'已认证':'未认证'}}" label="用于您购买海外直邮商品" is-link link-type="navigateTo" url="../../checkOut/imageUploader/imageUploader" center />
+</van-cell-group>

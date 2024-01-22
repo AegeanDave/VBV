@@ -1,5 +1,5 @@
-import { Address, IAppOption } from "../../../models/index"
-import { deleteAddress, getAddresses } from '../../../services/api/api'
+import { Address, IAppOption } from "../../models/index"
+import { deleteAddress, getAddresses } from '../../services/api/api'
 const app = getApp<IAppOption>()
 
 Page({
@@ -15,10 +15,10 @@ Page({
   },
   addNewAddress: function () {
     wx.navigateTo({
-      url: '../newAddress/newAddress'
+      url: './newAddress/newAddress'
     })
   },
-  onChoose: function (e) {
+  onChoose: function (e: any) {
     const address = e.currentTarget.dataset.address
     const pages = getCurrentPages()
     const prevPage = pages[pages.length - 2]
@@ -42,7 +42,6 @@ Page({
       if (selected) {
         const pages = getCurrentPages()
         const prevPage = pages[pages.length - 2]
-        console.log(1111)
         prevPage.setData({
           selectedAddress: newAddressList[0] || null
         })

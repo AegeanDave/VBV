@@ -1,4 +1,4 @@
-import { getAllSoldOrders, hideOrder, markPaid } from '../../services/api/api'
+import { getAllSoldOrders, deleteOrder, markPaid } from '../../services/api/api'
 import { SaleOrder, IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
 import { parseTime } from "../../utils/util"
@@ -118,11 +118,11 @@ Page({
     let that = this
     wx.showModal({
       title: '提示',
-      content: '您确认隐藏此订单？',
+      content: '您确认删除此订单？',
       async success(res) {
         if (res.confirm) {
           const order = that.data.currentOrder
-          const result: any = await hideOrder(order)
+          const result: any = await deleteOrder(order)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
               title: '订单已隐藏',

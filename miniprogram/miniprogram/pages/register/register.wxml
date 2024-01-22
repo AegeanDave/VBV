@@ -1,5 +1,5 @@
 <view data-weui-theme="{{theme}}" class="container">
-  <view><text class='title text'>欢迎加入微帮微！</text></view>
+  <view><text class='title text'>{{mode==='edit'?'更改信息':'欢迎加入微帮微！'}}</text></view>
   <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
     <image class="avatar" src="{{avatarUrl}}"></image>
   </button>
@@ -8,18 +8,18 @@
       <mp-form>
         <mp-cells>
           <mp-cell title="昵称">
-            <input type="nickname" class="weui-input" name="username" placeholder="请输入昵称" bindinput="onChangeUsername" bindnicknamereview="onChangeNickname"/>
+            <input type="nickname" class="weui-input" name="username" placeholder="请输入昵称" bindinput="onChangeUsername" bindnicknamereview="onChangeNickname" />
           </mp-cell>
           <mp-cell>
             <text class='text welcome'>
-              为了让您更好地体验我们的服务，我们建议您使用微信名称和头像进行注册。这样可以使您在社区中更容易被其他用户识别。
-
+              {{mode==='edit'?'请及时更新您的微信头像和昵称以便您的供应商方便找到您':'为了让您更好地体验我们的服务，我们建议您使用微信名称和头像进行注册。这样可以使您在社区中更容易被其他用户识别。'}}
+              
               不用担心，我们将保护您的隐私信息，并确保您在使用过程中的安全。</text>
           </mp-cell>
         </mp-cells>
       </mp-form>
       <view class="grid item">
-        <button class="btn" form-type="submit">立即创建</button>
+        <button class="btn" form-type="submit">{{mode==='edit'?'立即更新':'立即创建'}}</button>
       </view>
     </form>
   </view>

@@ -14,22 +14,20 @@ Page({
     username: '',
     avatarUrl: defaultAvatarUrl,
     theme: wx.getSystemInfoSync().theme,
+    mode: null
   },
 
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad() {
-    wx.onThemeChange((result) => {
-      this.setData({
-        theme: result.theme
-      })
-    })
+  onLoad(option: any) {
     const { user } = app.globalData
-    if (user?.status === 'Active') {
+    if (user?.status === 'Active' && option.mode !== 'edit') {
       wx.navigateBack()
     }
-
+    this.setData({
+      mode: option.mode
+    })
   },
 
   /**

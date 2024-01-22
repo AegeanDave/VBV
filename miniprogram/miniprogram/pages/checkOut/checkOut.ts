@@ -12,29 +12,40 @@ Page({
     isEditing: false,
     addressList: [],
     totalPrice: 0,
+    agreeUsingId: false,
   },
-  async onLoad(option) {
-    let items, needId
+  async onLoad(option: any) {
+    let items
     if (option.mode === 'CART') {
       items = wx.getStorageSync('cart')
     }
     if (option.mode === 'QuickBuy') {
       items = wx.getStorageSync('quickBuy')
     }
-    needId = items.some((element: any) => element.item.product.setting?.isIdRequired)
+
     const totalPrice = items.reduce((sum: number, product: any) => sum + Number(product.quantity * product.item.defaultPrice), 0).toFixed(2)
-    const { addresses, hasId }: any = await getAddresses()
     this.setData({
       order: items,
       totalPrice: totalPrice,
+    })
+
+  },
+  async onShow() {
+    const { addresses, hasId }: any = await getAddresses()
+    const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
+    this.setData({
       addressList: addresses || [],
       selectedAddress: addresses ? addresses[0] : null,
     })
     if (needId) {
-      if (hasId) {
+      if (hasId && !this.data.agreeUsingId) {
         Dialog.confirm({
           title: '身份信息',
           message: '订单含海外直邮，需要授权以获取身份证照片',
+        }).then(() => {
+          this.setData({
+            agreeUsingId: true
+          })
         }).catch(() => {
           wx.navigateBack()
         })
@@ -64,18 +75,13 @@ Page({
   toManageAddress: function (e: any) {
     if (e.currentTarget.dataset.address) {
       wx.navigateTo({
-        url: `./address/address?selectedId=${e.currentTarget.dataset.address.id}`
+        url: `../address/address?selectedId=${e.currentTarget.dataset.address.id}`
       })
     } else {
       wx.navigateTo({
-        url: `./address/address`
+        url: `../address/address`
       })
     }
-  },
-  toNewAddress: function () {
-    wx.navigateTo({
-      url: './newAddress/newAddress'
-    })
   },
   handleChangeComment(e: any) {
     const comment = e.detail.value

@@ -66,13 +66,14 @@ export default (app: Router) => {
 					avatarUrl: newUser.avatarUrl,
 					status: newUser.status
 				})
-				Invitation.bulkCreate(
-					Array.from({ length: 5 }, () => ({
-						code: makeCode(),
-						openId: myOpenId,
-						status: 'Active'
-					}))
-				)
+				if (todoSignup[0] === 1)
+					Invitation.bulkCreate(
+						Array.from({ length: 5 }, () => ({
+							code: makeCode(),
+							openId: myOpenId,
+							status: 'Active'
+						}))
+					)
 				Logger.info('Signup Success')
 			} catch (err) {
 				console.log(err)

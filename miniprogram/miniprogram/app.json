@@ -10,8 +10,8 @@
     "pages/index/productDetail/productDetail",
     "pages/checkOut/checkOut",
     "pages/checkOut/contactToPay/contactToPay",
-    "pages/checkOut/address/address",
-    "pages/checkOut/newAddress/newAddress",
+    "pages/address/address",
+    "pages/address/newAddress/newAddress",
     "pages/store/store",
     "pages/soldOrders/soldOrders",
     "pages/soldOrders/shareOrder/shareOrder",
@@ -26,7 +26,8 @@
     "pages/account/followingAndFollower/dealer/dealer",
     "pages/register/register",
     "pages/checkOut/imageUploader/imageUploader",
-    "pages/account/warehouse/register/register"
+    "pages/account/warehouse/register/register",
+    "pages/account/profile/profile"
   ],
   "tabBar": {
     "color": "#CDE1E0",
