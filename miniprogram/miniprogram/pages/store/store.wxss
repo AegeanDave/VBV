@@ -3,7 +3,7 @@ page {
 }
 
 .card {
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
 .cardHeader.products {

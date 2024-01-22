@@ -19,7 +19,6 @@ import {
 import { Op } from 'sequelize'
 import db from '../../../config/database'
 import { getPrepay, pay } from '../../../provider/wechat'
-import { handleWarehouseOrderSMS } from '../../../utils/order'
 import { handleCreateTransferingOrders } from '../../../utils/order'
 import { OrderType } from '../../../models/types'
 
@@ -149,7 +148,7 @@ export default (app: Router) => {
 				res.send({
 					...todoOrder?.dataValues,
 					createdAt: moment(todoOrder?.dataValues.creadtedAt).format(
-						'MM Do YYYY, h:mm'
+						'YYYY-MM-DD h:mm'
 					)
 				})
 				Logger.info('sold order get')
@@ -208,7 +207,7 @@ export default (app: Router) => {
 							grouped[key] = []
 						}
 						const createdAt = moment(order.dataValues.creadtedAt).format(
-							'MMMM Do YYYY'
+							'YYYY-MM-DD h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
 
@@ -224,7 +223,7 @@ export default (app: Router) => {
 							grouped[key] = []
 						}
 						const createdAt = moment(order.dataValues.creadtedAt).format(
-							'MM Do YYYY, h:mm'
+							'YYYY-MM-DD , h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
 

@@ -1,6 +1,5 @@
 import { getAllPurchasedOrders } from '../../../services/api/api'
-import { PurchasedOrder, OrderProduct, IAppOption } from "../../../models/index"
-import { parseTime } from "../../../utils/util"
+import {  IAppOption } from "../../../models/index"
 const app = getApp<IAppOption>()
 
 Page({

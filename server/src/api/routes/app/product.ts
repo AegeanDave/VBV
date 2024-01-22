@@ -125,6 +125,11 @@ export default (app: Router) => {
 				const todoAlias = await Connection.findAll({
 					where: {
 						openIdChild: myOpenId
+					},
+					include: {
+						model: User,
+						as: 'dealer',
+						attributes: ['username', 'avatarUrl']
 					}
 				})
 				const todoMyProducts = StoreProduct.findAll({

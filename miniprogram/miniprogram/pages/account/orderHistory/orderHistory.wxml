@@ -47,10 +47,10 @@
           <view class="divLine"></view>
           <view class="boxFooter">
             <view class="item">
-              <van-tag type="warning" round>未付款</van-tag>
+              <van-tag type="warning" size="medium">未付款</van-tag>
             </view>
             <view class="item">
-              <button class="toPay" bindtap="onCheckPayment" data-order="{{order}}">去付款</button>
+              <button class="toPay" bind:tap="onCheckPayment" data-order="{{order}}">去付款</button>
             </view>
           </view>
         </view>
@@ -92,26 +92,22 @@
                   </view>
                 </view>
               </block>
+              <view class="sub-order-footer">
+                <view class="item">
+                  <text class="totalPrice label">总价: </text>
+                  <text class="totalPrice amount value">￥{{subOrder.payment.totalAmount}}</text>
+                </view>
+              </view>
             </block>
           </view>
+          <view class="divLine"></view>
           <view class="boxFooter">
-            <view class="footerInner">
-              <view class="item">
-                <text class="totalPrice label">总价: </text>
-                <text class="totalPrice amount value">￥{{order.totalPrice}}</text>
-              </view>
+            <view class="item">
+              <van-tag type="success" size="medium">已付款</van-tag>
             </view>
-            <view class="divLine"></view>
-            <view class="footerInner">
-              <view class="item">
-                <text class="label">订单状态: </text>
-                <text wx:if="{{tab.id===0}}" class="unpaid value">未付款</text>
-                <text wx:else class="paid value">已付款</text>
-              </view>
-              <view class="item">
-                <button wx:if="{{tab.id===0}}" class="toPay" bindtap="toConfirmPayment" data-order="{{order}}">去付款</button>
-                <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
-              </view>
+            <view class="item">
+              <button wx:if="{{tab.id===0}}" class="toPay" bindtap="toConfirmPayment" data-order="{{order}}">去付款</button>
+              <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
             </view>
           </view>
         </view>

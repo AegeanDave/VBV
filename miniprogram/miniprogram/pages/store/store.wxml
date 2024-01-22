@@ -51,8 +51,8 @@
           <image class='pic store' src='{{product.coverImageUrl}}'>
           </image>
           <view class="dealerBox">
-            <image src="{{product.user.avatarUrl}}"></image>
-            <text>{{product.user.username}}</text>
+            <image src="{{product.from.dealer.avatarUrl}}"></image>
+            <text>{{product.from.dealer.username}}</text>
           </view>
           <text class="name">{{product.name}}</text>
           <block wx:if="{{product.specialPrice.length>0}}">
