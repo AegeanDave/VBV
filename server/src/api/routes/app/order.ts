@@ -223,7 +223,7 @@ export default (app: Router) => {
 							grouped[key] = []
 						}
 						const createdAt = moment(order.dataValues.creadtedAt).format(
-							'YYYY-MM-DD , h:mm'
+							'YYYY-MM-DD h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
 
@@ -334,7 +334,7 @@ export default (app: Router) => {
 					]
 				})
 				res.send(todoOrder)
-				Logger.info('purchased order get')
+				Logger.info(`purchased order ${orderNumber} get`)
 			} catch (err) {
 				console.log(err)
 				res.status(500).send({

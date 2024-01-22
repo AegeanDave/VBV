@@ -75,7 +75,7 @@
               <text class="value">{{order[0].createdAt}}</text>
             </view>
           </view>
-          <view class="productList" bindtap="bindToDetail" data-order="{{order}}">
+          <view class="productList" bindtap="bindToDetail" data-order="{{order[0]}}">
             <block wx:for="{{order}}" wx:key="id" wx:for-item="subOrder">
               <block wx:for="{{subOrder.orderDetails}}" wx:key="id" wx:for-item="product">
                 <view class="productCard">
@@ -106,8 +106,7 @@
               <van-tag type="success" size="medium">已付款</van-tag>
             </view>
             <view class="item">
-              <button wx:if="{{tab.id===0}}" class="toPay" bindtap="toConfirmPayment" data-order="{{order}}">去付款</button>
-              <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
+              <button bindtap="bindToDetail" data-order="{{order[0]}}">查看详情</button>
             </view>
           </view>
         </view>
