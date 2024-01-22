@@ -8,13 +8,13 @@
       <block wx:for="{{myProductList}}" wx:key="id" wx:for-item="product">
         <view class="productCard" bindtap="onShowStoreActionSheet" data-product="{{product}}">
           <block wx:if="{{product.status==='Active'}}">
-            <text>售卖中</text>
+            <van-tag type="primary">售卖中</van-tag>
           </block>
           <block wx:if="{{product.status==='Inactive'}}">
-            <text>已下架</text>
+            <van-tag plain>已下架</van-tag>
           </block>
           <block wx:if="{{product.status==='Not_Available'}}">
-            <text>供应商已下架</text>
+            <van-tag type="warning">供应商已下架</van-tag>
           </block>
           <image class='pic store' src='{{product.coverImageUrl}}'>
           </image>
