@@ -164,7 +164,15 @@ export default (app: Router) => {
 					todoMyProducts,
 					todoAvailableProducts
 				])
-				res.send({ myProducts, availableProducts })
+				res.send({
+					myProducts,
+					availableProducts: availableProducts.map(({ dataValues }: any) => ({
+						...dataValues,
+						from: todoAlias.find(
+							(user: any) => user.dataValues.openId === dataValues.openId
+						)
+					}))
+				})
 				Logger.info('all saleProducts get')
 			} catch (err) {
 				res.send({

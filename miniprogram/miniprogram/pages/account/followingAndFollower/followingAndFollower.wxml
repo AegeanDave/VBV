@@ -11,8 +11,8 @@
 </view>
 <block wx:else>
   <view class="filterBtn">
-    <text wx:if="{{groupName==='CUSTOMER'}}">仅查看待付款用户</text>
-    <text wx:else>仅查看未付款款用户</text>
+    <text wx:if="{{groupName==='CUSTOMER'}}">仅查看欠款客户</text>
+    <text wx:else>仅查看未结清供应</text>
     <switch checked="{{lookingUnpaid}}" bindchange="bindCheck"></switch>
   </view>
   <view class="dealerList">
