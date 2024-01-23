@@ -16,7 +16,7 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: async function (option) {
+  onLoad: async function (option: any) {
     if (option.dealerId) {
       const todoOrder = await getPurchasedOrderWithDealer(option.orderNumber, option.dealerId)
       this.setData({

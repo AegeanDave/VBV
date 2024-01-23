@@ -83,6 +83,7 @@ Page({
       this.setData({
         selectedDealer: ''
       })
+      this.onClear()
       return
     }
     this.setData({

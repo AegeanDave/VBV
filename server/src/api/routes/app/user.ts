@@ -56,24 +56,26 @@ export default (app: Router) => {
 			const { username } = req.body
 			const { myOpenId } = req.params
 			try {
-				const todoSignup = await User.update(
+				const todoOrigin = await User.findByPk(myOpenId)
+				const [numOfAffectedRows, [updatedModel]] = await User.update(
 					{ username, avatarUrl: avatar.location, status: DBStatus.ACTIVE },
 					{ where: { openId: myOpenId }, returning: true }
 				)
-				const newUser = todoSignup[1][0].dataValues
+				const newUser = updatedModel.dataValues
 				res.send({
 					username: newUser.username,
 					avatarUrl: newUser.avatarUrl,
 					status: newUser.status
 				})
-				if (todoSignup[0] === 1)
-					Invitation.bulkCreate(
-						Array.from({ length: 5 }, () => ({
-							code: makeCode(),
-							openId: myOpenId,
-							status: 'Active'
-						}))
-					)
+				if (numOfAffectedRows > 0)
+					if (todoOrigin?.dataValues.status !== updatedModel.dataValues.status)
+						Invitation.bulkCreate(
+							Array.from({ length: 5 }, () => ({
+								code: makeCode(),
+								openId: myOpenId,
+								status: 'Active'
+							}))
+						)
 				Logger.info('Signup Success')
 			} catch (err) {
 				console.log(err)

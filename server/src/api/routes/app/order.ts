@@ -147,7 +147,7 @@ export default (app: Router) => {
 				})
 				res.send({
 					...todoOrder?.dataValues,
-					createdAt: moment(todoOrder?.dataValues.creadtedAt).format(
+					createdAt: moment(todoOrder?.dataValues.createdAt).format(
 						'YYYY-MM-DD h:mm'
 					)
 				})
@@ -206,7 +206,7 @@ export default (app: Router) => {
 						if (!grouped[key]) {
 							grouped[key] = []
 						}
-						const createdAt = moment(order.dataValues.creadtedAt).format(
+						const createdAt = moment(order.dataValues.createdAt).format(
 							'YYYY-MM-DD h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
@@ -222,7 +222,7 @@ export default (app: Router) => {
 						if (!grouped[key]) {
 							grouped[key] = []
 						}
-						const createdAt = moment(order.dataValues.creadtedAt).format(
+						const createdAt = moment(order.dataValues.createdAt).format(
 							'YYYY-MM-DD h:mm'
 						)
 						grouped[key].push({ ...order.dataValues, createdAt })
