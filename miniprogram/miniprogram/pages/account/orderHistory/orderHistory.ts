@@ -20,7 +20,7 @@ Page({
     }
     this.setData({
       pendingOrders: todoOrders?.unpaidOrders || [],
-      processingOrders: todoOrders.processingOrders || [],
+      processingOrders: todoOrders?.processingOrders || [],
     })
   },
   onTabChange(e: any) {
