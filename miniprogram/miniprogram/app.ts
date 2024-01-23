@@ -21,7 +21,7 @@ App<IAppOption>({
           }
         } catch (err) {
           wx.showToast({
-            title: '连接服务器失败', icon: 'none', duration: 3000
+            title: '登录失效，请下拉刷新', icon: 'none', duration: 3000
           })
         }
       },

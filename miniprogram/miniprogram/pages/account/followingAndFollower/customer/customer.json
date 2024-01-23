@@ -8,6 +8,6 @@
     "van-cell-group": "@vant/weapp/cell-group/index"
   },
   "enablePullDownRefresh": true,
-  "navigationBarTitleText": "用户详情",
+  "navigationBarTitleText": "客户详情",
   "backgroundTextStyle": "dark" 
 }

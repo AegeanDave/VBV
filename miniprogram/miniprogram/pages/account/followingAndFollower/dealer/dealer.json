@@ -3,5 +3,5 @@
     "van-tab": "@vant/weapp/tab/index",
     "van-tabs": "@vant/weapp/tabs/index"
   },
-  "navigationBarTitleText": "用户详情"
+  "navigationBarTitleText": "供应商详情"
 }

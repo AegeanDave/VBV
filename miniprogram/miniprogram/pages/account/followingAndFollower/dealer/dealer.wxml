@@ -65,9 +65,12 @@
               <view class="divLine"></view>
               <view class="footerInner alignRight">
                 <view class="item">
-                  <text>订单状态: </text>
-                  <text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
-                  <text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
+                <block wx:if="{{order.status==='Unpaid'}}">
+                  <van-tag type="warning" size="medium">未付款</van-tag>
+                </block>
+                <block wx:elif="{{order.status==='Paid'}}">
+                  <van-tag type="primary" size="medium">已付款</van-tag>
+                </block>
                 </view>
               </view>
             </view>

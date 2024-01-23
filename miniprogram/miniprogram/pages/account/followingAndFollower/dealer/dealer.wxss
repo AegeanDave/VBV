@@ -255,7 +255,7 @@ button {
 }
 
 .boxFooter {
-  padding: 6px 28px;
+  padding: 6px 16px;
   flex-direction: column;
 }
 
@@ -278,8 +278,8 @@ button {
 .divLine {
   background: #F1F1F1;
   width: 100%;
-  margin-bottom: 10px;
-  height: 5rpx;
+  margin-bottom: 8px;
+  height: 3rpx;
 }
 
 text.amount {

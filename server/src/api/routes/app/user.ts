@@ -495,6 +495,47 @@ export default (app: Router) => {
 			}
 		}
 	)
+	route.delete(
+		'/connection/dealer',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { id } = req.body
+			const { myOpenId } = req.params
+
+			const t = await db.transaction()
+			try {
+				await Connection.destroy({
+					where: {
+						openIdChild: myOpenId,
+						openId: id
+					},
+					transaction: t
+				})
+				await StoreProduct.update(
+					{ status: 'Not_Available' },
+					{
+						where: {
+							openId: myOpenId,
+							openIdFather: id
+						},
+						transaction: t
+					}
+				)
+				await t.commit()
+				res.send({
+					status: Status.SUCCESS
+				})
+				Logger.info('Remove connection successfully')
+			} catch (err) {
+				await t.rollback()
+				res.status(500).send({
+					status: Status.FAIL,
+					message: '解除关系失败'
+				})
+				Logger.info('Remove connection fail')
+			}
+		}
+	)
 
 	route.delete(
 		'/connection',

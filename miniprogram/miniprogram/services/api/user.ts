@@ -18,10 +18,11 @@ const createWarehouse = (phone: string, countryCode: string) => request.postRequ
 const getCustomer = (openId: string) => request.getRequest(`users/customer/${openId}`)
 const getDealer = (openId: string) => request.getRequest(`users/dealer/${openId}`)
 const removeConnection = (aliasId: string) => request.deleteRequest("users/connection", { id: aliasId })
+const unfollowingDealer = (aliasId: string) => request.deleteRequest("users/connection/dealer", { id: aliasId })
 const uploadPhotoFront = (filePath: string) => request.uploadImage("users/upload/front", filePath, 'front')
 const uploadPhotoBack = (filePath: string) => request.uploadImage("users/upload/back", filePath, 'back')
 const addAddress = (address: any, selectedField: number) => request.postRequest("users/address/new", { address, selectedField })
 const deleteAddress = (id: string) => request.deleteRequest("users/address", { id })
 const getAddresses = () => request.getRequest("users/addresses")
 
-export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer, uploadPhotoFront, uploadPhotoBack, addAddress, getAddresses, deleteAddress }
+export { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer, uploadPhotoFront, uploadPhotoBack, addAddress, getAddresses, deleteAddress, unfollowingDealer }

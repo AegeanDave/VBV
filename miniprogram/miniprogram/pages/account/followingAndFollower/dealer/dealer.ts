@@ -1,4 +1,4 @@
-import { getDealer, unlockRelation } from '../../../../services/api/api'
+import { getDealer, unfollowingDealer } from '../../../../services/api/api'
 import { Product, IAppOption, DealerOrder, OrderProduct } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
@@ -15,7 +15,7 @@ Page({
   onLoad: async function (option: any) {
     const { user, products, orders, unpaidAmount }: any = await getDealer(option.id)
     this.setData({
-      orders: orders.map(order => ({
+      orders: orders.map((order: any) => ({
         ...order,
         createdAt: parseTime(new Date(order.createdAt))
       })),
@@ -42,8 +42,8 @@ Page({
       content: '确定与“' + this.data.dealer.username + '”解除关系?',
       success: async function (sm) {
         if (sm.confirm) {
-          const aliasID = that.data.dealer.aliasId
-          const result = await unlockRelation(aliasID)
+          const aliasId = that.data.dealer.aliasId
+          const result = await unfollowingDealer(aliasId)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
               title: '已解除关系',
