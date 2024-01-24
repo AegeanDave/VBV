@@ -36,7 +36,7 @@ export default (app: Router) => {
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
 			try {
-				const todoUnpaidOrder = await Order.findAll({
+				const todoUnpaidOrder = Order.findAll({
 					where: {
 						dealerId: myOpenId,
 						status: 'Unpaid'
@@ -57,10 +57,10 @@ export default (app: Router) => {
 					]
 				})
 
-				const todoPaidOrder = await Order.findAll({
+				const todoPaidOrder = Order.findAll({
 					where: {
 						dealerId: myOpenId,
-						status: { [Op.or]: ['Paid', 'Processing', 'Shipped'] }
+						status: { [Op.or]: ['Paid', 'Processing'] }
 					},
 					include: [
 						{ model: User, attributes: ['username', 'avatarUrl'] },
@@ -78,11 +78,19 @@ export default (app: Router) => {
 					]
 				})
 
-				const todoCompleteOrder = await Order.findAll({
+				const todoCompleteOrder = Order.findAll({
 					where: {
 						dealerId: myOpenId,
-						status: { [Op.or]: ['Completed', 'Cancelled'] }
+						status: { [Op.or]: ['Completed', 'Cancelled', 'Shipped'] },
+						hidden: false
 					},
+					attributes: { exclude: ['hidden'] },
+					order: [
+						db.literal(
+							"CASE WHEN orders.status = 'Shipped' THEN 1 WHEN orders.status = 'Completed' THEN 2 ELSE 3 END"
+						),
+						['createdAt', 'DESC']
+					],
 					include: [
 						{ model: User, attributes: ['username', 'avatarUrl'] },
 						{
@@ -98,13 +106,19 @@ export default (app: Router) => {
 						}
 					]
 				})
+				const [unpaid, paid, complete] = await Promise.all([
+					todoUnpaidOrder,
+					todoPaidOrder,
+					todoCompleteOrder
+				])
 				res.send({
-					unpaid: todoUnpaidOrder,
-					paid: todoPaidOrder,
-					complete: todoCompleteOrder
+					unpaid,
+					paid,
+					complete
 				})
 				Logger.info('Sold orders got')
 			} catch (err) {
+				console.log(err)
 				res.status(500).send({
 					status: Status.FAIL
 				})
@@ -732,6 +746,40 @@ export default (app: Router) => {
 					message: error
 				})
 				Logger.info('mark fail')
+			}
+		}
+	)
+	route.post(
+		'/action',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { order, action } = req.body
+			try {
+				if (action === 'hide') {
+					await Order.update({ hidden: true }, { where: { id: order.id } })
+					res.send({
+						status: 'SUCCESS'
+					})
+					Logger.info('Order has been hidden')
+					return
+				}
+				if (action === 'complete') {
+					await Order.update(
+						{ status: 'Completed' },
+						{ where: { id: order.id } }
+					)
+					res.send({
+						status: 'SUCCESS'
+					})
+					Logger.info('Order has been mark completed')
+					return
+				}
+			} catch (err) {
+				res.send({
+					status: Status.FAIL,
+					message: err
+				})
+				Logger.info('Cancel order failed')
 			}
 		}
 	)

@@ -1,4 +1,4 @@
-import { getAllSoldOrders, deleteOrder, markPaid } from '../../services/api/api'
+import { getAllSoldOrders, hideOrder, completeOrder, markPaid } from '../../services/api/api'
 import { SaleOrder, IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
 import { parseTime } from "../../utils/util"
@@ -20,10 +20,10 @@ Page({
       { text: '联系付款', value: 'CONTACT' },
     ],
     paidGroups: [
-      { text: '取消订单', value: 'CANCEL', type: 'warn' }
+      { text: '标记完成', value: 'COMPLETE', type: 'warn' }
     ],
     shippedGroups: [
-      { text: '取消订单', value: 'CANCEL', type: 'warn' }
+      { text: '隐藏订单', value: 'CANCEL', type: 'warn' }
     ]
   },
   async onLoad() {
@@ -82,7 +82,10 @@ Page({
         this.bindShare()
         break;
       case 'CONTACT':
-        this.bindCopy()
+        this.handleCopy()
+        break;
+      case 'COMPLETE':
+        this.handleCompleteOrder()
         break;
       case 'CANCEL':
         this.bindCancelOrder()
@@ -92,7 +95,6 @@ Page({
     }
     this.closeActionsheet()
   },
-
   markPaid: async function () {
     let order = this.data.currentOrder!
     const result: any = await markPaid([order], this.data.newComment)
@@ -114,27 +116,22 @@ Page({
       newComment: input
     })
   },
-  bindCancelOrder() {
+  handleCompleteOrder(){
     let that = this
     wx.showModal({
       title: '提示',
-      content: '您确认删除此订单？',
+      content: '再次确认所有产品已发货？',
       async success(res) {
         if (res.confirm) {
           const order = that.data.currentOrder
-          const result: any = await deleteOrder(order)
+          const result: any = await completeOrder(order)
           if (result.status === Status.SUCCESS) {
             wx.showToast({
-              title: '订单已隐藏',
+              title: '标记成功',
               icon: 'success',
               duration: 2000
             })
-            const updateShippingOrders = that.data.tabs[2].orders.filter((currentOrder: SaleOrder) => currentOrder.orderId !== order.orderId)
-            const updatePaidOrders = that.data.tabs[1].orders.filter((currentOrder: SaleOrder) => currentOrder.orderId !== order.orderId)
-            that.setData({
-              ['tabs[1].orders']: updatePaidOrders,
-              ['tabs[2].orders']: updateShippingOrders
-            })
+            that.onLoad()
           } else {
             wx.showToast({
               title: '操作失败',
@@ -148,7 +145,36 @@ Page({
       }
     })
   },
-  bindCopy(e: any) {
+  bindCancelOrder() {
+    let that = this
+    wx.showModal({
+      title: '提示',
+      content: '您确认不再显示此订单？',
+      async success(res) {
+        if (res.confirm) {
+          const order = that.data.currentOrder
+          const result: any = await hideOrder(order)
+          if (result.status === Status.SUCCESS) {
+            wx.showToast({
+              title: '订单已隐藏',
+              icon: 'success',
+              duration: 2000
+            })
+            that.onLoad()
+          } else {
+            wx.showToast({
+              title: '操作失败',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        } else if (res.cancel) {
+          console.log('用户点击取消')
+        }
+      }
+    })
+  },
+  handleCopy(e?: any) {
     let that = this
     wx.setClipboardData({
       data: e ? e.currentTarget.dataset.name : that.data.currentOrder.user.username,

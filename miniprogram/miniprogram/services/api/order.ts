@@ -12,9 +12,11 @@ const getPurchasedOrder = (orderNumber: string) => request.getRequest(`orders/pu
 const getPurchasedOrderWithDealer = (orderNumber: string, dealerId: string) => request.getRequest(`orders/purchase-dealer`, { orderNumber, dealerId })
 const cancelOrder = (order: SaleOrder) => request.postRequest("orders/cancelOrder", { order })
 const deleteOrder = (order: SaleOrder) => request.deleteRequest("orders/", { order })
+const hideOrder = (order: SaleOrder) => request.postRequest("orders/action", { order, action: 'hide' })
+const completeOrder = (order: SaleOrder) => request.postRequest("orders/action", { order, action: 'complete' })
 const getOrderResult = (orderNumber: string) => request.getRequest('orders/contact', { orderNumber })
 const getInstance = () => request.getRequest('orders/pay/instance')
 
 export {
-  submitOrder, deleteOrder, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, markPaid, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, getInstance, markPaidAll
+  submitOrder, deleteOrder, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, markPaid, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, getInstance, markPaidAll, completeOrder, hideOrder
 }
