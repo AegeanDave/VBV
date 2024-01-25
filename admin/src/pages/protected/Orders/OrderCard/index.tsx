@@ -16,7 +16,7 @@ import { Order } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ContentCopy } from "@mui/icons-material";
 import ActionField from "./ActionField";
-import moment from "moment";
+import moment from "../../../../utils";
 import { useSnackbar } from "notistack";
 import IdPhoto from "./IdPhotoField";
 
@@ -52,7 +52,7 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
             </Grid>
             <Grid item xs={7} textAlign="right">
               <Typography fontSize={12} variant="subtitle2">
-                {moment(order.createdAt).format("MMMM Do YYYY, h:mm a")}
+                {moment(order.createdAt).format("YYYY-MM-DD h:mma")}
               </Typography>
             </Grid>
             <Grid item xs={1}>

@@ -1,10 +1,10 @@
 <van-tabs bind:change="onTabChange" sticky>
-  <van-tab title="未付款">
+  <van-tab title="未收款">
     <block wx:if="{{unpaidOrders.length===0}}">
       <view class="empty">
         <image src='/image/empty_orders.png' class="noOrders"></image>
         <text>
-          暂无未付款订单</text>
+          暂无未收款订单</text>
       </view>
     </block>
     <block wx:else>
@@ -83,12 +83,12 @@
       </view>
     </block>
   </van-tab>
-  <van-tab title="已付款">
+  <van-tab title="已收款">
     <block wx:if="{{paidOrders.length===0}}">
       <view class="empty">
         <image src='../../image/empty_orders.png' class="noOrders"></image>
         <text>
-          暂无已付款订单</text>
+          暂无已收款订单</text>
       </view>
     </block>
     <block wx:else>

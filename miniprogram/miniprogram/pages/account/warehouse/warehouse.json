@@ -6,5 +6,5 @@
     "van-tabs": "@vant/weapp/tabs/index",
     "van-empty": "@vant/weapp/empty/index"
   },
-  "navigationBarTitleText": "仓库管理"
+  "navigationBarTitleText": "自营仓库"
 }

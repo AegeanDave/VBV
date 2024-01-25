@@ -9,6 +9,8 @@ import { Op } from 'sequelize'
 import { createPresignedUrlWithClient } from '../../../provider/fileAction'
 import archiver from 'archiver'
 import db from '../../../config/database'
+import { shipmentDocRender } from '../../../provider/invoice'
+import fs from 'fs'
 
 const route = Router()
 
@@ -187,6 +189,33 @@ export default (app: Router) => {
 			} catch (err) {
 				res.status(500).send()
 				Logger.info('file download fail')
+			}
+		}
+	)
+	route.get(
+		'/shipment/download',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoOrders = await Order.findAll({
+					where: { dealerId: myOpenId, status: 'Paid' },
+					include: [{ model: OrderDetail }, User]
+				})
+				const { outputPath, pdfBuffer } = await shipmentDocRender(todoOrders)
+				res.setHeader(
+					'Content-Disposition',
+					'attachment; filename=shipment.pdf'
+				)
+				res.setHeader('Content-Type', 'application/pdf')
+				res.send(pdfBuffer)
+				fs.unlinkSync(outputPath)
+
+				Logger.info('Shipment document generated')
+			} catch (err) {
+				console.log(err)
+				res.status(500).end()
+				Logger.info('Error on shipment document generated')
 			}
 		}
 	)

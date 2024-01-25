@@ -24,9 +24,9 @@ export type SaleProduct = {
 };
 
 export type Order = {
+  id: string;
   user: any;
-  orderDetails: any;
-  orderId: string;
+  orderDetails: any[];
   orderNumber: string;
   status:
     | "Paid"
@@ -36,12 +36,13 @@ export type Order = {
     | "Shipped"
     | "Delivered"
     | "Completed";
-  buyer: User;
+  buyer: any;
   address: Address;
   comment?: string;
+  payment: any;
   newComment?: string;
-  updatedAt: Date;
-  createdAt: Date;
+  updatedAt: Date | string;
+  createdAt: Date | string;
 };
 
 type User = {

@@ -12,7 +12,7 @@
 <view wx:else>
   <view class="instruction">
     <image src="/image/warehouse.svg" mode="aspectFit"></image>
-    <text>申请开通微帮微仓库后，即可开始上架售卖属于您自己的商品</text>
+    <text>申请开通微帮微自营仓库后，即可开始上架售卖属于您自己的商品</text>
   </view>
   <view class="card register">
     <form bindsubmit="submitRegistration">

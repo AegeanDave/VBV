@@ -51,8 +51,8 @@
           <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
           <view class="tagField">
             <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
-            <text class="tag" wx:if="{{product.setting.isFreeShipping}}">邮费到付</text>
-            <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">包邮</text>
+            <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">邮费到付</text>
+            <text class="tag" wx:if="{{product.setting.isFreeShipping}}">包邮</text>
           </view>
           <text class='name'>{{product.name}}</text>
           <view class='price'>
@@ -69,8 +69,8 @@
           <image class="productCardImage" src="{{product.coverImageUrl}}"></image>
           <view class="tagField">
             <text class="tag" wx:if="{{product.setting.isIdRequired}}">海外直邮</text>
-            <text class="tag" wx:if="{{product.setting.isFreeShipping}}">邮费到付</text>
-            <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">包邮</text>
+            <text class="tag" wx:if="{{!product.setting.isFreeShipping}}">邮费到付</text>
+            <text class="tag" wx:if="{{product.setting.isFreeShipping}}">包邮</text>
           </view>
           <text class='name'>{{product.name}}</text>
           <view class='price'>

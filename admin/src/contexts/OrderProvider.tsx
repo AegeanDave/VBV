@@ -1,7 +1,6 @@
 import React, { useState, ReactNode, useEffect, useMemo } from "react";
 import { Order } from "../models/index";
 import { getOrders, updateOrder } from "../api/order";
-import { OrderStatus, actions, snackMessage } from "../constant/index";
 import { useSnackbar } from "notistack";
 
 interface OrderContextType {
@@ -19,7 +18,7 @@ const useOrder = () => React.useContext(OrderContext);
 
 function OrderProvider({ children }: { children: ReactNode }) {
   const { enqueueSnackbar } = useSnackbar();
-  const [orders, setOrders] = useState<any>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const fetchOrders = async () => {
@@ -57,8 +56,8 @@ function OrderProvider({ children }: { children: ReactNode }) {
     try {
       await updateOrder(order, "REJECT");
       setIsLoading((pre) => !pre);
-      setOrders((preOrders: any) =>
-        preOrders.map((item: any) => {
+      setOrders((preOrders: Order[]) =>
+        preOrders.map((item: Order) => {
           if (item.id === order.id) {
             return { ...item, status: "Cancelled" };
           }

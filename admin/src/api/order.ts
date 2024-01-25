@@ -18,9 +18,15 @@ export const updateOrder = async (
   action: string,
   trackingInfo?: any
 ) => {
-  return await axios.post("/admin/order/action", {
+  return axios.post("/admin/order/action", {
     order,
     trackingInfo,
     action,
+  });
+};
+
+export const downloadShipmentDoc = async () => {
+  return axios.get("/admin/order/shipment/download", {
+    responseType: "blob",
   });
 };

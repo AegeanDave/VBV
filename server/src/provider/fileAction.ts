@@ -1,4 +1,8 @@
-import { GetObjectAclCommand, GetObjectCommand } from '@aws-sdk/client-s3'
+import {
+	GetObjectAclCommand,
+	GetObjectCommand,
+	PutObjectCommand
+} from '@aws-sdk/client-s3'
 import { getSignedUrl, S3RequestPresigner } from '@aws-sdk/s3-request-presigner'
 import s3 from '../utils/s3Util'
 import multer from 'multer'
@@ -29,6 +33,14 @@ export const downloadFile = (url: string) => {
 		Key: url.substring(url.lastIndexOf('/') + 1)
 	})
 	return s3.send(command)
+}
+
+export const createPutPresignedUrlWithClient = (key: string) => {
+	const command = new PutObjectCommand({
+		Bucket: process.env.BUCKET_NAME,
+		Key: key
+	})
+	return getSignedUrl(s3 as any, command as any, { expiresIn: 3600 })
 }
 
 export const createPresignedUrlWithClient = (url: string) => {

@@ -27,7 +27,7 @@
     <view class="tagField">
       <text class="tag" wx:if="{{product.product.setting.isIdRequired}}">海外直邮</text>
       <text class="tag" wx:if="{{!product.product.setting.isFreeShipping}}">邮费到付</text>
-      <text class="tag" wx:elif="{{product.product.setting.isFreeShipping}}">包邮</text>
+      <text class="tag" wx:if="{{product.product.setting.isFreeShipping}}">包邮</text>
     </view>
   </view>
   <view class="divider"></view>
