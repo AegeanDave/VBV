@@ -44,6 +44,7 @@ const Orders = () => {
       console.error("Error downloading PDF:", error);
     } finally {
       setProcessing((pre) => !pre);
+      setAnchorElOption(null);
     }
   };
 
