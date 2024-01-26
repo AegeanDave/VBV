@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Paper,
   Grid,
@@ -12,13 +12,14 @@ import {
   Stack,
   Chip,
 } from "@mui/material";
-import { Order } from "../../../../models/index";
+import { Order, OrderItem } from "../../../../models/index";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { ContentCopy } from "@mui/icons-material";
 import ActionField from "./ActionField";
 import moment from "../../../../utils";
 import { useSnackbar } from "notistack";
 import IdPhoto from "./IdPhotoField";
+import { StatusLabel } from "../../../../constant";
 
 interface OrderProps {
   order: Order;
@@ -35,11 +36,9 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
   const handleGetIdPhoto = () => {
     setIsShowPhotos(true);
   };
-  // const ifCredential = order.orderDetails.find(
-  //   (product: any) => product.setting?.isIdRequired
-  // );
-  const ifCredential = true;
-
+  const ifCredential = order.orderDetails.find(
+    (product: any) => product.setting?.isIdRequired
+  );
   return (
     <Card>
       <Grid container p={2}>
@@ -69,7 +68,12 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
             </Grid>
             <Grid item xs textAlign="right">
               <Chip
-                label={<Typography fontSize={10}>{order.status}</Typography>}
+                color="primary"
+                label={
+                  <Typography fontSize={10}>
+                    {StatusLabel[order.status]}
+                  </Typography>
+                }
                 size="small"
               ></Chip>
             </Grid>
@@ -84,11 +88,11 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
           </Divider>
         </Grid>
         <Grid item xs={12} container>
-          {order.orderDetails.map((product: any, index: number) => (
+          {order.orderDetails.map((product: OrderItem, index: number) => (
             <Grid container spacing={1} key={index}>
               <Grid item xs={4}>
                 <img
-                  style={{ width: 100, height: 100 }}
+                  style={{ width: 80, height: 80 }}
                   alt={product.productInfo.name}
                   src={product.productInfo.coverImageUrl}
                 />

@@ -15,18 +15,10 @@ export type Product = {
   openId?: string;
 };
 
-export type SaleProduct = {
-  productId?: string;
-  inStoreProductId: string;
-  price: number;
-  quantity: number;
-  status: string;
-};
-
 export type Order = {
   id: string;
   user: any;
-  orderDetails: any[];
+  orderDetails: OrderItem[];
   orderNumber: string;
   status:
     | "Paid"
@@ -45,10 +37,11 @@ export type Order = {
   createdAt: Date | string;
 };
 
-type User = {
-  openId: string;
-  name: string;
-  avatar: string;
+export type OrderItem = {
+  productInfo: any;
+  quantity: number;
+  subtotal: number;
+  comment?: string;
 };
 
 export type Address = {
@@ -64,6 +57,7 @@ export type Address = {
   idPhotoBackUrl?: string;
   quickInput?: string;
 };
+
 export type Image = {
   id: string;
   url: string;
@@ -71,6 +65,7 @@ export type Image = {
   priority?: number;
   file?: File;
 };
+
 export interface Column {
   type: "images" | "name" | "price";
   label: string;

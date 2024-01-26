@@ -116,7 +116,7 @@
                     <text>数量：{{product.quantity}}</text>
                     <view wx:if="{{order.status==='Paid'}}" class="tagBox">
                       <view class="tag {{product.status==='Processing'?'pending':product.status==='Shipping'?'shipping': product.status==='Canceled' && 'canceled'}}">
-                        {{product.status==='Processing'?'未发货':product.status==='Shipping'? '已发货' : '被取消'}}
+                        {{product.status==='Processing'?'未发货':product.status==='Shipped'? '已发货' : '被取消'}}
                       </view>
                     </view>
                   </view>
@@ -154,7 +154,7 @@
                   <view class="item">
                     <text class="label">订单状态: </text>
                     <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
-                    <text wx:elif="{{order.status==='Canceled'}}" class="paid value">被取消</text>
+                    <text wx:elif="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
                     <text wx:else class="paid value">已付款</text>
                   </view>
                   <button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
@@ -199,13 +199,18 @@
                     <text>{{product.productInfo.name}}</text>
                     <text>数量：{{product.quantity}}</text>
                     <view class="tagBox">
+                      <block wx:if="{{product.status==='Shipped'}}">
+                        <view class="tag completed">
+                          已发货
+                        </view>
+                      </block>
                       <block wx:if="{{product.status==='Completed'}}">
-                        <view class="tag {{product.status==='Completed'?'completed': product.status==='Canceled' && 'canceled'}}">
+                        <view class="tag completed">
                           已送达
                         </view>
                       </block>
                       <block wx:if="{{product.status==='Cancelled'}}">
-                        <view class="tag {{product.status==='Cancelled' && 'canceled'}}">
+                        <view class="tag cancelled">
                           被取消
                         </view>
                       </block>

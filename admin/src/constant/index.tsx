@@ -4,6 +4,7 @@ export const Status = {
   SUCCESS: "SUCCESS",
   FAIL: "FAIL",
 };
+
 export const productStatusTabs = {
   Published: 0,
   Unpublished: 1,
@@ -51,12 +52,12 @@ export const OrderStatus = {
 };
 
 export const StatusLabel: any = {
-  UNPAID: "未付款",
-  PAID: "已付款",
-  PENDING: "处理中",
-  SHIPPING: "已发货",
-  CANCELLED: "已取消",
-  DENY: "已驳回",
+  Unpaid: "未付款",
+  Paid: "已付款",
+  Pending: "处理中",
+  Shipped: "已发货",
+  Cancelled: "已取消",
+  Completed: "已完成",
   ALL: "状态",
 };
 

@@ -81,7 +81,8 @@ function OrderProvider({ children }: { children: ReactNode }) {
         (order: Order) =>
           order.status === "Completed" ||
           order.status === "Delivered" ||
-          order.status === "Shipped"
+          order.status === "Shipped" ||
+          order.status === "Cancelled"
       ),
     }),
     [orders]

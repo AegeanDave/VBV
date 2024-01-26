@@ -9,8 +9,8 @@ import {
   CircularProgress,
   Select,
 } from "@mui/material/";
-import { actions, OrderStatus, carriers } from "../../../../constant/index";
-import { useForm, Controller, SubmitHandler } from "react-hook-form";
+import { carriers } from "../../../../constant/index";
+import { useForm, Controller } from "react-hook-form";
 import { useOrder } from "../../../../contexts/OrderProvider";
 
 interface Props {

@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 interface ProductContextType {
   loading: boolean;
-  products: any;
+  products: Product[];
   error: any;
   handleConfirmUpdate: (action: "Publish" | "Unpublish" | "Delete") => void;
   handleOpenDialog: (id: string, type: "Delete" | "Update") => void;
