@@ -1,5 +1,4 @@
-import React from "react";
-import { Order } from "../../../models/index";
+import React, { useState } from "react";
 import { useOrder } from "../../../contexts/OrderProvider";
 import {
   AppBar,
@@ -7,7 +6,6 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Tooltip,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -21,6 +19,7 @@ import { downloadShipmentDoc } from "../../../api/order";
 
 const Orders = () => {
   const { currentOrders, isLoading } = useOrder();
+  const [processing, setProcessing] = useState(false);
   const [anchorElOption, setAnchorElOption] =
     React.useState<null | HTMLElement>(null);
 
@@ -29,6 +28,7 @@ const Orders = () => {
   };
 
   const handleDownloadShipment = async () => {
+    setProcessing(true);
     try {
       const response = await downloadShipmentDoc();
 
@@ -42,6 +42,8 @@ const Orders = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading PDF:", error);
+    } finally {
+      setProcessing((pre) => !pre);
     }
   };
 
@@ -94,6 +96,7 @@ const Orders = () => {
             >
               <MenuItem
                 key="download-shipment"
+                disabled={processing}
                 onClick={handleDownloadShipment}
               >
                 <ListItemIcon>

@@ -86,9 +86,15 @@ function OrderProvider({ children }: { children: ReactNode }) {
     }),
     [orders]
   );
+
   return (
     <OrderContext.Provider
-      value={{ ...values, onShipping, onCancelling, isLoading }}
+      value={{
+        ...values,
+        onShipping,
+        onCancelling,
+        isLoading,
+      }}
     >
       {children}
     </OrderContext.Provider>

@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "nodemon src/app.ts",
 		"start": "npm run build && node dist/app.js",
-		"build": "rimraf ./build && tsc",
+		"build": "rimraf ./build && tsc && node copyEJS.js",
 		"serve": "node dist/app.js",
 		"build-ts": "tsc",
 		"watch-ts": "tsc -w",
@@ -69,6 +69,7 @@
 		"@types/pdfkit": "^0.13.3",
 		"@types/uuid": "^7.0.0",
 		"concurrently": "^4.1.2",
+		"ncp": "^2.0.0",
 		"nodemon": "^1.19.3",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.0.4"

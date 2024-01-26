@@ -4,8 +4,12 @@ import path from 'path'
 import ejs from 'ejs'
 
 const shipmentDocRender = async (data: any) => {
-	const browser = await puppeteer.launch({ headless: 'new' })
+	const browser = await puppeteer.launch({
+		headless: 'new',
+		args: ['--no-sandbox', '--disable-setuid-sandbox']
+	})
 	const page = await browser.newPage()
+
 	const outputPath = 'shipment.pdf'
 	const template = fs.readFileSync(
 		path.join(__dirname, 'template', 'shipment.ejs'),
