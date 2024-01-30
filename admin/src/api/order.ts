@@ -30,3 +30,9 @@ export const downloadShipmentDoc = async () => {
     responseType: "blob",
   });
 };
+
+export const downloadShipmentExcel = async () => {
+  return axios.get("/admin/order/shipment/download/excel", {
+    responseType: "blob",
+  });
+};

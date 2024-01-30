@@ -15,7 +15,7 @@ import { Masonry } from "@mui/lab";
 import OrderCard from "./OrderCard";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import { downloadShipmentDoc } from "../../../api/order";
+import { downloadShipmentDoc, downloadShipmentExcel } from "../../../api/order";
 
 const Orders = () => {
   const { currentOrders, isLoading } = useOrder();
@@ -42,6 +42,27 @@ const Orders = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading PDF:", error);
+    } finally {
+      setProcessing((pre) => !pre);
+      setAnchorElOption(null);
+    }
+  };
+
+  const handleDownloadShipmentExcel = async () => {
+    setProcessing(true);
+    try {
+      const response = await downloadShipmentExcel();
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "shipment.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading Excel:", error);
     } finally {
       setProcessing((pre) => !pre);
       setAnchorElOption(null);
@@ -104,6 +125,16 @@ const Orders = () => {
                   <SaveAltIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>下载出货单</ListItemText>
+              </MenuItem>
+              <MenuItem
+                key="download-shipment-excel"
+                disabled={processing}
+                onClick={handleDownloadShipmentExcel}
+              >
+                <ListItemIcon>
+                  <SaveAltIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>下载出货单Excel</ListItemText>
               </MenuItem>
             </Menu>
           </Box>

@@ -108,11 +108,11 @@ Page({
         icon: 'success',
         duration: 1000
       })
-      // const pages = getCurrentPages()
-      // const prevPage = pages[pages.length -2]
-      // prevPage.setData({
-
-      // })
+      const pages = getCurrentPages()
+      const prevPage = pages[pages.length - 2]
+      prevPage.setData({
+        hasId: true
+      })
       wx.navigateBack()
     } catch (err) {
       wx.showToast({

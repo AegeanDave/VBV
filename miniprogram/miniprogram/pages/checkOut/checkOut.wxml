@@ -21,13 +21,6 @@
     <text class="value comment" wx:if="{{!isEditing}}" bindtap="toEditing">{{comment||'选填'}}</text>
     <textarea wx:else class="value editing comment" auto-height='true' value="{{comment}}" auto-focus="true" maxlength="100" bindconfirm="handleChangeComment"></textarea>
   </view>
-  <view class="addressInfoBox popBox" wx:if="{{addressList[currentAddress]&&(needCredential&&(!hasId))}}" bindtap="toAddFile">
-    <image src="../../image/info.png"></image>
-  </view>
-  <view class="addressInfoBox popBox" wx:elif="{{addressList[currentAddress]&&(needCredential&&hasCredential)}}">
-    <image src='../../image/correct.svg'></image>
-    <text>此地址已绑定身份信息</text>
-  </view>
 </view>
 <view class="orderList">
   <block wx:for="{{order}}" wx:key="id" wx:for-item="product">

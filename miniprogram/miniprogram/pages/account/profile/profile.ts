@@ -19,8 +19,14 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad() {
-    
+  async onLoad() {
+    const { addresses, hasId }: any = await getAddresses()
+    this.setData({
+      username: app.globalData.user?.username,
+      avatarUrl: app.globalData.user?.avatarUrl,
+      selectedAddress: addresses[0] || null,
+      hasId: hasId
+    })
   },
 
   /**
@@ -33,14 +39,8 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  async onShow() {
-    const { addresses, hasId }: any = await getAddresses()
-    this.setData({
-      username: app.globalData.user?.username,
-      avatarUrl: app.globalData.user?.avatarUrl,
-      selectedAddress: addresses[0] || null,
-      hasId: hasId
-    })
+  onShow() {
+    
   },
 
   /**

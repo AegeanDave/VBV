@@ -10,7 +10,9 @@ import { createPresignedUrlWithClient } from '../../../provider/fileAction'
 import archiver from 'archiver'
 import db from '../../../config/database'
 import { shipmentDocRender } from '../../../provider/invoice'
+import { shipmentExcelRender } from '../../../provider/excel'
 import fs from 'fs'
+import path from 'path'
 
 const route = Router()
 
@@ -212,6 +214,41 @@ export default (app: Router) => {
 				fs.unlinkSync(outputPath)
 
 				Logger.info('Shipment document generated')
+			} catch (err) {
+				console.log(err)
+				res.status(500).end()
+				Logger.info('Error on shipment document generated')
+			}
+		}
+	)
+	route.get(
+		'/shipment/download/excel',
+		adminAuthenticated,
+		async (req: Request, res: Response) => {
+			const { myOpenId } = req.params
+			try {
+				const todoOrders = await Order.findAll({
+					where: { dealerId: myOpenId, status: 'Paid' },
+					include: [{ model: OrderDetail }, User]
+				})
+				const outputFile = await shipmentExcelRender(todoOrders)
+				res.setHeader(
+					'Content-Disposition',
+					`attachment; filename=${outputFile}`
+				)
+				res.setHeader(
+					'Content-Type',
+					'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+				)
+				console.log(process.cwd())
+				res.sendFile(outputFile, { root: process.cwd() }, err => {
+					if (err) {
+						console.log(err)
+						return
+					}
+					Logger.info('Shipment document generated')
+					fs.unlinkSync(outputFile)
+				})
 			} catch (err) {
 				console.log(err)
 				res.status(500).end()

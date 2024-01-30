@@ -13,8 +13,11 @@ Page({
     addressList: [],
     totalPrice: 0,
     agreeUsingId: false,
+    hasId: false
   },
   async onLoad(option: any) {
+    const { addresses, hasId }: any = await getAddresses()
+
     let items
     if (option.mode === 'CART') {
       items = wx.getStorageSync('cart')
@@ -22,21 +25,18 @@ Page({
     if (option.mode === 'QuickBuy') {
       items = wx.getStorageSync('quickBuy')
     }
-
     const totalPrice = items.reduce((sum: number, product: any) => sum + Number(product.quantity * product.item.defaultPrice), 0).toFixed(2)
     this.setData({
       order: items,
       totalPrice: totalPrice,
-    })
-
-  },
-  async onShow() {
-    const { addresses, hasId }: any = await getAddresses()
-    const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
-    this.setData({
       addressList: addresses || [],
       selectedAddress: addresses ? addresses[0] : null,
+      hasId: true
     })
+  },
+  async onShow() {
+    const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
+    const hasId = this.data.hasId
     if (needId) {
       if (hasId && !this.data.agreeUsingId) {
         Dialog.confirm({
