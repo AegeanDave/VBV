@@ -1,12 +1,12 @@
-import { Product, IAppOption } from "../../../models/index"
+import { IAppOption } from "../../../models/index"
 import { Status, Mode } from "../../../constant/index"
-import { publishToStore, updatePriceForChild, getProduct } from "../../../services/api/api"
+import { publishToStore, getProduct } from "../../../services/api/api"
 
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    product: {} as Product,
+    product: null,
     slider: [] as string[],
     quantity: 1 as number,
     newPrice: 0,
@@ -16,7 +16,7 @@ Page({
     cartBadgeValue: 0,
     disbledSale: false,
   },
-  async onLoad(options) {
+  async onLoad(options: any) {
     const product = await getProduct(options.id)
     wx.setNavigationBarTitle({
       title: product.name
@@ -34,26 +34,9 @@ Page({
       url: '../../shoppingCart/shoppingCart'
     })
   },
-  reduce: function () {
+  onQuantityChange: function (e: any) {
     this.setData({
-      quantity: this.data.quantity - 1
-    })
-  },
-  bindKeyblur: function (e: any) {
-    if (e.detail.value) {
-      this.setData({
-        quantity: parseInt(e.detail.value)
-      })
-    }
-    else {
-      this.setData({
-        quantity: 1
-      })
-    }
-  },
-  plus: function () {
-    this.setData({
-      quantity: this.data.quantity + 1
+      quantity: e.detail
     })
   },
   submitToCart: function () {
@@ -61,7 +44,7 @@ Page({
     let cartStorage = wx.getStorageSync("cart")
     let cartLength = 0
     if (cartStorage && cartStorage.length >= 0) {
-      const index = cartStorage.findIndex(item =>
+      const index = cartStorage.findIndex((item: any) =>
         item.item.id === cartItem.item.id
       )
       cartLength = cartStorage.length

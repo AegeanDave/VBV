@@ -1,6 +1,7 @@
 import { getAlias } from '../../../services/api/api'
 import { IAppOption } from "../../../models/index"
 import { group } from "../../../constant/index"
+import { parseTime } from '../../../utils/util'
 
 const app = getApp<IAppOption>()
 
@@ -24,7 +25,9 @@ Page({
     }
     const todoAlias = await getAlias(options.group)
     this.setData({
-      groupList: todoAlias || [],
+      groupList: todoAlias?.map((item: any) => ({
+        ...item, createdAt: parseTime(new Date(item.createdAt))
+      })) || [],
       groupName: options.group,
     })
   },
@@ -41,7 +44,7 @@ Page({
     const UnpaidList = this.data.groupList.filter(item => item.hasUnpaidOrders === true)
     this.setData({
       checkedList: UnpaidList,
-      lookingUnpaid: e.detail.value
+      lookingUnpaid: e.detail
     })
   },
   toAlias: function (e: any) {

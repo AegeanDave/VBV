@@ -13,7 +13,7 @@
   <view class="filterBtn">
     <text wx:if="{{groupName==='CUSTOMER'}}">仅查看欠款客户</text>
     <text wx:else>仅查看未结清供应</text>
-    <switch checked="{{lookingUnpaid}}" bindchange="bindCheck"></switch>
+    <van-switch checked="{{ lookingUnpaid }}" bind:change="bindCheck"size="20px"/>
   </view>
   <view class="dealerList">
     <block wx:if="{{lookingUnpaid&&checkedList.length===0}}">
@@ -26,16 +26,22 @@
             <image class="avatar" src="{{alias.dealer.avatarUrl}}"></image>
             <view class="redDot" wx:if="{{alias.hasUnpaidOrders}}"></view>
           </view>
-          <text class="name">{{alias.dealer.username}}</text>
-          <van-icon name="arrow" size="32px" bind:tap="toAlias" data-alias="{{alias}}"/>
+          <view class="name">
+            <text>{{alias.dealer.username}}</text>
+            <text class="caption">关注于{{alias.createdAt}}</text>
+          </view>
+          <van-icon name="arrow" size="32px" bind:tap="toAlias" data-alias="{{alias}}" />
         </block>
         <block wx:if="{{alias.customer.username}}">
           <view class="imgBox">
             <image class="avatar" src="{{alias.customer.avatarUrl}}"></image>
             <view class="redDot" wx:if="{{alias.hasUnpaidOrders}}"></view>
           </view>
-          <text class="name">{{alias.customer.username}}</text>
-          <van-icon name="arrow" size="32px" bind:tap="toAlias" data-alias="{{alias}}"/>
+          <view class="name">
+            <text>{{alias.customer.username}}</text>
+            <text class="caption">邀请于{{alias.createdAt}}</text>
+          </view>
+          <van-icon name="arrow" size="32px" bind:tap="toAlias" data-alias="{{alias}}" />
         </block>
       </view>
     </block>

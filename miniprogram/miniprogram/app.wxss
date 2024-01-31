@@ -357,3 +357,7 @@ button[disabled] {
     padding-bottom: 22px;
   }
 }
+
+.caption {
+  font-size: 12px;
+}

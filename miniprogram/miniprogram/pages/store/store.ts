@@ -1,7 +1,7 @@
 import { getMyStore, publishProduct, unpublishProduct, updatePrice, deleteProduct } from "../../services/api/api"
 import { IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
-import Toast from '@vant/weapp/toast/toast';
+import Toast from '@vant/weapp/toast/toast'
 
 const app = getApp<IAppOption>()
 

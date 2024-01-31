@@ -1,5 +1,10 @@
-<view wx:if="{{mode==='PREVIEW'}}" class="hint">
-  <text>当前为预览模式</text>
+<view wx:if="{{mode==='PREVIEW'}}" >
+  <van-notice-bar
+  color="#1989fa"
+  background="#ecf9ff"
+  left-icon="info-o"
+  text="当前为预览模式"
+/>
 </view>
 <view class="page-section page-section-spacing swiper">
   <swiper indicator-dots="true" indicator-active-color="#02A69F" class="slider">
@@ -33,6 +38,8 @@
   <view class="divider"></view>
   <view class="introduction">
     <text class="title">简介</text>
+    <text class="detail">{{product. shortDescription}}</text>
+    <text class="title">描述</text>
     <text class="detail">{{product.description}}</text>
   </view>
 </view>
@@ -50,13 +57,7 @@
   </view>
   <view wx:elif="{{mode==='NORMAL'}}" class="submitField normal">
     <view class="amountChange product">
-      <button bindtap='reduce' disabled='{{quantity==1}}' class="reduce amountComponent">
-        <image src='../../../image/minusIcon.png'></image>
-      </button>
-      <input class="input amountComponent" type='number' bindblur="bindKeyblur" maxlength='2' value='{{quantity}}'></input>
-      <button bindtap='plus' class="plus amountComponent" disabled='{{quantity==99}}'>
-        <image src='../../../image/plusIcon.png'></image>
-      </button>
+      <van-stepper value="{{ 1 }}" bind:change="onQuantityChange" input-width="60px" button-size="38px" integer min="1" max="99"/>
     </view>
     <view class="btnField">
       <button class="purchaseBtn" bindtap="submitToPurchase">购买</button>

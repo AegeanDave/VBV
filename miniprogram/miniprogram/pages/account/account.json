@@ -2,7 +2,9 @@
   "usingComponents": {
     "mp-icon": "weui-miniprogram/icon/icon",
     "van-grid": "@vant/weapp/grid/index",
-    "van-grid-item": "@vant/weapp/grid-item/index"
+    "van-grid-item": "@vant/weapp/grid-item/index",
+    "van-cell": "@vant/weapp/cell/index",
+    "van-cell-group": "@vant/weapp/cell-group/index"
   },
   "navigationBarTitleText": "我的账户"
 }

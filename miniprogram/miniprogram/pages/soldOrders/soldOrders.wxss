@@ -162,7 +162,7 @@ button {
 }
 
 .boxFooter {
-  padding: 6px 28px;
+  padding: 6px 18px;
   flex-direction: column;
 }
 
@@ -187,6 +187,7 @@ button {
   font-size: 12px;
   padding: 3px 30px;
   margin-top: 8px;
+  margin-left: 0;
   border-radius: 12px;
   background-color: #E6F6F6;
   box-shadow: 0 2px 4px 0 rgba(202, 218, 218, 0.59);

@@ -1,0 +1,5 @@
+/* pages/account/termUse/termUse.wxss */
+.container{
+  padding: 32rpx 24rpx;
+  color:darkslategray;
+}

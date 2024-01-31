@@ -136,7 +136,7 @@ button {
 }
 
 .productCard {
-  padding: 20rpx;
+  padding: 14rpx;
   box-shadow: none;
 }
 
@@ -163,14 +163,14 @@ button {
 }
 
 .boxFooter {
-  padding: 4px 16px;
+  padding: 0 6px;
   justify-content: space-between;
   align-items: center;
 }
 
 .sub-order-footer {
   display: flex;
-  padding: 8px 16px;
+  padding: 4px 16px;
   justify-content: space-between;
 }
 

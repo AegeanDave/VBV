@@ -27,7 +27,9 @@
     "pages/register/register",
     "pages/checkOut/imageUploader/imageUploader",
     "pages/account/warehouse/register/register",
-    "pages/account/profile/profile"
+    "pages/account/profile/profile",
+    "pages/account/termUse/termUse",
+    "pages/myStore/myStore"
   ],
   "tabBar": {
     "color": "#CDE1E0",

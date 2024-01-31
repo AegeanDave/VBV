@@ -1,5 +1,5 @@
 import { getAllSoldOrders, hideOrder, completeOrder, markPaid } from '../../services/api/api'
-import { SaleOrder, IAppOption } from "../../models/index"
+import { IAppOption } from "../../models/index"
 import { Status } from "../../constant/index"
 import { parseTime } from "../../utils/util"
 
@@ -29,7 +29,7 @@ Page({
   async onLoad() {
     const { unpaid, paid, complete }: any = await getAllSoldOrders()
     this.setData({
-      unpaidOrders: unpaid.map(order => ({
+      unpaidOrders: unpaid.map((order: any) => ({
         ...order,
         createdAt: parseTime(new Date(order.createdAt))
       })) || [],
@@ -116,7 +116,7 @@ Page({
       newComment: input
     })
   },
-  handleCompleteOrder(){
+  handleCompleteOrder() {
     let that = this
     wx.showModal({
       title: '提示',
