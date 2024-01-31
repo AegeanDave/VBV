@@ -31,10 +31,35 @@ Page({
       totalPrice: totalPrice,
       addressList: addresses || [],
       selectedAddress: addresses ? addresses[0] : null,
-      hasId: true
+      hasId: hasId
     })
+    const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
+    if (needId) {
+      if (hasId && !this.data.agreeUsingId) {
+        Dialog.confirm({
+          title: '身份信息',
+          message: '订单含海外直邮，需要授权以获取身份证照片',
+        }).then(() => {
+          this.setData({
+            agreeUsingId: true
+          })
+        }).catch(() => {
+          wx.navigateBack()
+        })
+      } if (!hasId) {
+        Dialog.confirm({
+          title: '身份信息',
+          message: '订单含海外直邮，需要您上传身份证照片',
+        })
+          .then(() =>
+            wx.navigateTo({ url: './imageUploader/imageUploader' })
+          ).catch(() => {
+            wx.navigateBack()
+          })
+      }
+    }
   },
-  async onShow() {
+  onShow() {
     const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
     const hasId = this.data.hasId
     if (needId) {

@@ -124,7 +124,7 @@ const Orders = () => {
                 <ListItemIcon>
                   <SaveAltIcon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText>下载出货单</ListItemText>
+                <ListItemText>下载出货单PDF</ListItemText>
               </MenuItem>
               <MenuItem
                 key="download-shipment-excel"

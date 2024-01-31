@@ -38,6 +38,7 @@ export type Order = {
 };
 
 export type OrderItem = {
+  shipment: any;
   productInfo: any;
   quantity: number;
   subtotal: number;

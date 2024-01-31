@@ -27,7 +27,7 @@
             <view class="redDot" wx:if="{{alias.hasUnpaidOrders}}"></view>
           </view>
           <text class="name">{{alias.dealer.username}}</text>
-          <image class="arrow" src="../../../image/arrow.png" bindtap="toAlias" data-alias="{{alias}}"></image>
+          <van-icon name="arrow" size="32px" bind:tap="toAlias" data-alias="{{alias}}"/>
         </block>
         <block wx:if="{{alias.customer.username}}">
           <view class="imgBox">
