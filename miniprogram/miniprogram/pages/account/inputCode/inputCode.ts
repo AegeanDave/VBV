@@ -5,7 +5,6 @@ const app = getApp<IAppOption>()
 
 Page({
   data: {
-    showPopup: false,
     currentValue: ''
   },
   onLoad: function (options: any) {
@@ -44,7 +43,6 @@ Page({
         icon: 'success'
       })
       wx.navigateBack()
-
     } catch (err) {
       wx.hideLoading()
       wx.showToast({

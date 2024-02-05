@@ -14,6 +14,10 @@ import {
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
+import moment from 'moment-timezone'
+
+moment.locale('zh-cn')
+moment.tz.setDefault('Asia/Shanghai')
 
 export default (app: Router) => {
 	app.use('/products', route)
@@ -78,7 +82,7 @@ export default (app: Router) => {
 		}
 	})
 	route.get(
-		'/available-products',
+		'/store/dealer',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
@@ -87,25 +91,49 @@ export default (app: Router) => {
 					where: {
 						openIdChild: myOpenId,
 						status: DBStatus.ACTIVE
+					},
+					include: {
+						model: User,
+						as: 'dealer',
+						attributes: ['username', 'avatarUrl']
 					}
 				})
-
 				const todoProduct = await StoreProduct.findAll({
 					include: {
-						model: Price,
+						model: User,
 						as: 'specialPrice',
-						where: {
-							openIdChild: myOpenId
-						}
+						through: {
+							where: {
+								openIdChild: myOpenId
+							}
+						},
+						attributes: ['username', 'avatarUrl', 'openId']
 					},
 					where: {
-						openIdFather: {
+						openId: {
 							[Op.or]: todoAlias.map(connection => connection.dataValues.openId)
 						},
+						openIdFather: { [Op.ne]: myOpenId },
 						status: DBStatus.ACTIVE
 					}
 				})
-				res.send(todoProduct)
+				const groupedProducts: any = {}
+				todoProduct.forEach(({ dataValues }) => {
+					const dealerId = dataValues.openId
+
+					if (!groupedProducts[dealerId]) {
+						groupedProducts[dealerId] = []
+					}
+
+					groupedProducts[dealerId].push({
+						...dataValues,
+						createdAt: moment(dataValues.createdAt).format('YYYY-MM-DD h:mm')
+					})
+				})
+				res.send({
+					dealers: todoAlias,
+					dealerProducts: groupedProducts
+				})
 				Logger.info('all saleProducts get')
 			} catch (err) {
 				res.send({
@@ -116,8 +144,9 @@ export default (app: Router) => {
 			}
 		}
 	)
+
 	route.get(
-		'/my-store',
+		'/store/me',
 		isAuthenticated,
 		async (req: Request, res: Response) => {
 			const { myOpenId } = req.params
@@ -139,7 +168,7 @@ export default (app: Router) => {
 					include: {
 						model: User,
 						as: 'dealer',
-						attributes: ['username', 'avatarUrl']
+						attributes: ['username', 'avatarUrl', 'openId']
 					}
 				})
 				const todoAvailableProducts =
@@ -153,7 +182,7 @@ export default (app: Router) => {
 											openIdChild: myOpenId
 										}
 									},
-									attributes: ['username', 'avatarUrl']
+									attributes: ['username', 'avatarUrl', 'openId']
 								},
 								where: {
 									openId: {
@@ -162,7 +191,8 @@ export default (app: Router) => {
 										)
 									},
 									status: DBStatus.ACTIVE
-								}
+								},
+								limit: 5
 						  })
 						: []
 				const [myProducts, availableProducts] = await Promise.all([
@@ -170,9 +200,13 @@ export default (app: Router) => {
 					todoAvailableProducts
 				])
 				res.send({
-					myProducts,
+					myProducts: myProducts.map(({ dataValues }: any) => ({
+						...dataValues,
+						createdAt: moment(dataValues.createdAt).format('YYYY-MM-DD h:mm')
+					})),
 					availableProducts: availableProducts.map(({ dataValues }: any) => ({
 						...dataValues,
+						createdAt: moment(dataValues.createdAt).format('YYYY-MM-DD h:mm'),
 						from: todoAlias.find(
 							(user: any) => user.dataValues.openId === dataValues.openId
 						)
@@ -337,6 +371,15 @@ export default (app: Router) => {
 			const { product, newPrice } = req.body
 			const { myOpenId } = req.params
 			try {
+				const todoCheck = await StoreProduct.findOne({
+					where: {
+						productId: product.productId,
+						openId: myOpenId
+					}
+				})
+				if (todoCheck?.dataValues) {
+					return res.send(true)
+				}
 				const todoProduct = await StoreProduct.findOne({
 					where: { id: product.id, status: DBStatus.ACTIVE },
 					attributes: [
@@ -358,7 +401,7 @@ export default (app: Router) => {
 				const [_storeProduct, created] = await StoreProduct.findOrCreate({
 					where: {
 						openId: myOpenId,
-						openIdFather: todoProduct.dataValues.openIdFather,
+						openIdFather: todoProduct.dataValues.openId,
 						productId: todoProduct.dataValues.productId
 					},
 					defaults: {

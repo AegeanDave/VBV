@@ -1,2 +1,107 @@
-<!--pages/myStore/myStore.wxml-->
-<text>pages/myStore/myStore.wxml</text>
+<van-dropdown-menu custom-class="custom-header">
+  <van-dropdown-item value="{{ dropdownValue }}" options="{{ dropdownOptions }}" bind:change="onDropdownSelect" />
+</van-dropdown-menu>
+<block wx:if="{{storeProducts.length < 1}}">
+  <van-empty description="您还未售卖任何商品">
+    <van-button round type="danger" class="bottom-button" bind:click="handleNavDealerStore">浏览供货商商品</van-button>
+  </van-empty>
+</block>
+<block wx:else>
+  <van-cell-group custom-class=".custom-store-container">
+    <block wx:for="{{isFiltered?filterProduct:storeProducts}}" wx:for-item="product" wx:key="index">
+      <van-swipe-cell id="{{index}}" left-width="{{ product.status!=='Not_Available'&&65 }}" right-width="{{ 65 }}">
+        <view wx:if="{{product.status==='Active'}}" slot="left" class="van-swipe-cell__left" bind:tap="handleUnpublish" data-product="{{product}}">下架</view>
+        <view wx:elif="{{product.status==='Inactive'}}" slot="left" class="van-swipe-cell__left" bind:tap="handlePublish" data-product="{{product}}">上架</view>
+        <van-cell bind:click="handleOpenSheet" data-product="{{product}}">
+          <view slot="icon">
+            <van-image radius="4" width="100rpx" height="100rpx" lazy-load fit="cover" src="{{product.coverImageUrl}}" />
+          </view>
+          <view slot="title" class="productInfo">
+            <view class="van-cell-text">{{product.name}}</view>
+            <view class="dealerBox">
+              <image src="{{product.dealer.avatarUrl}}"></image>
+              <text>{{product.dealer.username}}</text>
+            </view>
+          </view>
+          <view slot="right-icon" class="custom-cell-icon">
+            <view class="van-cell-text price">¥{{product.defaultPrice}}</view>
+            <view class="van-cell-text date">创建于 {{product.createdAt}}</view>
+          </view>
+        </van-cell>
+        <view slot="right" class="van-swipe-cell__right" bind:tap="handleDelete">删除</view>
+      </van-swipe-cell>
+    </block>
+  </van-cell-group>
+</block>
+<view class="title">供货商商品推荐</view>
+<block wx:if="{{dealerProducts.length>0}}">
+  <scroll-view class="custom-scroll-view_H" scroll-x="true" style="width: 100%">
+    <block wx:for="{{dealerProducts}}" wx:key="index" wx:for-item="product">
+      <view class="custom-grid-item" bind:tap="handleNavProduct" data-product="{{product}}">
+        <image style="width: 100%; height: 100px;" src="{{product.coverImageUrl}}" />
+        <view class="productInfo">
+          <view class="name custom">{{product.name}}</view>
+          <block wx:if="{{product.specialPrice.length > 0}}">
+            <view>
+              <text class="price old">￥{{product.defaultPrice}}</text>
+              <text class="price new">￥{{product.specialPrice[0].price.price}}</text>
+            </view>
+          </block>
+          <block wx:else>
+            <text class="price">￥{{product.defaultPrice}}</text>
+          </block>
+        </view>
+      </view>
+    </block>
+    <view class="custom-grid-item" bind:tap="handleNavDealerStore">
+      <van-icon name="more-o" size="50px" color="#02a69f" />
+      <view class="productInfo">
+        <view class="name custom">查看更多</view>
+      </view>
+    </view>
+  </scroll-view>
+</block>
+<block wx:else>
+  <van-empty description="您暂无可转售商品" image="">
+    <van-button round type="danger" plain class="bottom-button" bind:click="handleNavConnection">去关注</van-button>
+  </van-empty>
+</block>
+<van-action-sheet show="{{ sheetShow }}" title="{{selectedProduct.name}}" bind:close="onSheetClose">
+  <view class="custom-sheet-box">
+    <form>
+      <van-field label="价格¥" value="{{ newPrice }}" type="digit" border="{{ false }}" bind:change="onPriceChange" />
+      <van-cell border="{{false}}" custom-class="custom-cell">
+        <van-slider value="{{newPrice}}" slot="title" bind:drag="onPriceDrug" use-button-slot min="{{selectedProduct.defaultPrice-100}}" max="{{selectedProduct.defaultPrice+100}}" bar-height="8px" active-color="#02a69f">
+          <view class="custom-slider-button" slot="button">{{ newPrice }}</view>
+        </van-slider>
+      </van-cell>
+      <van-cell>
+        <van-button type="primary" size="small" custom-class="custom-button" round color="#02a69f" bind:click="handleUpdatePrice">确认更改</van-button>
+      </van-cell>
+    </form>
+  </view>
+  <van-grid column-num="5" border="{{ false }}" icon-size="20px" clickable>
+    <block wx:if="{{selectedProduct.status!=='Not_Available'}}">
+      <block wx:if="{{selectedProduct.status==='Active'}}">
+        <van-grid-item icon="close" text="下架" text-class="custom-text" bind:tap="handleUnpublish" />
+      </block>
+      <block wx:if="{{selectedProduct.status==='Inactive'}}">
+        <van-grid-item icon="add-o" text="上架" text-class="custom-text" bind:tap="handlePublish" />
+      </block>
+    </block>
+    <van-grid-item icon="photo-o" text="生成分享图" text-class="custom-text" bind:tap="handleShowCanvas" />
+    <van-grid-item icon="description-o" text="预览" text-class="custom-text" bind:tap="handleNavPreview" />
+    <van-grid-item icon="delete-o" text="删除" text-class="custom-text" bind:tap="handleDelete" />
+  </van-grid>
+</van-action-sheet>
+
+<view class="mask" hidden="{{!showCanvasMask}}">
+  <view class="canvasContainer">
+    <mp-icon icon="close2" type='field' color='white' size="{{28}}" wx:if="{{canvasHeight!==0}}" class="closeIcon" bindtap="closeCanvas"></mp-icon>
+    <canvas type="2d" id="productSharingCanvas" style="width:100%; height:{{canvasHeight}}px;" disable-scroll="true"></canvas>
+    <button class="canvasButtons" wx:if="{{canvasHeight!==0}}" bindtap="handleSavingImage">
+      <image class='download' src='../../image/file_download.png'></image>
+      <text>保存图片</text>
+    </button>
+  </view>
+</view>

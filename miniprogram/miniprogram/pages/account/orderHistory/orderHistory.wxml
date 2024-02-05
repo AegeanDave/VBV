@@ -1,5 +1,5 @@
 <van-tabs active="{{ active }}" bind:change="onTabChange" sticky animated>
-  <van-tab title="未付款订单">
+  <van-tab title="未付款">
     <block wx:if="{{!pendingOrders}}">
       <van-loading type="spinner" color="#1989fa" />
     </block>
@@ -57,7 +57,7 @@
       </block>
     </block>
   </van-tab>
-  <van-tab title="已付款订单">
+  <van-tab title="已付款">
     <block wx:if="{{!processingOrders}}">
       <van-loading type="spinner" color="#1989fa" />
     </block>

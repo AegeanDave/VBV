@@ -89,8 +89,7 @@ Page({
       showPopup: true
     })
   },
-
-  onDialogAction(e) {
+  onDialogAction(e: any) {
     if (e.detail.index === 1) {
       this.onAddToStore()
     }
@@ -102,6 +101,14 @@ Page({
     if (!isNaN(this.data.newPrice) && this.data.newPrice) {
       let product = this.data.product
       const result: any = await publishToStore(product, this.data.newPrice)
+      if (result === true) {
+        wx.showToast({
+          title: '此商品已在您的商店中',
+          icon: 'none',
+          duration: 2000
+        })
+        return
+      }
       if (result.status === Status.SUCCESS) {
         await wx.showToast({
           title: '成功上架',

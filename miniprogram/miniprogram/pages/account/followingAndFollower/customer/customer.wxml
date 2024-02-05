@@ -106,7 +106,7 @@
     </van-tab>
   </van-tabs>
 </view>
-<van-action-sheet show="{{ showDialog }}" title="改价" bind:close="onPriceActionSheetClose">
+<van-action-sheet show="{{ showDialog }}" title="改价" description="此价格为专属价格，仅对您的客户可见" bind:close="onPriceActionSheetClose">
   <van-cell-group>
     <van-field value="{{ specialPrice }}" center clearable label="¥" placeholder="请输入新的价格" border="{{ false }}" type="digit" use-button-slot bind:change="onSpecialPriceChange">
       <van-button slot="button" type="primary" bind:click="handleUpdatePrice" disabled="{{!specialPrice}}">

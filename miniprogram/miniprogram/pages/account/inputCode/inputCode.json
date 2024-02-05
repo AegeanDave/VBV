@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "pop-up": "../../../components/pop-up/pop-up",
     "mp-form-page": "weui-miniprogram/form-page/form-page"
   },
   "navigationBarTitleText": "邀请码"
