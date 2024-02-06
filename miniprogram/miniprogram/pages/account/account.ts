@@ -96,7 +96,7 @@ Page({
       })
     }
     return wx.navigateTo({
-      url: '../store/store'
+      url: '../myStore/myStore'
     })
   },
   toWarehouse: function () {

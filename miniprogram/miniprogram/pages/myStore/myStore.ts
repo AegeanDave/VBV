@@ -1,30 +1,28 @@
 import { getMyStore, publishProduct, unpublishProduct, updatePrice, deleteProduct } from "../../services/api/api"
 import { IAppOption } from "../../models/index"
 import { Status, Mode } from "../../constant/index"
-import Toast from '@vant/weapp/toast/toast';
 
 const app = getApp<IAppOption>()
-
 Page({
+  /**
+   * Page initial data
+   */
   data: {
-    myProductList: [],
-    showCanvasMask: true,
-    allFathersProducts: [],
-    selectedProduct: null,
-    storeActionSheetShow: false,
-    dealerActionSheetShow: false,
-    storeActions: [
-      { text: '生成朋友圈分享图', value: 1 },
-      { text: '改价', value: 2 },
-      { text: '预览', value: 3 },
-      { text: '下架', value: 4 }
+    dropdownValue: 0,
+    dropdownOptions: [
+      { text: '全部商品', value: 0 },
+      { text: '转售商品', value: 1 },
+      { text: '自营商品', value: 2 },
     ],
-    recommendationActions: [{ text: '我要售卖', value: 6 }],
-    dialogShow: false,
-    buttons: [{ text: '取消' }, { text: '确定' }],
-    priceActionSheetShow: false,
+    isFiltered: false,
+    storeProducts: null,
+    dealerProducts: null,
+    selectedProduct: null,
+    sheetShow: false,
+    newPrice: 0,
 
     // 设置区，针对部件的数据设置
+    showCanvasMask: false,
     qrcodeDiam: 80,               // 小程序码直径
     infoSpace: 14,                // 底部信息的间距
     saveImageWidth: 500,          // 保存的图像宽度
@@ -33,7 +31,7 @@ Page({
     tipsTwo: "进入微帮微购好货",   // 提示语
 
     // 缓冲区，无需手动设定
-    QRcode: null as Object,
+    QRcode: null,
     canvasWidth: 0,               // 画布宽
     canvasHeight: 0,              // 画布高
     canvasDom: {} as Object,              // 画布dom对象
@@ -42,40 +40,106 @@ Page({
     dpr: 1,                       // 设备的像素比
     posterHeight: 0,
   },
-  onLoad: async function () {
+
+  /**
+   * Lifecycle function--Called when page load
+   */
+  async onLoad() {
     const { myProducts, availableProducts }: any = await getMyStore()
     this.setData({
-      myProductList: myProducts,
-      allFathersProducts: availableProducts
+      storeProducts: myProducts || [],
+      dealerProducts: availableProducts || []
     })
   },
-  async onShow() {
-    if (app.globalData.reload) {
-      const { myProducts, availableProducts }: any = await getMyStore()
-      this.setData({
-        myProductList: myProducts,
-        allFathersProducts: availableProducts
-      })
-      app.globalData.reload = false
+
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow() {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide() {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh() {
+
+  },
+  onDropdownSelect(e: any) {
+    switch (e.detail) {
+      case 0:
+        this.handleFilter('ALL')
+        break;
+      case 1:
+        this.handleFilter('DEALER')
+        break;
+      case 2:
+        this.handleFilter('SELF')
+        break;
+      default:
+        break;
     }
   },
-  bindAddToStore: function () {
-    const isDuplicate = this.data.myProductList?.some(item => item.productId === this.data.selectedProduct.productId)
-    if (isDuplicate) {
-      Toast('此商品已在您的商店中');
+  handleFilter(filterMode: 'SELF' | 'DEALER' | 'ALL') {
+    if (filterMode === 'ALL') {
+      this.setData({
+        isFiltered: false,
+        filterProduct: null
+      })
       return
     }
+    const username = app.globalData.user?.username
+    if (filterMode === 'SELF') {
+      this.setData({
+        isFiltered: true,
+        filterProduct: this.data.storeProducts.filter(item => item.dealer.username === username)
+      })
+    }
+    if (filterMode === 'DEALER') {
+      this.setData({
+        isFiltered: true,
+        filterProduct: this.data.storeProducts.filter(item => item.dealer.username !== username)
+      })
+    }
+  },
+  handleNavDealerStore() {
+    wx.navigateTo({ url: '../dealerStore/dealerStore' })
+  },
+  handleNavConnection() {
+    wx.navigateTo({ url: '../account/inputCode/inputCode' })
+  },
+  handleNavPreview: function () {
+    this.onSheetClose()
     wx.navigateTo({
-      url: `../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${this.data.selectedProduct.id}`,
+      url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct?.id}`,
     })
   },
-  bindPreview: function () {
+  handleNavProduct: function (e: any) {
+    const { id } = e.currentTarget.dataset.product
     wx.navigateTo({
-      url: `../index/productDetail/productDetail?mode=${Mode.PREVIEW}&id=${this.data.selectedProduct.id}`,
+      url: `../index/productDetail/productDetail?mode=${Mode.PUBLISHING}&id=${id}`,
     })
   },
-  bindPublish: async function () {
-    const product = this.data.selectedProduct
+  handlePublish: async function (e: any) {
+    let product
+    if (e.currentTarget.dataset.product) {
+      product = e.currentTarget.dataset.product
+    }
+    product = this.data.selectedProduct
     const result: any = await publishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
@@ -83,14 +147,15 @@ Page({
         icon: 'success',
         duration: 2000
       })
-      const newList = this.data.myProductList?.map(item => {
+      const newList = this.data.storeProducts?.map((item: any) => {
         if (product.id === item.id) {
           return { ...item, status: 'Active' }
         }
         return item
       })
       this.setData({
-        myProductList: newList
+        storeProducts: newList,
+        sheetShow: false
       })
       app.globalData.reload = true
     }
@@ -102,8 +167,12 @@ Page({
       })
     }
   },
-  bindUnpublish: async function () {
-    const product = this.data.selectedProduct
+  handleUnpublish: async function (e: any) {
+    let product
+    if (e.currentTarget.dataset.product) {
+      product = e.currentTarget.dataset.product
+    }
+    product = this.data.selectedProduct
     const result: any = await unpublishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
@@ -111,14 +180,15 @@ Page({
         icon: 'success',
         duration: 2000
       })
-      const newList = this.data.myProductList.map(item => {
+      const newList = this.data.storeProducts?.map(item => {
         if (product.id === item.id) {
           return { ...item, status: 'Inactive' }
         }
         return item
       })
       this.setData({
-        myProductList: newList
+        storeProducts: newList,
+        sheetShow: false
       })
       app.globalData.reload = true
     }
@@ -130,64 +200,16 @@ Page({
       })
     }
   },
-  onShowDealerActionSheet(e: any) {
-    if (e.currentTarget.dataset.newproduct) {
-      this.setData({
-        groups: [
-          { text: '我要售卖', value: 6 }
-        ],
-        dealerActionSheetShow: true,
-        selectedProduct: e.currentTarget.dataset.newproduct,
-      })
-    }
-  },
-  onShowStoreActionSheet(e: any) {
-    const product = e.currentTarget.dataset.product
-    if (product.status === 'Inactive') {
-      this.setData({
-        storeActions: [
-          { text: '上架', value: 5 },
-        ]
-      })
-    }
-    if (product.status === 'Active') {
-      this.setData({
-        storeActions: [
-          { text: '生成朋友圈分享图', value: 1 },
-          { text: '改价', value: 2 },
-          { text: '预览', value: 3 },
-          { text: '下架', value: 4 },
-        ],
-      })
-    }
-    if (product.status === 'Not_Available') {
-      this.setData({
-        storeActions: [
-          { text: '删除', value: 7 }
-        ],
-      })
-    }
+  handleOpenSheet(e: any) {
     this.setData({
-      storeActionSheetShow: true,
-      selectedProduct: product,
+      sheetShow: true,
+      selectedProduct: e.currentTarget.dataset.product,
+      newPrice: e.currentTarget.dataset.product.defaultPrice
     })
   },
-  close: function () {
+  onSheetClose() {
     this.setData({
-      storeActionSheetShow: false,
-      dealerActionSheetShow: false
-    })
-  },
-  onDialogClick(e: any) {
-    switch (e.detail.index) {
-      case 0:
-        break;
-      case 1:
-        this.bindUnpublish()
-        break;
-    }
-    this.setData({
-      dialogShow: false,
+      sheetShow: false,
     })
   },
   onPriceChange(e: any) {
@@ -195,14 +217,18 @@ Page({
       newPrice: e.detail
     })
   },
+  onPriceDrug(e: any) {
+    this.setData({
+      newPrice: e.detail.value,
+    });
+  },
   async handleUpdatePrice() {
     const selectedProduct = this.data.selectedProduct
-
     wx.showLoading({ title: '提交中' })
     try {
       await updatePrice(selectedProduct, this.data.newPrice)
       this.setData({
-        myProductList: this.data.myProductList.map(item => {
+        storeProducts: this.data.storeProducts?.map((item: any) => {
           if (item.id === selectedProduct.id) {
             return { ...item, defaultPrice: this.data.newPrice }
           }
@@ -212,7 +238,7 @@ Page({
       wx.hideLoading()
       wx.showToast({
         title: '更新成功',
-        icon: 'error'
+        icon: 'success'
       })
     } catch (err) {
       console.log(err)
@@ -222,73 +248,41 @@ Page({
         icon: 'error'
       })
     } finally {
-      this.onPriceActionSheetClose()
+      this.onSheetClose()
     }
   },
-  onActionClick(e: any) {
-    const optionValue = e.detail.value
-    switch (optionValue) {
-      case 1:
-        this.setData({
-          showCanvasMask: !this.data.showCanvasMask
-        })
-        this.drawImage()
-        break;
-      case 2:
-        this.setData({
-          priceActionSheetShow: true
-        })
-        break;
-      case 3:
-        this.bindPreview()
-        break;
-      case 4:
-        this.setData({
-          dialogShow: !this.data.dialogShow
-        })
-        break;
-      case 5:
-        this.bindPublish()
-        break;
-      case 6:
-        this.bindAddToStore()
-        break;
-      case 7:
-        this.handleDeleteProduct()
-        break
-      default:
-        break;
+  async handleDelete(e: any) {
+    let product
+    if (e.currentTarget.dataset?.product) {
+      product = e.currentTarget.dataset?.product
+    } else {
+      product = this.data.selectedProduct
     }
-    this.close()
-  },
-  onPriceActionSheetClose() {
-    this.setData({
-      priceActionSheetShow: false
+    const that = this
+    wx.showModal({
+      title: '提示',
+      content: '确认删除产品',
+      async success(res) {
+        if (res.confirm) {
+          try {
+            await deleteProduct(product)
+            that.setData({
+              storeProducts: that.data.storeProducts.filter((item: any) => item.id !== product.id)
+            })
+            wx.showToast({ title: '成功删除' })
+          } catch (err) {
+            console.log(err)
+            wx.showToast({ title: '成功失败', icon: 'none' })
+          }
+        }
+      }
     })
   },
-  async handleDeleteProduct() {
-    const product = this.data.selectedProduct
-    try {
-      await deleteProduct(product)
-      this.setData({
-        myProductList: this.data.myProductList.filter(item => item.id !== product.id)
-      })
-      wx.showToast({ title: '成功删除' })
-    } catch (err) {
-      console.log(err)
-    }
-  },
-  closeCanvas() {
+  handleShowCanvas() {
     this.setData({
-      showCanvasMask: !this.data.showCanvasMask,
-      canvasHeight: 0,
-      canvasWidth: 0,
-      canvasDom: {},
-      canvas: null,
+      showCanvasMask: true
     })
-    this.data.ctx.clearRect(0, 0, this.data.canvasWidth, this.data.canvasHeight)
-  },
-  drawImage() {
+    const that = this
     const query = wx.createSelectorQuery()  // 创建一个dom元素节点查询器
     query.select('#productSharingCanvas')              // 选择我们的canvas节点
       .fields({                             // 需要获取的节点相关信息
@@ -305,9 +299,19 @@ Page({
           ctx: ctx,         // 把canvas 2d的上下文放到全局
           dpr: dpr          // 屏幕像素比
         }, function () {
-          this.drawing()    // 开始绘图
+          that.drawing()    // 开始绘图
         })
       })
+  },
+  closeCanvas() {
+    this.setData({
+      showCanvasMask: !this.data.showCanvasMask,
+      canvasHeight: 0,
+      canvasWidth: 0,
+      canvasDom: {},
+      canvas: null,
+    })
+    this.data.ctx.clearRect(0, 0, this.data.canvasWidth, this.data.canvasHeight)
   },
   async drawing() {
     const that = this;
@@ -326,16 +330,16 @@ Page({
       quality: 1,
       canvas: that.data.canvasDom.node,
       success(res) {
-        let productList = that.data.myProductList
+        let productList = that.data.storeProducts
 
-        productList.map(product => {
+        productList.map((product: any) => {
           if (product.id === that.data.selectedProduct.id) {
             return { ...product, imageTempUrl: res.tempFilePath }
           }
           product
         })
         that.setData({
-          myProductList: productList
+          storeProducts: productList
         })
       }
     })
@@ -383,7 +387,6 @@ Page({
     this.data.ctx.fillRect(0, this.data.canvasHeight - this.data.bottomInfoHeight, this.data.canvasWidth, this.data.bottomInfoHeight); // 填充整个画布
     this.data.ctx.restore();
   },
-
   // 绘制小程序码
   drawQrcode(url: string) {
     let diam = this.data.qrcodeDiam                    // 小程序码直径

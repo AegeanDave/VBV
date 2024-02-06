@@ -7,9 +7,3 @@
     </view>
   </form>
 </mp-form-page>
-<pop-up show="{{showPopup}}" showCancel="">
-  <view class="popupContainer">
-    <image src="../../image/logo.png" class="logo"></image>
-    <text>您已收到好友邀请码，即刻开始购物</text>
-  </view>
-</pop-up>

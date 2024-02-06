@@ -64,14 +64,14 @@
                     <text class="label">买家: </text>
                     <text class="value name">{{order.user.username}}</text>
                   </view>
-                  <button bindtap="bindCopy" data-name="{{order.user.username}}">复制微信名</button>
+                  <button bindtap="handleCopy" data-name="{{order.user.username}}">复制微信名</button>
                 </view>
                 <view class="itemOuter">
                   <view class="item">
                     <text class="label">订单状态: </text>
                     <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
-                    <text wx:elif="{{order.status==='Canceled'}}" class="paid value">被取消</text>
-                    <text wx:else class="paid value">已付款</text>
+                    <text wx:elif="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
+                    <text wx:else class="paid value">已收款</text>
                   </view>
                   <button wx:if="{{order.status==='Unpaid'}}" bindtap="onOpenConfirmation" data-order="{{order}}">标记付款</button>
                   <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
@@ -148,7 +148,7 @@
                     <text class="label">买家: </text>
                     <text class="value name">{{order.user.username}}</text>
                   </view>
-                  <button bindtap="bindCopy" data-name="{{order.user.username}}">复制微信名</button>
+                  <button bindtap="handleCopy" data-name="{{order.user.username}}">复制微信名</button>
                 </view>
                 <view class="itemOuter">
                   <view class="item">
@@ -244,7 +244,7 @@
                     <text class="label">买家: </text>
                     <text class="value name">{{order.user.username}}</text>
                   </view>
-                  <button bindtap="bindCopy" data-name="{{order.user.username}}">复制微信名</button>
+                  <button bindtap="handleCopy" data-name="{{order.user.username}}">复制微信名</button>
                 </view>
                 <view class="itemOuter">
                   <view class="item">

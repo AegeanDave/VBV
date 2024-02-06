@@ -1,6 +1,7 @@
 {
   "usingComponents": {
-    "pop-up": "../../../components/pop-up/pop-up",
-    "mp-dialog": "weui-miniprogram/dialog/dialog"
+    "mp-dialog": "weui-miniprogram/dialog/dialog",
+    "van-notice-bar": "@vant/weapp/notice-bar/index",
+    "van-stepper": "@vant/weapp/stepper/index"
   }
 }

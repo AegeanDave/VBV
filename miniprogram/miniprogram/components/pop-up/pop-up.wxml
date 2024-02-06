@@ -1,9 +1,0 @@
-<!--components/pop-up.wxml-->
-<view class="mask" wx:if="{{show}}">
-  <view class="popupContent">
-    <view class="imageField cancel" bindtap='cancel' wx:if="{{showCancel}}">
-      <image class="image" src="../../pages/image/cancel.png"></image>
-    </view>
-    <slot></slot>
-  </view>
-</view>

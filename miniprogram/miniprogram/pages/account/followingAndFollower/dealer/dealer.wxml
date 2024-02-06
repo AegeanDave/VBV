@@ -69,7 +69,7 @@
                   <van-tag type="warning" size="medium">未付款</van-tag>
                 </block>
                 <block wx:elif="{{order.status==='Paid'}}">
-                  <van-tag type="primary" size="medium">已付款</van-tag>
+                  <van-tag type="success" size="medium">已付款</van-tag>
                 </block>
                 </view>
               </view>

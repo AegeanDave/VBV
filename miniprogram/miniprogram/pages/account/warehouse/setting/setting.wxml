@@ -25,13 +25,6 @@
       <view class="btnArea">
         <button class="newEmail confirm" disabled="{{disabled}}" bindtap="toConfirm">确认</button>
       </view>
-      <pop-up show="{{showPopup}}">
-        <view class="container">
-          <view class="text">确认与手机号<text class="bold">+{{countryCodes[currentCode].value}} {{newPhone}}</text>绑定？登录仓库端将需要该号码接收验证码
-          </view>
-          <button class="confirm submit" formType="submit">确认无误</button>
-        </view>
-      </pop-up>
     </form>
   </view>
 </view>

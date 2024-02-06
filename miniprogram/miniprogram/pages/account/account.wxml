@@ -22,7 +22,7 @@
   </view>
 </view>
 <view class="nav account">
-  <van-grid column-num="3" clickable square>
+  <van-grid column-num="3" clickable square border="{{false}}" gutter="{{16}}">
     <van-grid-item icon="/image/store.png" text="我的在售" bind:click="toStore" />
     <van-grid-item icon="/image/warehouse.png" bind:click="toWarehouse" text="自营仓库" />
     <van-grid-item icon="/image/order.png" bind:click="toOrder" text="销售记录" badge="{{newOrderNumber}}" />
@@ -31,3 +31,6 @@
     <van-grid-item icon="/image/plainCode.png" bind:click="toConnection" text="输入邀请码" />
   </van-grid>
 </view>
+<van-cell-group inset>
+  <van-cell title="隐私条款" is-link link-type="navigateTo" title-class='additional-menu-title' url="/pages/account/termUse/termUse" />
+</van-cell-group>

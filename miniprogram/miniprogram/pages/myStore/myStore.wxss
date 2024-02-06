@@ -1,0 +1,151 @@
+/* pages/myStore/myStore.wxss */
+
+.custom-store-container {
+  min-height: 66vh;
+}
+
+.van-swipe-cell__left {
+  background-color: #24C160;
+  width: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.custom-sheet-box .custom-cell {
+  padding-bottom: 14px;
+}
+
+.van-swipe-cell__right {
+  background-color: red;
+  width: 65px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.title {
+  background-color: #02a69f;
+  padding: 8px 18px;
+  color: white;
+}
+
+.van-cell-text.price {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #02a69f;
+}
+
+.van-cell-text.date {
+  font-size: 22rpx;
+  font-weight: 400;
+  color: #02a69f;
+}
+
+.custom-cell-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.custom-scroll-view_H {
+  white-space: nowrap;
+}
+
+.custom-grid-item {
+  display: inline-block;
+  max-width: 120px;
+  margin: 8px;
+}
+
+.custom-grid-item .productInfo {
+  margin-left: 0;
+}
+
+.productInfo .price {
+  font-size: 20rpx;
+}
+
+.custom-sheet-box {
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.custom-slider-button {
+  background-color: #02a69f;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.custom-sheet-box .custom-button {
+  padding: 3px 16px 2.5px !important;
+}
+
+.custom-text text {
+  font-size: small;
+}
+
+.name.custom {
+  width: 100%;
+  white-space: nowrap;
+  /* 防止文本换行 */
+  overflow: hidden;
+  /* 隐藏溢出的文本 */
+  text-overflow: ellipsis;
+  /* 显示省略号 */
+  font-size: smaller;
+}
+
+
+.mask {
+  position: fixed;
+  z-index: 999;
+  padding: 150rpx 22px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.canvasContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.closeIcon {
+  align-self: flex-end;
+  margin-bottom: 6px;
+}
+
+.canvasButtons {
+  margin-top: 31px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  padding: 9px 16px 9px 27px;
+}
+
+.canvasButtons text {
+  font-size: 16px;
+  margin: 0 27px;
+}
+
+.canvasButtons .download {
+  width: 36rpx;
+  height: 44rpx
+}
+
+
+
+
+
+
+

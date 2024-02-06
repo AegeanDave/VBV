@@ -2,7 +2,8 @@ import request from './request'
 
 const getProductList = () => request.getRequest("products/all")
 const getProduct = (id: string) => request.getRequest(`products/product/${id}`)
-const getMyStore = () => request.getRequest("products/my-store")
+const getMyStore = () => request.getRequest("products/store/me")
+const getDealerStores = () => request.getRequest("products/store/dealer")
 const unpublishProduct = (product: Product) => request.postRequest("products/unpublish", { product: product })
 const publishProduct = (product: Product) => request.postRequest("products/publish", { product })
 const publishToStore = (product: any, newPrice: number) => request.postRequest("products/publish/new", { product, newPrice })
@@ -11,4 +12,4 @@ const updatePriceForChild = (price: number, openIdChild: string, product: any) =
 const deleteProduct = (product: any) => request.deleteRequest("products/store/product", { product })
 
 
-export { getProductList, getMyStore, updatePrice, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, deleteProduct }
+export { getProductList, getMyStore, updatePrice, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, deleteProduct, getDealerStores }

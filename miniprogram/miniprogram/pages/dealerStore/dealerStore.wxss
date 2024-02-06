@@ -1,0 +1,34 @@
+.productInfo {
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+.name.custom {
+  width: 100%;
+  white-space: nowrap;
+  /* 防止文本换行 */
+  overflow: hidden;
+  /* 隐藏溢出的文本 */
+  text-overflow: ellipsis;
+  /* 显示省略号 */
+  font-size: smaller;
+}
+
+.productInfo .price {
+  font-size: 24rpx;
+}
+
+.custom-slider-button {
+  background-color: #02a69f;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.custom-sheet-box .custom-button {
+  padding: 0px 36px !important;
+}
+
+.custom-text text {
+  font-size: small;
+}

@@ -67,10 +67,15 @@
               <view class="divLine"></view>
               <view class="footerInner alignRight">
                 <view class="item">
-                  <text>订单状态: </text>
-                  <text wx:if="{{order.status==='Unpaid'}}" class="unpaid">未付款</text>
-                  <text wx:elif="{{order.status==='Paid'}}" class="paid">已付款</text>
-                  <text wx:elif="{{order.status==='Shipped'}}" class="paid">已发货</text>
+                  <block wx:if="{{order.status==='Unpaid'}}">
+                    <van-tag type="warning" size="medium">未收款</van-tag>
+                  </block>
+                  <block wx:if="{{order.status==='Paid'}}">
+                    <van-tag type="success" size="medium">已收款</van-tag>
+                  </block>
+                  <block wx:if="{{order.status==='Shipped'}}">
+                    <van-tag type="primary" size="medium">已发货</van-tag>
+                  </block>
                 </view>
               </view>
             </view>
@@ -101,7 +106,7 @@
     </van-tab>
   </van-tabs>
 </view>
-<van-action-sheet show="{{ showDialog }}" title="改价" bind:close="onPriceActionSheetClose">
+<van-action-sheet show="{{ showDialog }}" title="改价" description="此价格为专属价格，仅对您的客户可见" bind:close="onPriceActionSheetClose">
   <van-cell-group>
     <van-field value="{{ specialPrice }}" center clearable label="¥" placeholder="请输入新的价格" border="{{ false }}" type="digit" use-button-slot bind:change="onSpecialPriceChange">
       <van-button slot="button" type="primary" bind:click="handleUpdatePrice" disabled="{{!specialPrice}}">

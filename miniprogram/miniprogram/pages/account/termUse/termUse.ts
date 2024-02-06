@@ -1,4 +1,4 @@
-// pages/index/productQRcode/productQRcode.js
+// pages/account/termUse/termUse.ts
 Page({
 
   /**
@@ -11,7 +11,7 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad(options) {
+  onLoad() {
 
   },
 

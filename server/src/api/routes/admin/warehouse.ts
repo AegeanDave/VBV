@@ -98,35 +98,38 @@ export default (app: Router) => {
 	})
 	route.post('/login', async (req: Request, res: Response) => {
 		const { phoneNumber, password: inputPass } = req.body
-		const todoWarehouse = await Warehouse.findOne({
-			where: {
-				loginPhoneNumber: phoneNumber
+		try {
+			const todoWarehouse = await Warehouse.findOne({
+				where: {
+					loginPhoneNumber: phoneNumber
+				}
+			})
+			if (!todoWarehouse) {
+				res.send({
+					status: Status.FAIL,
+					message: '此账号不存在'
+				})
+				return
 			}
-		})
-		if (!todoWarehouse) {
-			res.status(400).send({
-				status: Status.FAIL,
-				message: '此账号不存在'
-			})
-			return
-		}
-		const { openId, warehouseId, password, ...rest } = todoWarehouse.dataValues
-		if (rest.status === 'Not_Verified') {
-			res.status(200).send({
-				status: Status.FAIL,
-				message: '此帐号还未完成注册，请前往注册页面完成注册'
-			})
-			return
-		}
-		if (rest.status === 'Inactive') {
-			res.status(200).send({
-				status: Status.FAIL,
-				message: '此账号已关闭'
-			})
-			return
-		}
-		bcrypt.compare(inputPass, password, (err, result) => {
-			if (result) {
+			const { openId, warehouseId, password, ...rest } =
+				todoWarehouse.dataValues
+			if (rest.status === 'Not_Verified') {
+				res.send({
+					status: Status.FAIL,
+					message: '此帐号还未完成注册，请前往注册页面完成注册'
+				})
+				return
+			}
+			if (rest.status === 'Inactive') {
+				res.status(200).send({
+					status: Status.FAIL,
+					message: '此账号已关闭'
+				})
+				return
+			}
+			const match = await bcrypt.compare(inputPass, password)
+
+			if (match) {
 				const sessionKey = uuidv4()
 				const value: Session = {
 					openId,
@@ -136,13 +139,18 @@ export default (app: Router) => {
 				res.status(200).send({ sessionKey, ...rest })
 				Logger.info('logged in')
 			} else {
-				res.status(401).send({
+				res.status(200).send({
 					status: Status.FAIL,
 					message: '密码有误'
 				})
 				Logger.info('login fail')
 			}
-		})
+		} catch (err) {
+			res.status(500).send({
+				status: Status.FAIL
+			})
+			Logger.info('Internal error')
+		}
 	})
 	route.delete(
 		'/logout',

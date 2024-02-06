@@ -12,7 +12,6 @@
     "pages/checkOut/contactToPay/contactToPay",
     "pages/address/address",
     "pages/address/newAddress/newAddress",
-    "pages/store/store",
     "pages/soldOrders/soldOrders",
     "pages/soldOrders/shareOrder/shareOrder",
     "pages/soldOrders/orderDetail/orderDetail",
@@ -22,12 +21,14 @@
     "pages/account/orderHistory/confirmOrder/confirmOrder",
     "pages/account/orderHistory/orderDetail/orderDetail",
     "pages/account/warehouse/setting/setting",
-    "pages/index/productQRcode/productQRcode",
     "pages/account/followingAndFollower/dealer/dealer",
     "pages/register/register",
     "pages/checkOut/imageUploader/imageUploader",
     "pages/account/warehouse/register/register",
-    "pages/account/profile/profile"
+    "pages/account/profile/profile",
+    "pages/account/termUse/termUse",
+    "pages/myStore/myStore",
+    "pages/dealerStore/dealerStore"
   ],
   "tabBar": {
     "color": "#CDE1E0",
@@ -65,6 +66,7 @@
   },
   "usingComponents": {
     "van-icon": "@vant/weapp/icon/index",
-    "van-tag": "@vant/weapp/tag/index"
+    "van-tag": "@vant/weapp/tag/index",
+    "van-button": "@vant/weapp/button/index"
   }
 }

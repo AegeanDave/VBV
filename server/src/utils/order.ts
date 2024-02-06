@@ -19,7 +19,6 @@ const handleCreateTransferingOrders = async (
 	oldOrder: any,
 	newComment?: string
 ) => {
-	console.log(oldOrder)
 	// handleWarehouseOrderSMS(todoOrder[1][0].dataValues.dealerId)
 	const todoOrderDetails = await OrderDetail.findAll({
 		where: { orderId: oldOrder.id }
@@ -33,7 +32,8 @@ const handleCreateTransferingOrders = async (
 				})
 			},
 			openId: oldOrder.dealerId,
-			openIdFather: { [Op.ne]: oldOrder.dealerId }
+			openIdFather: { [Op.ne]: oldOrder.dealerId },
+			status: { [Op.ne]: 'Not_Available' }
 		}
 	})
 	//find all related products from father
