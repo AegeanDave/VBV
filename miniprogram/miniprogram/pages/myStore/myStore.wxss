@@ -119,6 +119,18 @@
   position: relative;
 }
 
+.canvasContainer image,
+.loading-box {
+  width: 75vw;
+  height: 50vh;
+}
+
+.loading-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .closeIcon {
   align-self: flex-end;
   margin-bottom: 6px;
@@ -142,10 +154,3 @@
   width: 36rpx;
   height: 44rpx
 }
-
-
-
-
-
-
-

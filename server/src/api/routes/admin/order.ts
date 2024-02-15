@@ -240,7 +240,6 @@ export default (app: Router) => {
 					'Content-Type',
 					'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 				)
-				console.log(process.cwd())
 				res.sendFile(outputFile, { root: process.cwd() }, err => {
 					if (err) {
 						console.log(err)

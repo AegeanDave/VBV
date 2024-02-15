@@ -1,7 +1,7 @@
 <block wx:for="{{dealers}}" wx:key="index" wx:for-item="item">
   <van-cell-group title="{{item.dealer.username}}">
     <van-grid column-num="4" border="{{ false }}" gutter="{{10}}" clickable>
-      <van-grid-item use-slot wx:for="{{ dealerProducts[item.openId] }}" wx:key="index" wx:for-item="product" bind:click="handleOpenSheet" data-product="{{product}}">
+      <van-grid-item use-slot wx:for="{{ dealerProducts[item.openId] }}" wx:key="index" wx:for-item="product" bind:click="handleOpenSheet" data-product="{{product}}" data-dealer="{{item.dealer}}">
         <image style="width: 100%; height: 90px;" src="{{product.coverImageUrl}}" />
         <view class="productInfo">
           <view class="name custom">{{product.name}}</view>
@@ -34,7 +34,7 @@
     </form>
   </view>
   <van-grid column-num="5" border="{{ false }}" icon-size="20px" clickable>
-    <van-grid-item icon="friends-o" text="联系供货商" text-class="custom-text" />
+    <van-grid-item icon="friends-o" text="联系供货商" text-class="custom-text" bind:tap="handleCopy"/>
     <van-grid-item icon="description-o" text="查看" text-class="custom-text" bind:tap="handleNavProductDetail" />
   </van-grid>
 </van-action-sheet>

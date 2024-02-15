@@ -15,6 +15,8 @@ import {
 import { Op } from 'sequelize'
 import db from '../../../config/database'
 import moment from 'moment-timezone'
+import { handleGetImages } from '../../../utils/product'
+import { posterRender } from '../../../provider/poster'
 
 moment.locale('zh-cn')
 moment.tz.setDefault('Asia/Shanghai')
@@ -490,6 +492,31 @@ export default (app: Router) => {
 					status: 'FAIL'
 				})
 				Logger.info('release fail')
+			}
+		}
+	)
+	route.post(
+		'/store/product/poster',
+		isAuthenticated,
+		async (req: Request, res: Response) => {
+			const { product, text, numOfImage } = req.body
+			try {
+				const images = await handleGetImages(product.productId, numOfImage)
+				const imageBuffer = await posterRender({
+					name: product.name,
+					images,
+					text
+				})
+				res.setHeader('Content-Type', 'image/png')
+				res.send(imageBuffer)
+
+				Logger.info('Images created')
+			} catch (err) {
+				console.log(err)
+				res.status(500).send({
+					status: 'FAIL'
+				})
+				Logger.info('Images created failed')
 			}
 		}
 	)

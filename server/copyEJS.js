@@ -26,3 +26,29 @@ ncp(ejsSourceDirectory, distDirectory, function (err) {
 	}
 	console.log('EJS files copied to dist.')
 })
+
+// Source directory containing EJS files
+const ejsPosterSourceDirectory = path.join(
+	__dirname,
+	'src',
+	'provider',
+	'poster',
+	'template'
+)
+
+// Destination directory (dist) where EJS files will be copied
+const distPosterDirectory = path.join(
+	__dirname,
+	'dist',
+	'provider',
+	'poster',
+	'template'
+)
+
+// Copy EJS files to dist
+ncp(ejsPosterSourceDirectory, distPosterDirectory, function (err) {
+	if (err) {
+		return console.error(err)
+	}
+	console.log('EJS files copied to dist.')
+})
