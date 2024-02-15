@@ -89,16 +89,40 @@
         <van-grid-item icon="add-o" text="上架" text-class="custom-text" bind:tap="handlePublish" />
       </block>
     </block>
-    <van-grid-item icon="photo-o" text="生成分享图" text-class="custom-text" bind:tap="handleShowCanvas" />
+    <van-grid-item icon="photo-o" text="生成分享图" text-class="custom-text" bind:tap="handleShowPoster" />
     <van-grid-item icon="description-o" text="预览" text-class="custom-text" bind:tap="handleNavPreview" />
     <van-grid-item icon="delete-o" text="删除" text-class="custom-text" bind:tap="handleDelete" />
   </van-grid>
 </van-action-sheet>
-
+<van-action-sheet show="{{ posterSheetShow }}" title="生成选项" bind:close="onPosterSheetClose">
+  <form catchsubmit="formSubmit">
+    <van-cell-group border="{{false}}">
+      <van-cell title="图片数量">
+        <van-radio-group name="numOfImage" value="1" direction="horizontal">
+          <van-radio name="1">1</van-radio>
+          <van-radio name="2">2</van-radio>
+          <van-radio name="3">3</van-radio>
+          <van-radio name="4">4</van-radio>
+        </van-radio-group>
+      </van-cell>
+      <van-field label="海报文案" name="text" value="立即购买，探索更多！" type="textarea" placeholder="请输入海报文案" autosize border="{{ false }}" maxlength="100" />
+      <van-cell border="{{false}}">
+        <van-button form-type='submit' type="primary" block>点击生成</van-button>
+      </van-cell>
+    </van-cell-group>
+  </form>
+</van-action-sheet>
 <view class="mask" hidden="{{!showCanvasMask}}">
   <view class="canvasContainer">
     <mp-icon icon="close2" type='field' color='white' size="{{28}}" wx:if="{{canvasHeight!==0}}" class="closeIcon" bindtap="closeCanvas"></mp-icon>
-    <canvas type="2d" id="productSharingCanvas" style="width:100%; height:{{canvasHeight}}px;" disable-scroll="true"></canvas>
+    <block wx:if="{{posterUrl}}">
+      <image src="{{posterUrl}}" mode='aspectFit'></image>
+    </block>
+    <block wx:else>
+      <view class="loading-box">
+        <van-loading type="spinner" />
+      </view>
+    </block>
     <button class="canvasButtons" wx:if="{{canvasHeight!==0}}" bindtap="handleSavingImage">
       <image class='download' src='../../image/file_download.png'></image>
       <text>保存图片</text>

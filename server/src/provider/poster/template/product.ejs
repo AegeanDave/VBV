@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Poster</title>
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
+			@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&family=ZCOOL+QingKe+HuangYou&display=swap');
+			body {
+				font-family: 'Noto Sans SC', 'ZCOOL QingKe HuangYou', sans-serif;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.container {
+				width: 800px;
+				max-height: 1600px;
+				color: #002126;
+			}
+			.poster {
+				width: calc(100% - 36px - 36px);
+				height: 100%;
+				padding: 36px;
+				display: flex;
+				flex-direction: column;
+				background: #eaefef;
+			}
+			.image-grid {
+				display: flex;
+				flex-wrap: wrap;
+				border-radius: 30px;
+				height: 860px;
+				box-shadow: 0 4px 20px rgba(25, 87, 105, 0.2);
+				overflow: hidden;
+			}
+			.image-box {
+				flex-grow: 1;
+			}
+			.image-box-1 {
+				width: 100%;
+			}
+			.image-box-2 {
+				width: 100%;
+			}
+			.image-box-3 {
+				width: 50%;
+				height: 50%;
+			}
+			.image-box-3:last-child {
+				width: 100%;
+			}
+			.image-box-4 {
+				width: 50%;
+				height: 50%;
+			}
+			.image-box img {
+				width: 100%;
+				height: 100%;
+			}
+			.text-box {
+				margin-top: 36px;
+				background-color: white;
+				border-radius: 30px;
+				padding: 30px;
+				flex-grow: 1;
+			}
+			.title {
+				font-family: 'ZCOOL QingKe HuangYou';
+				font-size: 48px;
+				margin-bottom: 16px;
+			}
+			.text {
+				font-family: 'Noto Sans SC';
+				font-size: 44px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="poster">
+				<div class="image-grid">
+					<% images.forEach(({dataValues}, index)=> { %>
+					<div class="image-box image-box-<%= images.length %>">
+						<img
+							src="<%= dataValues.url %>"
+							class="image-<%= index %>"
+							alt="image-<%= index %>"
+						/>
+					</div>
+					<% }) %>
+				</div>
+				<div class="text-box">
+					<div class="title"><%= name %></div>
+					<div class="text"><%= text %></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

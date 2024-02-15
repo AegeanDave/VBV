@@ -68,6 +68,37 @@ const request = {
       });
     });
   },
+  bufferRequest: function (endPoint: string, data?: object) {
+    const sessionKey = wx.getStorageSync('sessionKey');
+    return new Promise(function (resolve: any, reject: any) {
+      wx.request({
+        url: url + "/" + endPoint,
+        method: "POST",
+        responseType: 'arraybuffer',
+        header: {
+          Authorization: sessionKey
+        },
+        data: data,
+        success: async function (res) {
+          if (res.statusCode === 403) {
+            await wx.showToast({
+              title: '登录失效',
+              icon: 'none',
+              duration: 1000
+            })
+            reLogin()
+          }
+          else {
+            var result = res.data;
+            resolve(result);
+          }
+        },
+        fail: function (err) {
+          reject(err);
+        }
+      });
+    });
+  },
   getRequest: function (endPoint: string, data?: object) {
     const sessionKey = wx.getStorageSync('sessionKey');
     return new Promise(function (resolve: any, reject: any) {

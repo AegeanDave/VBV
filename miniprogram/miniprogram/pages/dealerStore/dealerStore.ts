@@ -10,6 +10,7 @@ Page({
     dealers: null,
     dealerProducts: null,
     selectedProduct: null,
+    selectedDealer: null,
     sheetShow: false,
     newPrice: 0
   },
@@ -46,6 +47,7 @@ Page({
     this.setData({
       sheetShow: true,
       selectedProduct: e.currentTarget.dataset.product,
+      selectedDealer: e.currentTarget.dataset.dealer,
       newPrice: e.currentTarget.dataset.product.defaultPrice
     })
   },
@@ -103,5 +105,25 @@ Page({
         duration: 2000
       })
     }
+  },
+  handleCopy() {  
+    let that = this
+    wx.setClipboardData({
+      data: that.data.selectedDealer?.username,
+      success: function () {
+        wx.showToast({
+          title: '已成功复制',
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail() {
+        wx.showToast({
+          title: '复制失败',
+          icon: 'none',
+          duration: 2000
+        })
+      }
+    })
   },
 })
