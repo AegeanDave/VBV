@@ -100,16 +100,16 @@ Page({
   onAddToStore: async function () {
     if (!isNaN(this.data.newPrice) && this.data.newPrice) {
       let product = this.data.product
-      const result: any = await publishToStore(product, this.data.newPrice)
-      if (result === true) {
-        wx.showToast({
-          title: '此商品已在您的商店中',
-          icon: 'none',
-          duration: 2000
-        })
-        return
-      }
-      if (result.status === Status.SUCCESS) {
+      try {
+        const result: any = await publishToStore(product, this.data.newPrice)
+        if (result === true) {
+          wx.showToast({
+            title: '此商品已在您的商店中',
+            icon: 'none',
+            duration: 2000
+          })
+          return
+        }
         await wx.showToast({
           title: '成功上架',
           icon: 'success',
@@ -119,63 +119,13 @@ Page({
         wx.navigateBack({
           delta: 1
         })
-      }
-      else {
+      } catch (err) {
         wx.showToast({
-          title: result.message,
-          icon: 'none',
+          title: '上架失败',
+          icon: 'error',
           duration: 2000
         })
       }
     }
-    else {
-      wx.showToast({
-        title: '输入有误',
-        icon: 'none',
-        duration: 2000
-      })
-    }
   },
-  // async submitToSale(e: any) {
-  //   this.setData({
-  //     disbledSale: true
-  //   })
-  //   if (!isNaN(e.detail.value.newPrice) && e.detail.value.newPrice) {
-  //     let newProduct = this.data.product
-  //     if (newProduct.mySale) {
-  //       newProduct.mySale.newPrice = e.detail.value.newPrice
-  //     } else {
-  //       newProduct.mySale = { newPrice: e.detail.value.newPrice }
-  //     }
-  //     const result: any = await updateSale(newProduct)
-  //     this.setData({
-  //       showPopup: false
-  //     })
-  //     if (result.status === Status.SUCCESS) {
-  //       this.setData({
-  //         showToast: true,
-  //         ['product.mySale.inStoreProductId']: result.data.inStoreProductId,
-  //         ['product.mySale.status']: Status.ENABLED
-  //       })
-  //       app.globalData.reload = true
-  //     }
-  //     else {
-  //       wx.showToast({
-  //         title: '修改失败',
-  //         icon: 'none',
-  //         duration: 2000
-  //       })
-  //     }
-  //   }
-  //   else {
-  //     wx.showToast({
-  //       title: '输入有误',
-  //       icon: 'none',
-  //       duration: 2000
-  //     })
-  //   }
-  //   this.setData({
-  //     disbledSale: false
-  //   })
-  // },
 })

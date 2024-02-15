@@ -386,7 +386,7 @@ export default (app: Router) => {
 					where: { id: product.id, status: DBStatus.ACTIVE },
 					attributes: [
 						'productId',
-						'openIdFather',
+						'openId',
 						'name',
 						'description',
 						'coverImageUrl',
@@ -424,6 +424,7 @@ export default (app: Router) => {
 					message: '此商品已在您的商店中'
 				})
 			} catch (err) {
+				console.log(err)
 				res.status(500).send({
 					status: 'FAIL'
 				})
