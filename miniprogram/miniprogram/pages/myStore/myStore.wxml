@@ -105,7 +105,7 @@
           <van-radio name="4">4</van-radio>
         </van-radio-group>
       </van-cell>
-      <van-field label="海报文案" name="text" value="立即购买，探索更多！" type="textarea" placeholder="请输入海报文案" autosize border="{{ false }}" maxlength="100" />
+      <van-field label="海报文案" name="text" type="textarea" placeholder="请输入海报文案" autosize border="{{ false }}" maxlength="100" />
       <van-cell border="{{false}}">
         <van-button form-type='submit' type="primary" block>点击生成</van-button>
       </van-cell>

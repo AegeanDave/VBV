@@ -386,7 +386,7 @@ export default (app: Router) => {
 					where: { id: product.id, status: DBStatus.ACTIVE },
 					attributes: [
 						'productId',
-						'openIdFather',
+						'openId',
 						'name',
 						'description',
 						'coverImageUrl',
@@ -400,14 +400,15 @@ export default (app: Router) => {
 						message: '此商品不存在'
 					})
 				}
+				const { openId, productId, ...reset } = todoProduct.dataValues
 				const [_storeProduct, created] = await StoreProduct.findOrCreate({
 					where: {
 						openId: myOpenId,
-						openIdFather: todoProduct.dataValues.openId,
-						productId: todoProduct.dataValues.productId
+						openIdFather: openId,
+						productId: productId
 					},
 					defaults: {
-						...todoProduct.dataValues,
+						...reset,
 						saleLevel: todoProduct.dataValues.saleLevel + 1,
 						defaultPrice: newPrice,
 						status: DBStatus.ACTIVE
@@ -424,6 +425,7 @@ export default (app: Router) => {
 					message: '此商品已在您的商店中'
 				})
 			} catch (err) {
+				console.log(err)
 				res.status(500).send({
 					status: 'FAIL'
 				})

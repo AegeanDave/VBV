@@ -300,6 +300,13 @@ Page({
   },
   async formSubmit(e: any) {
     const { numOfImage, text } = e.detail.value
+    if(!numOfImage||!text){
+      wx.showToast({
+        title: '请补全信息',
+        icon: 'error'
+      })
+      return
+    }
     this.setData({
       posterSheetShow: false,
       showCanvasMask: true
