@@ -123,7 +123,9 @@ Page({
     if (e.currentTarget.dataset.product) {
       product = e.currentTarget.dataset.product
     }
-    product = this.data.selectedProduct
+    else {
+      product = this.data.selectedProduct
+    }
     const result: any = await publishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({
@@ -156,7 +158,9 @@ Page({
     if (e.currentTarget.dataset.product) {
       product = e.currentTarget.dataset.product
     }
-    product = this.data.selectedProduct
+    else{
+      product = this.data.selectedProduct
+    }
     const result: any = await unpublishProduct(product)
     if (result.status === Status.SUCCESS) {
       wx.showToast({

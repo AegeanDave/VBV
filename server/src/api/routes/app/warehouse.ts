@@ -4,6 +4,7 @@ const route = Router()
 import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
 import { Status } from '../../../constants'
+import { Op } from 'sequelize'
 
 export default (app: Router) => {
 	app.use('/warehouse', route)
@@ -58,7 +59,7 @@ export default (app: Router) => {
 				const todoOrder = await Order.findAll({
 					where: {
 						dealerId: myOpenId,
-						status: 'Processing'
+						status: { [Op.or]: ['Paid', 'Processing'] }
 					}
 				})
 				res.send({

@@ -2,16 +2,16 @@
   <view class="card {{currentField!==0&&'disabled'}}" bindtap="activateField" data-index="0">
     <view class="inputField">
       <view class="inputBox firstNoBorder">
-        <text class="label {{currentField!==0&&'disabled'}}">收件人</text>
-        <input name="name" disabled="{{currentField!==0}}" auto-focus bindinput="handleChangeName"></input>
+        <text class="label {{currentField!==0&&'disabled'}}">收件人:</text>
+        <input name="name" disabled="{{currentField!==0}}" auto-focus placeholder="请输入收件人" bindinput="handleChangeName"></input>
       </view>
       <view class="inputBox firstNoBorder">
-        <text class="label {{currentField!==0&&'disabled'}}">电话</text>
-        <input name="phone" type="number" maxlength="11" disabled="{{currentField!==0}}"
+        <text class="label {{currentField!==0&&'disabled'}}">电话:</text>
+        <input name="phone" type="number" maxlength="11" disabled="{{currentField!==0}}" placeholder="请输入街电话"
           bindinput="handleChangePhone"></input>
       </view>
       <view class="inputBox firstNoBorder">
-        <text class="label {{currentField!==0&&'disabled'}}">省/市/区</text>
+        <text class="label {{currentField!==0&&'disabled'}}">省/市/区:</text>
         <picker class="regionPicker" name="region" mode="region" bindchange="bindRegionChange" value="{{regionChina}}"
           disabled="{{currentField!==0}}">
           <view class="picker {{currentField!==0&&'disabled'}}">
@@ -20,8 +20,8 @@
         </picker>
       </view>
       <view class="inputBox firstNoBorder">
-        <text class="address label {{currentField!==0&&'disabled'}}">详细地址</text>
-        <textarea name="street" disable-default-padding="true" maxlength="80" disabled="{{currentField!==0}}"></textarea>
+        <text class="address label {{currentField!==0&&'disabled'}}">详细地址:</text>
+        <textarea name="street" disable-default-padding="true" maxlength="80" disabled="{{currentField!==0}}" placeholder="请输入街道地址" disable-default-padding="{{true}}"></textarea>
       </view>
     </view>
   </view>

@@ -17,7 +17,18 @@
             <van-image radius="4" width="100rpx" height="100rpx" lazy-load fit="cover" src="{{product.coverImageUrl}}" />
           </view>
           <view slot="title" class="productInfo">
-            <view class="van-cell-text">{{product.name}}</view>
+            <view class="status-box">
+              <view class="van-cell-text">{{product.name}}</view>
+              <block wx:if="{{product.status==='Active'}}">
+                <van-tag type="primary">在售</van-tag>
+              </block>
+              <block wx:if="{{product.status==='Inactive'}}">
+                <van-tag type="warning">已下架</van-tag>
+              </block>
+              <block wx:if="{{product.status==='Not_Available'}}">
+                <van-tag type="danger">不可用</van-tag>
+              </block>
+            </view>
             <view class="dealerBox">
               <image src="{{product.dealer.avatarUrl}}"></image>
               <text>{{product.dealer.username}}</text>

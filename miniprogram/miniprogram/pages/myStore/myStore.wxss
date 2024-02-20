@@ -26,10 +26,18 @@
   color: white;
 }
 
+.status-box {
+  display: flex;
+}
+
 .title {
   background-color: #02a69f;
   padding: 8px 18px;
   color: white;
+}
+
+.productInfo .van-cell-text {
+  margin-right: 10px;
 }
 
 .van-cell-text.price {
