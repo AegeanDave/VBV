@@ -8,7 +8,7 @@
               <van-icon slot="right-icon" name="passed" />
             </block>
           </van-cell>
-          <van-cell value="{{address.country}}" label="{{address.phone}}" />
+          <van-cell label="{{address.phone}}" />
         </van-cell-group>
       </block>
       <block wx:else>
