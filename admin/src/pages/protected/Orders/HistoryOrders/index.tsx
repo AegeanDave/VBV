@@ -1,5 +1,5 @@
 import { useOrder } from "../../../../contexts/OrderProvider";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, AppBar, Toolbar } from "@mui/material";
 import { Masonry } from "@mui/lab";
 import OrderCard from "../OrderCard";
 
@@ -21,13 +21,25 @@ const OrderHistory = () => {
       </Box>
     );
   return (
-    <Box sx={{ width: 780, minHeight: 400, margin: "0 auto" }} p={2}>
-      <Masonry columns={2} spacing={2}>
-        {historyOrders.map((order: any) => (
-          <OrderCard key={order.id} order={order} readOnly></OrderCard>
-        ))}
-      </Masonry>
-    </Box>
+    <>
+      <AppBar position="static">
+        <Toolbar>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography textAlign="left">
+              历史订单 {historyOrders.length} 个
+            </Typography>
+          </Box>
+          <Box sx={{ display: { xs: "none", md: "flex" } }}></Box>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ width: 780, minHeight: 400 }} p={4}>
+        <Masonry columns={2} spacing={2}>
+          {historyOrders.map((order: any) => (
+            <OrderCard key={order.id} order={order} readOnly></OrderCard>
+          ))}
+        </Masonry>
+      </Box>
+    </>
   );
 };
 export default OrderHistory;

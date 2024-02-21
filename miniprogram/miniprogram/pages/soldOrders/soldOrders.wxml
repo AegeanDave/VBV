@@ -1,5 +1,5 @@
 <van-tabs bind:change="onTabChange" sticky>
-  <van-tab title="未收款">
+  <van-tab title="未收款 {{unpaidOrders.length}}">
     <block wx:if="{{unpaidOrders.length===0}}">
       <view class="empty">
         <image src='/image/empty_orders.png' class="noOrders"></image>
@@ -69,7 +69,7 @@
                 <view class="itemOuter">
                   <view class="item">
                     <text class="label">订单状态: </text>
-                    <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
+                    <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未收款</text>
                     <text wx:elif="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
                     <text wx:else class="paid value">已收款</text>
                   </view>
@@ -83,7 +83,7 @@
       </view>
     </block>
   </van-tab>
-  <van-tab title="已收款">
+  <van-tab title="已收款 {{paidOrders.length}}">
     <block wx:if="{{paidOrders.length===0}}">
       <view class="empty">
         <image src='../../image/empty_orders.png' class="noOrders"></image>
@@ -153,9 +153,9 @@
                 <view class="itemOuter">
                   <view class="item">
                     <text class="label">订单状态: </text>
-                    <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未付款</text>
+                    <text wx:if="{{order.status==='Unpaid'}}" class="unpaid value">未收款</text>
                     <text wx:elif="{{order.status==='Cancelled'}}" class="paid value">被取消</text>
-                    <text wx:else class="paid value">已付款</text>
+                    <text wx:else class="paid value">已收款</text>
                   </view>
                   <button wx:if="{{order.status==='Unpaid'}}" bindtap="markPaid" data-order="{{order}}">标记付款</button>
                   <button wx:else bindtap="bindToDetail" data-order="{{order}}">查看详情</button>
@@ -167,7 +167,7 @@
       </view>
     </block>
   </van-tab>
-  <van-tab title="已完成">
+  <van-tab title="已完成 {{completeOrders.length}}">
     <block wx:if="{{completeOrders.length===0}}">
       <view class="empty">
         <image src='../../image/empty_orders.png' class="noOrders"></image>

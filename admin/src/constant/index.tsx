@@ -67,7 +67,7 @@ export const navigators = {
     path: "product",
   },
   order: {
-    label: "订单发货",
+    label: "待发货订单",
     path: "order/",
   },
   history: {

@@ -41,6 +41,10 @@
                   <text class="totalPrice label">总价: </text>
                   <text class="totalPrice amount value">￥{{subOrder.payment.totalAmount}}</text>
                 </view>
+                <view class="item">
+                  <text class="totalPrice label">供应商:</text>
+                  <text class="totalPrice amount value">{{subOrder.dealer.username}}</text>
+                </view>
               </view>
             </block>
           </view>
@@ -96,6 +100,10 @@
                 <view class="item">
                   <text class="totalPrice label">总价: </text>
                   <text class="totalPrice amount value">￥{{subOrder.payment.totalAmount}}</text>
+                </view>
+                <view class="item">
+                  <text class="totalPrice label">供应商:</text>
+                  <text class="totalPrice amount value">{{subOrder.dealer.username}}</text>
                 </view>
               </view>
             </block>
