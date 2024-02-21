@@ -31,7 +31,7 @@
     "pages/dealerStore/dealerStore"
   ],
   "tabBar": {
-    "color": "#CDE1E0",
+    "color": "#9eadad",
     "selectedColor": "#23ABA4",
     "list": [
       {

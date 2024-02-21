@@ -192,6 +192,11 @@ export default (app: Router) => {
 						{
 							model: OrderDetail,
 							attributes: ['productInfo', 'quantity', 'subtotal']
+						},
+						{
+							model: User,
+							as: 'dealer',
+							attributes: ['username', 'avatarUrl']
 						}
 					]
 				})
@@ -201,6 +206,11 @@ export default (app: Router) => {
 						status: { [Op.or]: ['Paid', 'Completed', 'Shipped'] }
 					},
 					include: [
+						{
+							model: User,
+							as: 'dealer',
+							attributes: ['username', 'avatarUrl']
+						},
 						{
 							model: OrderDetail,
 							attributes: ['productInfo', 'quantity', 'subtotal']
@@ -342,7 +352,13 @@ export default (app: Router) => {
 					include: [
 						{
 							model: OrderDetail,
-							attributes: ['productInfo', 'quantity', 'subtotal']
+							attributes: [
+								'productInfo',
+								'quantity',
+								'subtotal',
+								'status',
+								'shipment'
+							]
 						},
 						{ model: User, as: 'dealer', attributes: ['username', 'avatarUrl'] }
 					]

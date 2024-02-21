@@ -84,7 +84,7 @@ export default function PermanentDrawerLeft({
                   color: "white",
                 }}
               >
-                上传商品
+                上传自营产品
               </ListItemText>
             </ListItemButton>
             <ListItemButton

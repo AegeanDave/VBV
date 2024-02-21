@@ -40,8 +40,8 @@
                     <text class="value">数量: {{product.quantity}}</text>
                     <view class="tagField">
                       <text class="value">货物状态：</text>
-                      <view class="tag {{product.status==='Canceled'?'canceled':product.status==='Shipping'?'shipping':'pending'}}">
-                        <text>{{product.status==='Shipping' ? '已发货' : product.status==='Canceled'?'被取消' : '未发货'}}</text>
+                      <view class="tag {{product.status==='Cancelled'?'cancelled':product.status==='Shipped'?'shipped':'pending'}}">
+                        <text>{{product.status==='Shipped' ? '已发货' : product.status==='Cancelled'?'被取消' : '未发货'}}</text>
                       </view>
                     </view>
                   </view>
@@ -50,8 +50,8 @@
               <view class="shippingBox">
                 <text class="label">快递状态：</text>
                 <view class="trackingInfo">
-                  <view wx:if="{{product.status==='SHIPPING'}}" class="shippingProgress">
-                    <text>快递单号：{{product.trackingNumber}} | {{product.company}}</text>
+                  <view wx:if="{{product.status==='Shipped'}}" class="shippingProgress">
+                    <text>快递单号：{{product.shipment.trackingNum}} | {{product.shipment.carrier}}</text>
                     <view class="progressBox">
                       <progress class="progress" percent="50" color="#A6DDDA" activeColor="#05A69F" active />
                       <view class="shippingInfo">

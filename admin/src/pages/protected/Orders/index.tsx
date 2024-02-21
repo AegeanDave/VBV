@@ -85,9 +85,13 @@ const Orders = () => {
     );
   return (
     <>
-      <AppBar>
+      <AppBar position="static">
         <Toolbar>
-          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography textAlign="left">
+              待发货订单 {currentOrders.length} 个
+            </Typography>
+          </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
               size="large"
@@ -140,10 +144,7 @@ const Orders = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box
-        sx={{ width: 780, minHeight: 400, margin: "0 auto", marginTop: "80px" }}
-        p={2}
-      >
+      <Box sx={{ width: 780, minHeight: 400 }} p={4}>
         <Masonry columns={2} spacing={2}>
           {currentOrders.map((order: any) => (
             <OrderCard key={order.id} order={order}></OrderCard>
