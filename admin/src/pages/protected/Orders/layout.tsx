@@ -1,4 +1,3 @@
-import React from "react";
 import OrderProvider from "../../../contexts/OrderProvider";
 import { useOutlet } from "react-router-dom";
 

@@ -28,7 +28,7 @@ export default function Login() {
 
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      areaCode: "1",
+      areaCode: "86",
       phoneNumber: "",
       password: "",
     },
