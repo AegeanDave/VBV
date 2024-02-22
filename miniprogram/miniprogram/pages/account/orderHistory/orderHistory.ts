@@ -1,12 +1,22 @@
 import { getAllPurchasedOrders } from '../../../services/api/api'
-import {  IAppOption } from "../../../models/index"
+import { IAppOption } from "../../../models/index"
 const app = getApp<IAppOption>()
 
 Page({
   data: {
-    active: 0,
+    showOrderValue: 0,
+    sortingValue: 0,
+    showOrderOptions: [
+      { text: '未付款订单', value: 0 },
+      { text: '已付款订单', value: 1 },
+    ],
+    sortingOptions: [
+      { text: '默认排序', value: 0 },
+      { text: '日期排序↑', value: 1 },
+      { text: '日期排序↓', value: 2 },
+    ],
     pendingOrders: null,
-    processingOrders: null
+    processingOrders: null,
   },
   async onLoad() {
     let todoOrders: any
@@ -23,10 +33,32 @@ Page({
       processingOrders: todoOrders?.processingOrders || [],
     })
   },
-  onTabChange(e: any) {
+  onShowOrderChange(e: any) {
     this.setData({
-      active: e.detail.index,
+      showOrderValue: e.detail
     })
+  },
+  onSortChange(e: any) {
+    const sortOrderKey = this.data.showOrderValue === 0 ? 'pendingOrders' : 'processingOrders'
+    switch (e.detail) {
+      case 0:
+        this.setData({
+          [sortOrderKey]: this.data[sortOrderKey].sort((a, b) => new Date(a[0].createdAt) - new Date(b[0].createdAt))
+        })
+        break;
+      case 1:
+        this.setData({
+          [sortOrderKey]: this.data[sortOrderKey].sort((a, b) => new Date(a[0].createdAt) - new Date(b[0].createdAt))
+        })
+        break;
+      case 2:
+        this.setData({
+          [sortOrderKey]: this.data[sortOrderKey].sort((a, b) => new Date(b[0].createdAt) - new Date(a[0].createdAt))
+        })
+        break;
+      default:
+        break;
+    }
   },
   bindToDetail(e: any) {
     wx.navigateTo({

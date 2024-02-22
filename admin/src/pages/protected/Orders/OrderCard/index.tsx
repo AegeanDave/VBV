@@ -187,10 +187,10 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
           <>
             <Grid item xs={12} pt={1}>
               <Typography variant="body2" textAlign="left">
-                运输公司：{order.orderDetails[0]?.shipment.carrier}
+                运输公司：{order.orderDetails[0]?.shipment?.carrier}
               </Typography>
               <Typography variant="body2" textAlign="left">
-                运单号：{order.orderDetails[0]?.shipment.trackingNum}
+                运单号：{order.orderDetails[0]?.shipment?.trackingNum}
               </Typography>
             </Grid>
           </>

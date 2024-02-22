@@ -36,19 +36,19 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath": "image/home.png",
+        "iconPath": "image/home.jpg",
         "selectedIconPath": "image/home_select.png",
         "text": "主页"
       },
       {
         "pagePath": "pages/shoppingCart/shoppingCart",
-        "iconPath": "image/cart.png",
+        "iconPath": "image/cart.jpg",
         "selectedIconPath": "image/cart_select.png",
         "text": "购物车"
       },
       {
         "pagePath": "pages/account/account",
-        "iconPath": "image/account.png",
+        "iconPath": "image/account.jpg",
         "selectedIconPath": "image/account_select.png",
         "text": "我的账户"
       }
