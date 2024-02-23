@@ -39,6 +39,6 @@
     <text class="label">总价：</text>
     <text class="value">￥{{totalPrice}}</text>
   </view>
-  <button class="submitOrder" bindtap="pay" disabled="{{!selectedAddress}}">下单</button>
+  <button class="submitOrder" bindtap="pay" disabled="{{!selectedAddress}}">提交订单</button>
 </view>
 <van-dialog id="van-dialog" />

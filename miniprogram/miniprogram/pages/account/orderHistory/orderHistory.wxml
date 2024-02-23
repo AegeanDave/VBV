@@ -11,7 +11,7 @@
   </block>
   <block wx:else>
     <block wx:for="{{pendingOrders}}" wx:key="id" wx:for-item="order">
-      <view class="orderBox card">
+      <view class="orderBox card" wx:if="{{!order[0].hidden}}">
         <view class="boxHeader">
           <view class="item">
             <text class="value">{{order[0].orderNumber}}</text>

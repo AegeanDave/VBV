@@ -60,7 +60,7 @@
       <van-stepper value="{{ 1 }}" bind:change="onQuantityChange" input-width="60px" button-size="38px" integer min="1" max="99"/>
     </view>
     <view class="btnField">
-      <button class="purchaseBtn" bindtap="submitToPurchase">购买</button>
+      <button class="purchaseBtn" bindtap="submitToPurchase">即刻下单</button>
       <button class="addCartBtn" bindtap="submitToCart">加入购物车</button>
     </view>
   </view>

@@ -33,5 +33,5 @@
 </view>
 <view wx:if="{{products.length!==0}}" class="btnBox">
   <text class="totalPrice">总价：￥{{totalPrice}}</text>
-  <button class="submitOrder" bindtap="submitOrder" disabled="{{totalPrice==0}}">结账</button>
+  <button class="submitOrder" bindtap="submitOrder" disabled="{{totalPrice==0}}">下单</button>
 </view>
