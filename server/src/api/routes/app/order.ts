@@ -4,6 +4,7 @@ import { Logger } from '../../../services'
 import { isAuthenticated } from '../../middleware/authorization'
 import { v4 as uuidv4 } from 'uuid'
 import {
+	makeCode,
 	makeOrderNumber,
 	sendOrderSubscribeMessage
 } from '../../../provider/index'
@@ -14,7 +15,8 @@ import {
 	OrderDetail,
 	StoreProduct,
 	User,
-	ConnectionOrder
+	ConnectionOrder,
+	Invitation
 } from '../../../models/sequelize'
 import { Op } from 'sequelize'
 import db from '../../../config/database'
@@ -54,7 +56,8 @@ export default (app: Router) => {
 								'status'
 							]
 						}
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 
 				const todoPaidOrder = Order.findAll({
@@ -75,7 +78,8 @@ export default (app: Router) => {
 								'status'
 							]
 						}
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 
 				const todoCompleteOrder = Order.findAll({
@@ -198,7 +202,8 @@ export default (app: Router) => {
 							as: 'dealer',
 							attributes: ['username', 'avatarUrl']
 						}
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 				const todoProcessingOrders = Order.findAll({
 					where: {
@@ -215,7 +220,8 @@ export default (app: Router) => {
 							model: OrderDetail,
 							attributes: ['productInfo', 'quantity', 'subtotal']
 						}
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 
 				const result = await Promise.all([
@@ -322,7 +328,8 @@ export default (app: Router) => {
 							attributes: ['productInfo', 'quantity', 'subtotal']
 						},
 						{ model: User, as: 'dealer', attributes: ['username', 'avatarUrl'] }
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 				res.send(todoOrder)
 				Logger.info('purchased order get')
@@ -361,7 +368,8 @@ export default (app: Router) => {
 							]
 						},
 						{ model: User, as: 'dealer', attributes: ['username', 'avatarUrl'] }
-					]
+					],
+					order: [['createdAt', 'DESC']]
 				})
 				res.send(todoOrder)
 				Logger.info(`purchased order ${orderNumber} get`)
@@ -391,7 +399,8 @@ export default (app: Router) => {
 						attributes: ['productInfo', 'quantity', 'subtotal']
 					},
 					{ model: User, as: 'customer', attributes: ['username', 'avatarUrl'] }
-				]
+				],
+				order: [['createdAt', 'DESC']]
 			})
 			res.send(todoOrder)
 			Logger.info('sold order get')
@@ -853,6 +862,7 @@ export default (app: Router) => {
 		const {
 			resource: { ciphertext, associated_data, nonce }
 		} = req.body
+		console.log(nonce)
 		try {
 			const { payer, out_trade_no, amount, ...rest }: any = pay.decipher_gcm(
 				ciphertext,
@@ -860,11 +870,16 @@ export default (app: Router) => {
 				nonce,
 				process.env.API_V3_KEY!
 			)
-			const todoOrder = await ConnectionOrder.create({
+			await ConnectionOrder.create({
 				openId: payer.openid,
 				orderNumber: out_trade_no,
 				amount,
 				status: 'Paid'
+			})
+			await Invitation.create({
+				openId: payer.openid,
+				code: makeCode(),
+				status: 'Active'
 			})
 			res.end()
 			Logger.info('Code order made success')

@@ -19,7 +19,7 @@
   <view class="addressInfoBox">
     <text class="title label">备注</text>
     <text class="value comment" wx:if="{{!isEditing}}" bindtap="toEditing">{{comment||'选填'}}</text>
-    <textarea wx:else class="value editing comment" auto-height='true' value="{{comment}}" auto-focus="true" maxlength="100" bindconfirm="handleChangeComment"></textarea>
+    <textarea wx:else class="value editing comment" value="{{comment}}" auto-focus="true" maxlength="140" auto-height bindconfirm="handleChangeComment" bindblur="handleChangeComment"></textarea>
   </view>
 </view>
 <view class="orderList">

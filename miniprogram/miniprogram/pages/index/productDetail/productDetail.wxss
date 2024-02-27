@@ -138,14 +138,20 @@
 .purchaseBtn {
   background-color: #98dbd8;
   border-radius: 20px 0 0 20px;
-  padding: 9px 23px 9px 32px;
+  padding: 9rpx 24rpx 9rpx 32rpx;
+  font-size: medium;
+  display: flex;
+  align-items: center;
   box-shadow: 0 0 10px 0 rgba(134, 194, 191, 0.3)
 }
 
 .addCartBtn {
   background-color: #02a69f;
   border-radius: 0 21.48px 21.48px 0;
-  padding: 9px 20px;
+  font-size: medium;
+  padding: 9rpx 32rpx 9rpx 24rpx;
+  display: flex;
+  align-items: center;
   box-shadow: 2px 2px 10px 0 rgba(0, 114, 109, 0.3);
 }
 

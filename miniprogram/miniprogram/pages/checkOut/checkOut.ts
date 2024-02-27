@@ -13,7 +13,8 @@ Page({
     addressList: [],
     totalPrice: 0,
     agreeUsingId: false,
-    hasId: false
+    hasId: false,
+    mode: null
   },
   async onLoad(option: any) {
     const { addresses, hasId }: any = await getAddresses()
@@ -31,7 +32,8 @@ Page({
       totalPrice: totalPrice,
       addressList: addresses || [],
       selectedAddress: addresses ? addresses[0] : null,
-      hasId: hasId
+      hasId: hasId,
+      mode: option.mode
     })
     const needId = this.data.order.some((element: any) => element.item.product.setting?.isIdRequired)
     if (needId) {
@@ -128,7 +130,7 @@ Page({
         icon: 'error'
       })
     } else {
-      wx.removeStorageSync('cart')
+      this.data.mode === 'QuickBuy' ? wx.removeStorageSync('quickBuy') : wx.removeStorageSync('cart')
       wx.redirectTo({
         url: `./contactToPay/contactToPay?orderNumber=${result.orderNumber}`,
       });

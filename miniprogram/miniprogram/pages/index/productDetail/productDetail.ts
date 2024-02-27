@@ -1,5 +1,5 @@
 import { IAppOption } from "../../../models/index"
-import { Status, Mode } from "../../../constant/index"
+import { Mode } from "../../../constant/index"
 import { publishToStore, getProduct } from "../../../services/api/api"
 
 const app = getApp<IAppOption>()

@@ -1,5 +1,5 @@
 import { getDealer, unfollowingDealer } from '../../../../services/api/api'
-import { Product, IAppOption, DealerOrder, OrderProduct } from "../../../../models/index"
+import { IAppOption } from "../../../../models/index"
 import { Status, Mode } from "../../../../constant/index"
 import { parseTime } from "../../../../utils/util"
 const app = getApp<IAppOption>()
@@ -42,7 +42,7 @@ Page({
       content: '确定与“' + this.data.dealer.username + '”解除关系?',
       success: async function (sm) {
         if (sm.confirm) {
-          const aliasId = that.data.dealer.aliasId
+          const aliasId = that.data.dealer.openId
           const result = await unfollowingDealer(aliasId)
           if (result.status === Status.SUCCESS) {
             wx.showToast({

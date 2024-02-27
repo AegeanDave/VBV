@@ -70,6 +70,7 @@ Page({
           icon: 'success',
           duration: 2000
         })
+        this.onLoad()
       } catch (error) {
         wx.showToast({
           title: '购买失败',

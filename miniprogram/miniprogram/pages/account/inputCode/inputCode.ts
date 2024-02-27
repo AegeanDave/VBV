@@ -42,7 +42,7 @@ Page({
         title: '关注成功',
         icon: 'success'
       })
-      wx.navigateBack()
+      wx.switchTab({ url: '../../index/index' })
     } catch (err) {
       wx.hideLoading()
       wx.showToast({
