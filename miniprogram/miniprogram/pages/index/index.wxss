@@ -147,7 +147,7 @@ text {
 
 .productCard .name {
   max-width: 36.5vw;
-  font-size: 16px;
+  font-size: 28rpx;
   color: #353535;
   margin-top: 3px;
   margin-bottom: 2px;

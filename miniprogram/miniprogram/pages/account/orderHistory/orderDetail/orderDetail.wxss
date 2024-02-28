@@ -3,7 +3,8 @@ page {
 }
 
 text,
-.productInfo .price, .userInfoNickname {
+.productInfo .price,
+.userInfoNickname {
   font-size: 14px;
 }
 
@@ -30,7 +31,8 @@ text,
   color: #333333;
 }
 
-.value, .userInfoNickname {
+.value,
+.userInfoNickname {
   flex-grow: 1;
   color: #373737
 }
@@ -46,6 +48,11 @@ text,
   border-radius: 14px;
   padding: 3px 4px 3px 10px;
   display: flex;
+}
+
+.custom-option {
+  flex-grow: 1;
+  text-align: right;
 }
 
 .fieldCard .label {

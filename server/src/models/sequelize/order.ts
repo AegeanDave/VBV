@@ -17,6 +17,9 @@ const Order = db.define('orders', {
 	comment: {
 		type: DataTypes.TEXT
 	},
+	dealerComment: {
+		type: DataTypes.TEXT
+	},
 	userId: { type: DataTypes.STRING, allowNull: false },
 	dealerId: { type: DataTypes.STRING, allowNull: false },
 	payment: {
@@ -30,7 +33,8 @@ const Order = db.define('orders', {
 			'Unpaid',
 			'Cancelled',
 			'Completed',
-			'Shipped'
+			'Shipped',
+			'Return'
 		),
 		defaultValue: 'Unpaid'
 	},

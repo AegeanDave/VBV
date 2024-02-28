@@ -6,7 +6,8 @@ Page({
    * Page initial data
    */
   data: {
-    dealers: []
+    dealers: [],
+    orderNumber: null
   },
   /**
    * Lifecycle function--Called when page load
@@ -14,7 +15,8 @@ Page({
   async onLoad(option) {
     const todoDealers = await getOrderResult(option.orderNumber)
     this.setData({
-      dealers: todoDealers.dealers
+      dealers: todoDealers.dealers,
+      orderNumber: option.orderNumber
     })
   },
   onReady() {
@@ -40,6 +42,11 @@ Page({
   toHome() {
     wx.switchTab({
       url: '../../index/index'
+    })
+  },
+  toOrderDetail() {
+    wx.redirectTo({
+      url: `../../account/orderHistory/orderDetail/orderDetail?orderNumber=${this.data.orderNumber}`
     })
   }
 })

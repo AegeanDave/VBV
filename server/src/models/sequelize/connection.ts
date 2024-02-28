@@ -18,6 +18,7 @@ const Connection = db.define('connections', {
 			key: 'openId'
 		}
 	},
+	nickname: { type: DataTypes.STRING },
 	status: {
 		type: DataTypes.ENUM('Active', 'Inactive'),
 		defaultValue: 'Active'

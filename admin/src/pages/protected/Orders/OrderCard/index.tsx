@@ -92,7 +92,7 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
             <Grid container spacing={1} key={index}>
               <Grid item xs={4}>
                 <img
-                  style={{ width: 80, height: 80 }}
+                  style={{ width: 60, height: 60 }}
                   alt={product.productInfo.name}
                   src={product.productInfo.coverImageUrl}
                 />
@@ -112,6 +112,29 @@ export default function OrderCard({ order, readOnly }: OrderProps) {
               </Grid>
             </Grid>
           ))}
+          {order.newComment ||
+            (order.comment && (
+              <Grid
+                item
+                container
+                xs={12}
+                p={1}
+                bgcolor="#02a69e6b"
+                mt={1}
+                mb={1}
+              >
+                <Grid item xs={2}>
+                  <Typography variant="caption" color="white">
+                    备注
+                  </Typography>
+                </Grid>
+                <Grid item xs={10}>
+                  <Typography variant="caption" textAlign="left" color="white">
+                    {order.newComment || order.comment || "空"}
+                  </Typography>
+                </Grid>
+              </Grid>
+            ))}
         </Grid>
         <Grid item xs={12}>
           <Divider variant="fullWidth">

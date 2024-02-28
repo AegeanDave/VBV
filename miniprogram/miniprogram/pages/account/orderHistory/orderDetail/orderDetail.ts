@@ -1,5 +1,7 @@
-import { getPurchasedOrder, getPurchasedOrderWithDealer } from '../../../../services/api/api'
+import { getPurchasedOrder, getPurchasedOrderWithDealer, returnOrder } from '../../../../services/api/api'
 import { IAppOption } from "../../../../models/index"
+import Dialog from '@vant/weapp/dialog/dialog';
+
 const app = getApp<IAppOption>()
 
 Page({
@@ -9,7 +11,7 @@ Page({
    */
   data: {
     order: {},
-    activeNames: ['0'],
+    activeNames: [0],
     percent: 0 as number
   },
 
@@ -46,5 +48,19 @@ Page({
     this.setData({
       activeNames: e.detail,
     });
+  },
+  onCancelling(e: any) {
+    const order = e.currentTarget.dataset.order
+    Dialog.confirm({
+      title: '确认取消对应的订单',
+      message: '订单中的其余商品将保留',
+    })
+      .then(async() => {
+        await returnOrder(order)
+        wx.navigateBack()
+      })
+      .catch(() => {
+        // on cancel
+      });
   }
 })

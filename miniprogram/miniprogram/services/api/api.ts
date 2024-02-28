@@ -1,7 +1,7 @@
 import request from './request'
 import { getProductList, getMyStore, getProduct, publishProduct, unpublishProduct, publishToStore, updatePriceForChild, updatePrice, deleteProduct, getDealerStores, generatePoster } from './product'
 import { getAuth, getSignup, getCodes, getWarehouse, makeNewConnection, getAccount, getAlias, createWarehouse, getCustomer, removeConnection, getDealer, uploadPhotoBack, uploadPhotoFront, addAddress, getAddresses, deleteAddress, unfollowingDealer } from './user'
-import { submitOrder, markPaid, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, deleteOrder, getInstance, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, markPaidAll, hideOrder, completeOrder } from './order'
+import { submitOrder, markPaid, cancelOrder, getAllPurchasedOrders, getAllSoldOrders, deleteOrder, getInstance, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, markPaidAll, hideOrder, completeOrder, returnOrder } from './order'
 
 const updateUserInfo = (userInfo: {}) => request.postRequest("users/updateUserInfo", userInfo)
 const getCountriesData = () => request.getRequest("users/countries")
@@ -43,5 +43,5 @@ export {
   getQRcode,
   getProductInfoBySerialID,
   makeNewConnection,
-  deleteOrder, getSignup, getCodes, getDealer, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, deleteProduct, markPaidAll, hideOrder, completeOrder, getDealerStores, generatePoster, unfollowingDealer
+  deleteOrder, getSignup, getCodes, getDealer, getOrderResult, getPurchasedOrder, getPurchasedOrderWithDealer, getSoldOrderWithCustomer, getSoldOrder, deleteProduct, markPaidAll, hideOrder, completeOrder, getDealerStores, generatePoster, unfollowingDealer, returnOrder
 }

@@ -72,6 +72,12 @@
   font-size: 16px;
 }
 
+.btnArea .custom-button {
+  margin-top: 8rpx;
+  border: none;
+  color: #02a69f;
+}
+
 @media (min-height: 720px) {
   .btnArea {
     padding-bottom: 50px;

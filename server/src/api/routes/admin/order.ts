@@ -12,7 +12,6 @@ import db from '../../../config/database'
 import { shipmentDocRender } from '../../../provider/invoice'
 import { shipmentExcelRender } from '../../../provider/excel'
 import fs from 'fs'
-import path from 'path'
 
 const route = Router()
 
@@ -101,7 +100,10 @@ export default (app: Router) => {
 						(await OrderDetail.update(
 							{
 								status: 'Shipped',
-								shipment: trackingInfo
+								shipment: {
+									...trackingInfo,
+									createdAt: db.literal('CURRENT_TIMESTAMP')
+								}
 							},
 							{
 								where: {

@@ -17,22 +17,28 @@
 <view class="card trackingCard">
   <block wx:for="{{order}}" wx:key="id" wx:for-item="subOrder" wx:for-index="groupIndex">
     <view class="group firstNoBorder">
-      <view class="fieldBox" bindtap="bindCopy" data-name="{{subOrder.dealer.username}}">
-        <view class="fieldCard">
+      <view class="fieldBox">
+        <view class="fieldCard" bindtap="bindCopy" data-name="{{subOrder.dealer.username}}">
           <view class="label">供货商:</view>
           <view class="value">{{subOrder.dealer.username}}</view>
           <image src='{{subOrder.dealer.avatarUrl}}' class="avatar"></image>
         </view>
-        <view class="copy">
+        <view class="copy" bindtap="bindCopy" data-name="{{subOrder.dealer.username}}">
           <image src='../../../../image/copy.png'></image>
+        </view>
+        <view class="custom-option" wx:if="{{subOrder.status==='Unpaid'}}">
+          <van-button size="small" type="danger" round data-order="{{subOrder}}" bind:click="onCancelling">取消订单</van-button>
+        </view>
+        <view class="custom-option" wx:if="{{subOrder.status==='Return'}}">
+          <van-tag size="small" plain type="warning">已取消</van-tag>
         </view>
       </view>
       <view class="productList">
         <van-collapse value="{{ activeNames }}" bind:change="onAccordionChange">
           <block wx:for="{{subOrder.orderDetails}}" wx:key="id" wx:for-item="product" wx:for-index="productIndex">
-            <van-collapse-item name="{{productIndex}}">
+            <van-collapse-item name="{{groupIndex*order[groupIndex].orderDetails.length+productIndex}}">
               <view class="productCard" slot="title">
-                <view class="mainInfo" data-firstindex="{{groupIndex}}" data-secondindex="{{productIndex}}">
+                <view class="mainInfo">
                   <image class="productImage" src="{{product.productInfo.coverImageUrl}}"></image>
                   <view class="productInfo">
                     <text class="price">￥{{product.productInfo.price}}</text>
@@ -41,7 +47,9 @@
                     <view class="tagField">
                       <text class="value">货物状态：</text>
                       <view class="tag {{product.status==='Cancelled'?'cancelled':product.status==='Shipped'?'shipped':'pending'}}">
-                        <text>{{product.status==='Shipped' ? '已发货' : product.status==='Cancelled'?'被取消' : '未发货'}}</text>
+                        <text wx:if="{{product.status==='Shipped'}}">已发货</text>
+                        <text wx:elif="{{product.status==='Cancelled'}}">被取消</text>
+                        <text wx:else>未发货</text>
                       </view>
                     </view>
                   </view>
@@ -65,8 +73,8 @@
             </van-collapse-item>
           </block>
         </van-collapse>
-
       </view>
     </view>
   </block>
 </view>
+<van-dialog id="van-dialog" />

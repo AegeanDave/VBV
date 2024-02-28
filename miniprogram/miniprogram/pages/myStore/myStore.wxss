@@ -37,6 +37,7 @@
 }
 
 .productInfo .van-cell-text {
+  max-width: 240rpx;
   margin-right: 10px;
 }
 

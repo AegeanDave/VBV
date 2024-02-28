@@ -22,4 +22,5 @@
 </scroll-view>
 <view class="btnArea">
   <button class="confirm" bindtap="toHome">返回首页</button>
+  <van-button plain hairline block bind:click='toOrderDetail' custom-class='custom-button'>查看订单</van-button>
 </view>

@@ -81,11 +81,12 @@ export default (app: Router) => {
 					],
 					order: [['createdAt', 'DESC']]
 				})
-
 				const todoCompleteOrder = Order.findAll({
 					where: {
 						dealerId: myOpenId,
-						status: { [Op.or]: ['Completed', 'Cancelled', 'Shipped'] },
+						status: {
+							[Op.or]: ['Completed', 'Cancelled', 'Shipped', 'Return']
+						},
 						hidden: false
 					},
 					attributes: { exclude: ['hidden'] },
@@ -190,7 +191,7 @@ export default (app: Router) => {
 				const todoPendingOrders = Order.findAll({
 					where: {
 						userId: myOpenId,
-						status: 'Unpaid'
+						status: { [Op.or]: ['Unpaid', 'Return'] }
 					},
 					include: [
 						{
@@ -228,7 +229,6 @@ export default (app: Router) => {
 					todoPendingOrders,
 					todoProcessingOrders
 				])
-
 				const unpaidOrders = Object.values(
 					result[0].reduce((grouped: any, order) => {
 						const key = order.dataValues.orderNumber
@@ -236,10 +236,10 @@ export default (app: Router) => {
 						if (!grouped[key]) {
 							grouped[key] = []
 						}
-						const createdAt = moment(order.dataValues.createdAt).format(
-							'YYYY-MM-DD h:mm'
-						)
-						grouped[key].push({ ...order.dataValues, createdAt })
+						const createdAtFormatted = moment(
+							order.dataValues.createdAt
+						).format('yyyy/MM/DD HH:mm')
+						grouped[key].push({ ...order.dataValues, createdAtFormatted })
 
 						return grouped
 					}, {})
@@ -252,10 +252,10 @@ export default (app: Router) => {
 						if (!grouped[key]) {
 							grouped[key] = []
 						}
-						const createdAt = moment(order.dataValues.createdAt).format(
-							'YYYY-MM-DD h:mm'
-						)
-						grouped[key].push({ ...order.dataValues, createdAt })
+						const createdAtFormatted = moment(
+							order.dataValues.createdAt
+						).format('yyyy/MM/DD HH:mm')
+						grouped[key].push({ ...order.dataValues, createdAtFormatted })
 
 						return grouped
 					}, {})
@@ -564,7 +564,7 @@ export default (app: Router) => {
 			const { myOpenId } = req.params
 			const t = await db.transaction()
 			const todoOrder = await Order.update(
-				{ status: 'Paid' },
+				{ status: 'Paid', dealerComment: newComment },
 				{
 					where: {
 						id: orders.map((order: OrderType) => order.id),
@@ -797,6 +797,17 @@ export default (app: Router) => {
 						status: 'SUCCESS'
 					})
 					Logger.info('Order has been mark completed')
+					return
+				}
+				if (action === 'return') {
+					await Order.update(
+						{ status: 'Return' },
+						{ where: { id: order.id, status: 'Unpaid' } }
+					)
+					res.send({
+						status: 'SUCCESS'
+					})
+					Logger.info('Order has been return')
 					return
 				}
 			} catch (err) {

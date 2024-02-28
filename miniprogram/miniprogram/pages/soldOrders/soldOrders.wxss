@@ -120,6 +120,11 @@ button {
   align-items: center;
   margin: 0;
   background-color: #fff;
+  border-radius: 10px;
+}
+
+.dotBox:active {
+  background-color: #02a69e17;
 }
 
 .dotBox[disabled] {
@@ -130,7 +135,11 @@ button {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background-color: #d8d8d8;
+  background-color: #c7c5c5;
+}
+
+.dotBox view:active {
+  background-color: white;
 }
 
 .productCard {
