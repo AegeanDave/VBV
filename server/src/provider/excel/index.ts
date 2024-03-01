@@ -1,4 +1,4 @@
-import ExcelJS from 'exceljs'
+import ExcelJS, { Cell } from 'exceljs'
 
 const shipmentExcelRender = async (data: any) => {
 	// Create a workbook and add a worksheet
@@ -52,18 +52,19 @@ const shipmentExcelRender = async (data: any) => {
 	}, [])
 
 	worksheet.addRows(newSheetsList)
-
+	const totalRows = worksheet.rowCount
 	worksheet.columns.forEach((column: any) => {
+		if (column.number > 5) return
 		let startRow = 2
 		let prevCellValue: any = null
-		column.eachCell({ includeEmpty: true }, (cell: any, rowNumber: number) => {
+		column.eachCell({ includeEmpty: true }, (cell: Cell, rowNumber: number) => {
 			if (cell.value === null) {
 				if (prevCellValue !== null) {
 					startRow = rowNumber - 1
 				}
 				// If the current cell is empty, check the next cell
 				const nextCell = worksheet.getCell(`${column.letter}${rowNumber + 1}`)
-				if (nextCell && nextCell.value === null) {
+				if (nextCell && nextCell.value === null && rowNumber !== totalRows) {
 					// If the next cell is also empty, continue checking
 					prevCellValue = cell.value
 					return
@@ -73,6 +74,7 @@ const shipmentExcelRender = async (data: any) => {
 					`${column.letter}${startRow}:${column.letter}${rowNumber}`
 				)
 			}
+			cell.alignment = { vertical: 'top' }
 			prevCellValue = cell.value
 		})
 	})

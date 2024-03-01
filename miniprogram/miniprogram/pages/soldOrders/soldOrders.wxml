@@ -266,7 +266,7 @@
 </mp-actionSheet>
 <van-action-sheet show="{{ showPaidConfirmation }}" title="确认提交" bind:close="onMarkPaidClose" description="确认收款后将向您的供货商创建新订单">
   <view class="confirmation custom-actionsheet">
-    <van-field value="{{ message }}" label="备注" type="textarea" placeholder="此备注只向您的供货商展示" autosize="{{newCommentSize}}" border="{{ false }}" maxlength="{{125}}" show-word-limit bind:change="onNewCommentChange" />
+    <van-field value="{{ message }}" label="备注" type="textarea" placeholder="此备注只向您的供货商展示" autosize="{{newCommentSize}}" clearable="{{true}}" border="{{ false }}" maxlength="{{125}}" show-word-limit bind:change="onNewCommentChange" />
     <view>
       <van-button round block type="info" custom-class="btn" bind:tap="markPaid">确认</van-button>
       <van-button round block plain custom-class="btn" bind:tap="onMarkPaidClose">取消</van-button>

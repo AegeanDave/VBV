@@ -331,7 +331,21 @@ export default (app: Router) => {
 					],
 					order: [['createdAt', 'DESC']]
 				})
-				res.send(todoOrder)
+				const todoPreviousOrder = await Order.findOne({
+					where: {
+						dealerId: myOpenId,
+						groupId: todoOrder?.dataValues.groupId,
+						status: 'Paid'
+					},
+					include: [
+						{
+							model: User,
+							as: 'customer',
+							attributes: ['username', 'avatarUrl']
+						}
+					]
+				})
+				res.send({ todoOrder, todoPreviousOrder })
 				Logger.info('purchased order get')
 			} catch (err) {
 				console.log(err)
@@ -371,7 +385,21 @@ export default (app: Router) => {
 					],
 					order: [['createdAt', 'DESC']]
 				})
-				res.send(todoOrder)
+				const todoPreviousOrder = await Order.findOne({
+					where: {
+						dealerId: myOpenId,
+						groupId: todoOrder[0].dataValues.groupId,
+						status: 'Paid'
+					},
+					include: [
+						{
+							model: User,
+							as: 'customer',
+							attributes: ['username', 'avatarUrl']
+						}
+					]
+				})
+				res.send({ todoOrder, todoPreviousOrder })
 				Logger.info(`purchased order ${orderNumber} get`)
 			} catch (err) {
 				console.log(err)
@@ -482,6 +510,7 @@ export default (app: Router) => {
 						payment: {
 							totalAmount: quantity * actualPrice
 						},
+						isBuyerOrder: true,
 						userId: myOpenId,
 						dealerId: dataValues.openId,
 						address: { ...todoAddress?.dataValues },
@@ -802,7 +831,7 @@ export default (app: Router) => {
 				if (action === 'return') {
 					await Order.update(
 						{ status: 'Return' },
-						{ where: { id: order.id, status: 'Unpaid' } }
+						{ where: { id: order.id, status: 'Unpaid', isBuyerOrder: true } }
 					)
 					res.send({
 						status: 'SUCCESS'

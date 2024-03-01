@@ -42,6 +42,7 @@ const Order = db.define('orders', {
 		type: DataTypes.BOOLEAN,
 		defaultValue: false
 	},
+	isBuyerOrder: { type: DataTypes.BOOLEAN },
 	createdAt: {
 		type: DataTypes.DATE,
 		defaultValue: DataTypes.NOW

@@ -5,7 +5,7 @@ const { miniProgram: { envVersion } } = wx.getAccountInfoSync()
 let url = ''
 switch (envVersion) {
   case 'develop':
-    url = "https://localhost:3000/api";
+    url = "https://api.vbangv.com/api";
     break;
   case 'trial':
     url = "https://api.vbangv.com/api";

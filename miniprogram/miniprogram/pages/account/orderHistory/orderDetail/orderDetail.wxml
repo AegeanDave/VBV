@@ -26,7 +26,7 @@
         <view class="copy" bindtap="bindCopy" data-name="{{subOrder.dealer.username}}">
           <image src='../../../../image/copy.png'></image>
         </view>
-        <view class="custom-option" wx:if="{{subOrder.status==='Unpaid'}}">
+        <view class="custom-option" wx:if="{{subOrder.status==='Unpaid'&&subOrder.isBuyerOrder===true}}">
           <van-button size="small" type="danger" round data-order="{{subOrder}}" bind:click="onCancelling">取消订单</van-button>
         </view>
         <view class="custom-option" wx:if="{{subOrder.status==='Return'}}">

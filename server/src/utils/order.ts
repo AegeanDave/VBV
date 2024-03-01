@@ -88,6 +88,7 @@ const handleCreateTransferingOrders = async (
 				payment: {
 					totalAmount: quantity * actualPrice
 				},
+				isBuyerOrder: false,
 				userId: oldOrder.dealerId,
 				dealerId: dataValues.openId,
 				address: { ...oldOrder.address },
